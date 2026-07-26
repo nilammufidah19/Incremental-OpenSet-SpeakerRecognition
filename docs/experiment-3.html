@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Experiment 3 — Pembenahan Threshold Open-Set (Hasil)</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1d24; --muted:#5b6472; --line:#e3e7ee; --card:#f7f9fc;
+    --accent:#2f6df6; --accent2:#12b886; --warn:#e8590c; --good:#2f9e44; --plan:#f59f00;
+    --code-bg:#f0f3f8; --shadow:0 1px 3px rgba(20,30,50,.08);
+    --box1:#e7f0ff; --box1b:#b9d2ff; --box2:#e6fbf3; --box2b:#a5e8d0; --box3:#fff3e6; --box3b:#ffd8a8;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1319; --fg:#e6eaf2; --muted:#9aa5b5; --line:#242c38; --card:#151b24;
+      --accent:#5b8cff; --accent2:#26c99a; --warn:#ff922b; --good:#51cf66; --plan:#ffc94d;
+      --code-bg:#161d27; --shadow:0 1px 3px rgba(0,0,0,.3);
+      --box1:#16233a; --box1b:#2b4a7a; --box2:#0f2b23; --box2b:#1e5c49; --box3:#2e2113; --box3b:#6b4a1f;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:960px;margin:0 auto;padding:32px 22px 80px}
+  h1{font-size:1.85rem;line-height:1.2;margin:.2em 0 .1em}
+  h2{font-size:1.35rem;margin:2.1em 0 .5em;padding-top:.4em;border-top:1px solid var(--line)}
+  h3{font-size:1.1rem;margin:1.5em 0 .4em}
+  .sub{color:var(--muted);font-size:1.02rem;margin:.2em 0 1.2em}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:var(--code-bg);padding:.12em .38em;border-radius:5px;font-size:.88em;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre{background:var(--code-bg);padding:14px 16px;border-radius:9px;overflow-x:auto;font-size:.86rem;border:1px solid var(--line)}
+  .eq{font-family:ui-monospace,Consolas,monospace;font-size:.84rem;background:var(--code-bg);
+    padding:10px 14px;border-radius:8px;border:1px solid var(--line);overflow-x:auto;white-space:pre}
+  table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+  th{background:var(--card);font-weight:600}
+  tr:nth-child(even) td{background:var(--card)}
+  .pill{display:inline-block;padding:.15em .6em;border-radius:999px;font-size:.8rem;font-weight:600}
+  .pill.done{background:#e6fbf3;color:#0b7a4b;border:1px solid #a5e8d0}
+  @media (prefers-color-scheme: dark){.pill.done{background:#0f2b23;color:var(--accent2);border-color:#1e5c49}}
+  .pill.tag{background:var(--box1);color:var(--accent);border:1px solid var(--box1b)}
+  .callout{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);padding:12px 16px;border-radius:8px;margin:1.2em 0}
+  .callout.warn{border-left-color:var(--warn)} .callout.good{border-left-color:var(--good)} .callout.plan{border-left-color:var(--plan)}
+  .muted{color:var(--muted)}
+  .exp{border:1px solid var(--line);border-radius:12px;padding:4px 18px 14px;margin:1.2em 0;box-shadow:var(--shadow);background:var(--card)}
+  .exp h3{margin-top:.9em}
+  .best td{background:var(--box2)!important;font-weight:600}
+  .sev-hi{color:var(--warn);font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Experiment 3 — Pembenahan Threshold Open-Set</h1>
+  <div class="sub">
+    <span class="pill done">✅ SUDAH DIJALANKAN — 11 Juli 2026</span>
+    <span class="pill tag">exp3a_lowfrr · exp3b_asnorm · exp3c_dualmetric</span><br>
+    Basis: <a href="experiment-1.html">Experiment 1</a> (0.731). Whisper bukan lever
+    (<a href="experiment-2.html">Experiment 2</a>) → fokus threshold. Batasan: strict 1-shot, bebas-pelatihan.
+    Versi rinci: <a href="experiment-3.md">experiment-3.md</a>.
+  </div>
+
+  <div class="callout good">
+    <strong>🏆 Hasil utama (exp3b, AS-Norm + low-FRR):</strong> sistem usulan
+    <strong>Accuracy = 0.865 ± 0.008</strong> — <strong>melampaui baseline ECAPA closed-set
+    (0.788 ± 0.017) secara signifikan</strong> (p = 0.0015 &lt; α = 0.00833), Forgetting
+    <strong>0.0022</strong>, deteksi unknown <strong>EER 0.111</strong> (target ≤ 0.15 ✓),
+    <strong>AUROC 0.952</strong>, <strong>TAR@FAR=1% 0.594</strong>.
+    Decision gate "melampaui baseline" <strong>TERCAPAI</strong> (+0.134 di atas exp1).
+  </div>
+
+  <h2>1. Apa yang diubah (semua di belakang feature flag)</h2>
+  <p>Field baru <code>ExperimentConfig</code> dengan default = perilaku lama persis; tag lama tidak berubah.</p>
+  <table>
+    <tr><th>Field</th><th>Default (lama)</th><th>exp3a</th><th>exp3b / 3c</th><th>Fungsi</th></tr>
+    <tr><td><code>calibration_strategy</code></td><td>"eer"</td><td>"target_frr"</td><td>"target_frr"</td><td>titik operasi threshold (3a)</td></tr>
+    <tr><td><code>target_frr</code></td><td>0.05 <span class="muted">(tak terpakai)</span></td><td><strong>0.01</strong></td><td><strong>0.05</strong></td><td>threshold = kuantil-(1−FRR) jarak genuine; dikunci via validasi</td></tr>
+    <tr><td><code>per_config_calibration</code></td><td>False</td><td>True</td><td>True</td><td><strong>fix P4</strong>: threshold per model fusi A1/A2/A3</td></tr>
+    <tr><td><code>score_norm</code></td><td>"none"</td><td>"none"</td><td>"asnorm"</td><td>normalisasi skor (3b)</td></tr>
+    <tr><td><code>asnorm_cohort_size</code></td><td>300</td><td>—</td><td>300</td><td>utterance cohort dari base_train</td></tr>
+    <tr><td><code>asnorm_top_k</code></td><td>100</td><td>—</td><td><strong>200</strong></td><td>subset adaptif statistik cohort; dikunci via validasi</td></tr>
+    <tr><td><code>report_open_set_detection</code></td><td>False</td><td>True</td><td>True</td><td>jalur unknown query + closed-set + EER/AUROC/TAR@FAR (3c)</td></tr>
+  </table>
+  <p>File: <code>calibration.py</code> (+<code>find_operating_point</code>),
+     <code>score_norm.py</code> <span class="muted">(baru — AS-Norm simetris adaptif)</span>,
+     <code>manager.py</code> (+<code>nearest_speaker_id</code>, <code>score_sample()</code> bebas-efek-samping),
+     <code>metrics.py</code> (+AUROC, TAR@FAR), <code>fscil.py</code> (+<code>run_fscil_detailed</code>),
+     <code>splits.py</code> (+<code>split_reserved_pool_halves</code>), <code>run_full_evaluation.py</code>,
+     <code>exp3_validation_sweep.py</code> <span class="muted">(baru)</span>,
+     <code>tests/test_experiment3.py</code> <span class="muted">(baru, 11 test)</span>.
+     Rincian lengkap: <a href="experiment-3.md">experiment-3.md §2</a>.</p>
+  <div class="eq">d_norm(q,p) = ½ [ (d(q,p) − μ_topK(q→cohort)) / σ_topK(q→cohort)
+          + (d(q,p) − μ_topK(p→cohort)) / σ_topK(p→cohort) ]</div>
+
+  <h2>2. Validasi anti-overfit (dijalankan)</h2>
+  <p><code>reserved_unknown_pool</code> dibagi dua paruh speaker-disjoint deterministik:
+     <strong>paruh-validasi</strong> (110 speaker → task FSCIL validasi 10×10-way, n_query=4, 3 seed) untuk memilih
+     &amp; mengunci hyperparameter; <strong>paruh-deteksi</strong> (111 speaker) disimpan murni untuk metrik deteksi.
+     Hyperparameter <em>tidak pernah</em> dipilih pada task speaker.</p>
+  <table>
+    <tr><th>Normalisasi</th><th>@EER</th><th>FRR 1%</th><th>FRR 5%</th><th>FRR 10%</th><th>FRR 15%</th><th>EER kalibrasi</th></tr>
+    <tr><td>none</td><td>0.7492</td><td><strong>0.7550</strong></td><td>0.7533</td><td>0.7483</td><td>0.7492</td><td>0.2193</td></tr>
+    <tr><td>asnorm c300 k50</td><td>0.8767</td><td>0.8725</td><td>0.8658</td><td>0.8667</td><td>0.8658</td><td>0.3422</td></tr>
+    <tr><td>asnorm c300 k100</td><td>0.8758</td><td>0.8733</td><td>0.8758</td><td>0.8750</td><td>0.8750</td><td>0.3029</td></tr>
+    <tr class="best"><td>asnorm c300 k200</td><td>0.8842</td><td>0.8858</td><td><strong>0.8867</strong></td><td>0.8858</td><td>0.8858</td><td>0.2558</td></tr>
+  </table>
+  <p><strong>Dikunci:</strong> exp3a → target_frr = 0.01 (tanpa norm); exp3b/3c → asnorm c300/k200 + target_frr = 0.05.</p>
+
+  <h2>3. Hasil resmi (5 seed, audio VoxCeleb nyata, 530 query unknown nyata)</h2>
+
+  <div class="exp">
+    <h3>3a — Low-FRR saja <span class="pill tag">exp3a_lowfrr</span></h3>
+    <table>
+      <tr><th>Konfigurasi</th><th>Open-set Acc</th><th>Closed-set</th><th>Forgetting</th><th>det-EER</th><th>AUROC</th><th>TAR@1%FAR</th></tr>
+      <tr><td>Usulan (A3, running_avg)</td><td>0.732 ± 0.025</td><td>0.732</td><td>0.0004</td><td>0.170</td><td>0.903</td><td>0.671</td></tr>
+      <tr><td>B1 — static</td><td>0.784 ± 0.016</td><td>0.787</td><td>0.0489</td><td>0.275</td><td>0.803</td><td>0.314</td></tr>
+      <tr><td>Baseline ECAPA (closed)</td><td>0.788 ± 0.017</td><td>0.788</td><td>0.0530</td><td>0.277</td><td>0.802</td><td>0.313</td></tr>
+    </table>
+    <p><strong>3a saja tidak cukup</strong> (0.732 ≈ exp1 0.731). Temuan penting: pada threshold permisif tanpa
+       AS-Norm, update running-average <em>drift</em> (B1 &gt; B2, p=0.0003) — konfirmasi P5. Fix P4 terverifikasi
+       (A1 = 0.732, bukan artefak 0.069).</p>
+  </div>
+
+  <div class="exp">
+    <h3>3b — AS-Norm + Low-FRR <span class="pill tag">exp3b_asnorm</span> — <strong>hasil utama</strong></h3>
+    <table>
+      <tr><th>Konfigurasi</th><th>Open-set Acc</th><th>Closed-set</th><th>Forgetting</th><th>det-EER</th><th>AUROC</th><th>TAR@1%FAR</th></tr>
+      <tr class="best"><td>Usulan (A3, running_avg)</td><td><strong>0.865 ± 0.008</strong></td><td><strong>0.865</strong></td><td>0.0022</td><td><strong>0.111</strong></td><td><strong>0.952</strong></td><td><strong>0.594</strong></td></tr>
+      <tr><td>B1 — static</td><td>0.807 ± 0.014</td><td>0.807</td><td>0.0492</td><td>0.223</td><td>0.842</td><td>0.249</td></tr>
+      <tr><td>A1 — ECAPA saja</td><td>0.865 ± 0.008</td><td>0.865</td><td>0.0022</td><td>0.110</td><td>0.952</td><td>0.594</td></tr>
+      <tr><td>A2 — Whisper saja</td><td>0.216 ± 0.018</td><td>0.216</td><td>0.0116</td><td>0.329</td><td>0.724</td><td>0.064</td></tr>
+      <tr><td>Baseline ECAPA (closed)</td><td>0.788 ± 0.017</td><td>0.788</td><td>0.0530</td><td>0.277</td><td>0.802</td><td>0.313</td></tr>
+      <tr><td>Baseline ProtoNet vanilla</td><td>0.405 ± 0.017</td><td>0.405</td><td>0.1214</td><td>0.457</td><td>0.567</td><td>0.050</td></tr>
+      <tr><td>Baseline x-vector+PLDA-lite</td><td>0.264 ± 0.014</td><td>0.264</td><td>0.1199</td><td>0.455</td><td>0.559</td><td>0.044</td></tr>
+    </table>
+    <p><strong>Signifikansi (α=0.00833):</strong> usulan vs ECAPA baseline <strong>p=0.0015 ✅ (melampaui)</strong>;
+       B2 vs B1 p=0.0036 ✅ (continual membantu lagi — drift teratasi di ruang ternormalisasi);
+       usulan vs A1 p=1.0 (Whisper tetap ~0, konsisten exp2).</p>
+  </div>
+
+  <div class="exp">
+    <h3>3c — Pelaporan dua-metrik <span class="pill tag">exp3c_dualmetric</span></h3>
+    <p>Konfigurasi sistem = exp3b (terbaik di validasi) → run resmi identik numerik; tag ini adalah view
+       pelaporan. Klaim tesis yang terbukti: <strong>identifikasi</strong> 0.865 &gt; baseline 0.788 (bukan hanya
+       menyamai), <strong>plus</strong> kapabilitas deteksi open-set (EER 0.111 / AUROC 0.952 / TAR@1%FAR 0.594)
+       terhadap 106 speaker unknown nyata yang tak pernah dipakai tuning.</p>
+  </div>
+
+  <h2>4. Analisis singkat</h2>
+  <ul>
+    <li><strong>Kenapa AS-Norm melompat +0.13 (bukan +0.01–0.03)?</strong> Efek dominan bukan di rejection tapi di
+        <em>identifikasi</em>: term sisi-prototype menormalkan bias per-kelas jarak nearest-prototype (efek
+        <em>hubness</em> pada 1-shot), argmin berubah → closed-set 0.732 → 0.865.</li>
+    <li><strong>Catatan jujur:</strong> EER pada data kalibrasi justru naik dengan AS-Norm (0.219→0.256), tetapi
+        deteksi pada task nyata membaik tajam (EER 0.170→0.111, AUROC 0.903→0.952). Target EER ≤ 0.15 tercapai
+        pada metrik task, bukan pada proxy kalibrasi.</li>
+    <li><strong>P5 terjawab:</strong> exp3a mengisolasi drift update pada threshold permisif (B1&gt;B2);
+        AS-Norm membuat gerbang update jauh lebih bersih → B2&gt;B1 kembali, tanpa mekanisme margin tambahan.</li>
+    <li><strong>Perbaikan insidental:</strong> bug kunci cache embedding (path relatif vs absolut) di
+        <code>precompute_embeddings.py</code>; summary kini juga disimpan per-eksperimen
+        (<code>full_evaluation_summary_&lt;tag&gt;.json</code>).</li>
+  </ul>
+
+  <h2>5. Kriteria keberhasilan — evaluasi akhir</h2>
+  <table>
+    <tr><th>Metrik</th><th>Baseline / target</th><th>Hasil</th><th>Status</th></tr>
+    <tr><td>Open-set FSCIL Acc</td><td>exp1 0.731; ≥0.76; stretch ≥0.788</td><td><strong>0.865 ± 0.008</strong></td><td>✅✅ stretch terlampaui</td></tr>
+    <tr><td>Closed-set Acc</td><td>ECAPA 0.788; ≈0.78</td><td><strong>0.865</strong></td><td>✅ melampaui</td></tr>
+    <tr><td>EER deteksi (task)</td><td>0.219; ≤0.15</td><td><strong>0.111</strong></td><td>✅</td></tr>
+    <tr><td>AUROC / TAR@FAR=1%</td><td>dilaporkan</td><td><strong>0.952 / 0.594</strong></td><td>✅</td></tr>
+    <tr><td>Forgetting</td><td>~0</td><td><strong>0.0022</strong></td><td>✅</td></tr>
+  </table>
+
+  <h2>6. Reproduksi</h2>
+  <pre># sweep validasi (mengunci hyperparameter)
+.venv\Scripts\python.exe scripts\exp3_validation_sweep.py
+
+# run resmi per tag
+$env:ACTIVE_EXPERIMENT = "exp3a_lowfrr";     .venv\Scripts\python.exe scripts\run_full_evaluation.py
+$env:ACTIVE_EXPERIMENT = "exp3b_asnorm";     .venv\Scripts\python.exe scripts\run_full_evaluation.py
+$env:ACTIVE_EXPERIMENT = "exp3c_dualmetric"; .venv\Scripts\python.exe scripts\run_full_evaluation.py
+
+# unit test fitur Experiment 3
+.venv\Scripts\python.exe -m pytest tests\test_experiment3.py -q</pre>
+
+  <p class="muted" style="margin-top:2.5em;border-top:1px solid var(--line);padding-top:1em">
+     Laporan Experiment 3 · terkait: <a href="experiment-1.html">experiment-1.html</a> ·
+     <a href="experiment-2.html">experiment-2.html</a> · <a href="experiment-3.md">experiment-3.md</a> ·
+     <a href="README.md">README.md</a> · <code>src/experiments.py</code>.</p>
+
+</div>
+</body>
+</html>

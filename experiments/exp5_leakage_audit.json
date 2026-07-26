@@ -1,0 +1,30 @@
+{
+  "base_train": {
+    "n": 5156,
+    "vox2_dev": 4196,
+    "vox2_test": 92,
+    "vox1": 868,
+    "other": 0
+  },
+  "task_speakers": {
+    "n": 100,
+    "vox2_dev": 80,
+    "vox2_test": 1,
+    "vox1": 19,
+    "other": 0
+  },
+  "reserved_unknown_pool": {
+    "n": 221,
+    "vox2_dev": 173,
+    "vox2_test": 7,
+    "vox1": 41,
+    "other": 0
+  },
+  "calibration_impostor_pool": {
+    "n": 1888,
+    "vox2_dev": 1545,
+    "vox2_test": 20,
+    "vox1": 323,
+    "other": 0
+  }
+}

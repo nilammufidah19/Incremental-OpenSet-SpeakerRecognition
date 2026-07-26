@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Experiment 5 — ECAPA + ReDimNet: Fusi Skor Dua-Ruang Ternormalisasi (Hasil)</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1d24; --muted:#5b6472; --line:#e3e7ee; --card:#f7f9fc;
+    --accent:#2f6df6; --accent2:#12b886; --warn:#e8590c; --good:#2f9e44; --plan:#f59f00;
+    --code-bg:#f0f3f8; --shadow:0 1px 3px rgba(20,30,50,.08);
+    --box1:#e7f0ff; --box1b:#b9d2ff; --box2:#e6fbf3; --box2b:#a5e8d0; --box3:#fff3e6; --box3b:#ffd8a8;
+    --boxr:#ffe9ec; --boxrb:#ffb3bf;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1319; --fg:#e6eaf2; --muted:#9aa5b5; --line:#242c38; --card:#151b24;
+      --accent:#5b8cff; --accent2:#26c99a; --warn:#ff922b; --good:#51cf66; --plan:#ffc94d;
+      --code-bg:#161d27; --shadow:0 1px 3px rgba(0,0,0,.3);
+      --box1:#16233a; --box1b:#2b4a7a; --box2:#0f2b23; --box2b:#1e5c49; --box3:#2e2113; --box3b:#6b4a1f;
+      --boxr:#331319; --boxrb:#7a2b3a;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:980px;margin:0 auto;padding:32px 22px 80px}
+  h1{font-size:1.85rem;line-height:1.2;margin:.2em 0 .1em}
+  h2{font-size:1.35rem;margin:2.1em 0 .5em;padding-top:.4em;border-top:1px solid var(--line)}
+  h3{font-size:1.1rem;margin:1.5em 0 .4em}
+  .sub{color:var(--muted);font-size:1.02rem;margin:.2em 0 1.2em}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:var(--code-bg);padding:.12em .38em;border-radius:5px;font-size:.88em;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre{background:var(--code-bg);padding:14px 16px;border-radius:9px;overflow-x:auto;font-size:.86rem;border:1px solid var(--line)}
+  .eq{font-family:ui-monospace,Consolas,monospace;font-size:.84rem;background:var(--code-bg);
+    padding:10px 14px;border-radius:8px;border:1px solid var(--line);overflow-x:auto;white-space:pre}
+  table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+  th{background:var(--card);font-weight:600}
+  tr:nth-child(even) td{background:var(--card)}
+  .pill{display:inline-block;padding:.15em .6em;border-radius:999px;font-size:.8rem;font-weight:600}
+  .pill.done{background:#e6fbf3;color:#0b7a4b;border:1px solid #a5e8d0}
+  @media (prefers-color-scheme: dark){.pill.done{background:#0f2b23;color:var(--accent2);border-color:#1e5c49}}
+  .pill.tag{background:var(--box1);color:var(--accent);border:1px solid var(--box1b)}
+  .callout{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);padding:12px 16px;border-radius:8px;margin:1.2em 0}
+  .callout.warn{border-left-color:var(--warn)} .callout.good{border-left-color:var(--good)} .callout.plan{border-left-color:var(--plan)}
+  .muted{color:var(--muted)}
+  .exp{border:1px solid var(--line);border-radius:12px;padding:4px 18px 14px;margin:1.2em 0;box-shadow:var(--shadow);background:var(--card)}
+  .exp h3{margin-top:.9em}
+  .best td{background:var(--box2)!important;font-weight:600}
+  .worst td{background:var(--boxr)!important}
+  .sev-hi{color:var(--warn);font-weight:700}
+  .arch{display:flex;gap:18px;flex-wrap:wrap;margin:1.2em 0}
+  .arch .col{flex:1 1 320px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card);box-shadow:var(--shadow)}
+  .arch .col h4{margin:.1em 0 .7em;font-size:.98rem}
+  .node{border:1px solid var(--box1b);background:var(--box1);border-radius:8px;padding:7px 10px;margin:7px 0;font-size:.86rem;text-align:center}
+  .node.frozen{border-style:dashed}
+  .node.newp{background:var(--box3);border-color:var(--box3b)}
+  .node.out{background:var(--box2);border-color:var(--box2b);font-weight:600}
+  .node.dead{background:var(--boxr);border-color:var(--boxrb)}
+  .arrow{text-align:center;color:var(--muted);font-size:.85rem;line-height:1;margin:-2px 0}
+  .split{display:flex;gap:8px}
+  .split>div{flex:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Experiment 5 — ECAPA + ReDimNet: Fusi Skor Dua-Ruang Ternormalisasi</h1>
+  <div class="sub">
+    <span class="pill done">✅ SUDAH DIJALANKAN — 18–19 Juli 2026</span>
+    <span class="pill tag">exp5b_redimnet_fusion (tag aktif baru)</span><br>
+    Basis: <a href="experiment-3.html">Experiment 3b</a> (0.865). Fusi Whisper ditutup oleh
+    <a href="experiment-4.html">Experiment 4</a> → backbone kedua diganti model speaker heterogen.
+    Batasan tetap: strict 1-shot, bebas-pelatihan. Rencana &amp; literatur:
+    <a href="experiment-5.md">experiment-5.md</a>.
+  </div>
+
+  <div class="callout good">
+    <strong>🏆 Hasil utama (run resmi, 5 seed, 99 task speaker, 530 query unknown nyata):</strong>
+    sistem usulan (A3, fusi <code>0.3·z_ecapa + 0.7·z_redimnet</code>, running-average)
+    <strong>Accuracy = 0.908 ± 0.019</strong> — rekor baru (+0.043 di atas exp3b 0.865; +0.120 di atas
+    baseline ECAPA closed-set 0.788, p = 0.0005). <strong>Untuk pertama kalinya kontribusi fusi
+    terukur: A3 &gt; A1 signifikan (p = 0.0041 &lt; α = 0.00833)</strong> — di exp1–exp4, A3 ≡ A1 (p = 1.0).
+    Deteksi unknown melonjak: <strong>EER 0.075</strong> (dari 0.111), <strong>AUROC 0.972</strong>,
+    <strong>TAR@FAR=1% 0.748</strong> (dari 0.594). Forgetting tetap <strong>0.0022</strong>.
+  </div>
+
+  <div class="callout warn">
+    <strong>Dua catatan jujur di garis depan:</strong>
+    (1) <strong>A3 vs A2</strong> (ReDimNet-saja, 0.902 ± 0.016): p = 0.209 — fusi <em>setara</em>, tidak
+    melampaui, backbone tunggal terkuat; klaim yang benar adalah "fusi menambah di atas ECAPA dan
+    tidak kalah dari ReDimNet", bukan "fusi mengalahkan segalanya".
+    (2) <strong>Leakage diaudit &amp; diungkap</strong>: ReDimNet dilatih di VoxCeleb2-dev yang memuat
+    80/100 task speaker — sama seperti ECAPA SpeechBrain yang juga dilatih VoxCeleb, jadi semua
+    perbandingan internal tetap apel-ke-apel; angka irisan lengkap di §3.
+  </div>
+
+  <h2>1. Perjalanan eksekusi (gerbang demi gerbang)</h2>
+  <table>
+    <tr><th>Fase</th><th>Apa yang terjadi</th><th>Verdik gerbang</th></tr>
+    <tr><td>0a — Audit leakage</td><td>Metadata resmi VoxCeleb2 diunduh; irisan dihitung per-split (§3)</td><td>Irisan besar → sesuai aturan §3.1 rencana, WavLM (bebas-VoxCeleb) diuji lebih dulu</td></tr>
+    <tr class="worst"><td>0b — Kandidat #1: WavLM-base-plus</td><td>Sweep 13 layer pada snapshot validasi (800 utterance, 1 forward/utterance): terbaik layer 5 = <strong>0.2925</strong> standalone (di atas Whisper 0.24, tapi jauh dari cukup) — SSL beku tanpa head terlatih bukan speaker embedder</td><td>❌ <strong>G5.1 GAGAL</strong> (0.2925 &lt; 0.70) → kandidat berikutnya</td></tr>
+    <tr><td>0b — Kandidat #2: ReDimNet-b2 (ft_lm, vox2)</td><td>torch.hub, 5.1M param, 192-d; sanity: cosine same-speaker 0.651 vs cross 0.096, deterministik</td><td>✅ sanity lolos</td></tr>
+    <tr><td>1 — Precompute</td><td>14.874 embedding <code>redimnet_b2</code> (3 manifest), 46 menit GPU, 0 gagal</td><td>✅</td></tr>
+    <tr class="best"><td>2 — Screening (script exp4)</td><td>Standalone AS-Norm <strong>0.878</strong> (&gt; ECAPA 0.837!); plafon oracle <strong>+0.069 ± 0.013</strong>; fusi snapshot w=0.5 = <strong>0.890 &gt; kedua backbone sendiri</strong></td><td>✅ <strong>G5.1 &amp; G5.2 LOLOS</strong> — persis yang gagal pada Whisper di exp4</td></tr>
+    <tr><td>3 — Sweep validasi FSCIL (kunci w)</td><td>9 nilai w × 3 seed, protokol sweep exp3 penuh: semua w&lt;1 &gt; ECAPA-only (0.8875) di 3/3 seed; plateau di w ≤ 0.7; <strong>w = 0.3 dikunci</strong> (0.9183; bobot fusi sungguhan terbaik — w=0.0 alias ReDimNet-saja 0.9200 seri statistik, dan tetap terwakili sebagai arm A2 di run resmi)</td><td>✅ <strong>G5.3 LOLOS</strong></td></tr>
+    <tr class="best"><td>4 — Run resmi</td><td>Tag <code>exp5b_redimnet_fusion</code>, 5 seed, 530 unknown paruh-deteksi murni (5.9 menit)</td><td>✅ hasil utama di atas; kriteria §6</td></tr>
+  </table>
+
+  <h2>2. Arsitektur — apa yang berubah dari exp3b</h2>
+
+  <div class="arch">
+    <div class="col">
+      <h4>exp3b (lama — tetap utuh &amp; reproducible)</h4>
+      <div class="node frozen">audio → preprocessing → backbone beku<br>ECAPA 192-d + Whisper 512-d (cache)</div>
+      <div class="arrow">▼</div>
+      <div class="node">Gated Attention Fusion 256-d<br><span class="muted">(residual-init, beku; gate ~0.98 → ≈ECAPA)</span></div>
+      <div class="arrow">▼</div>
+      <div class="node">AS-Norm — 1 ruang fusi (c300/k200)</div>
+      <div class="arrow">▼</div>
+      <div class="node">threshold target-FRR 5% → continual update</div>
+      <div class="arrow">▼</div>
+      <div class="node out">0.865 — A3 ≡ A1 (Whisper tak berkontribusi)</div>
+    </div>
+    <div class="col">
+      <h4>exp5b (baru — <code>fusion_strategy="score_norm"</code>)</h4>
+      <div class="node frozen">audio → preprocessing → backbone beku<br>ECAPA 192-d + <strong>ReDimNet-b2 192-d</strong> (cache <code>redimnet_b2</code>)</div>
+      <div class="arrow">▼</div>
+      <div class="node newp">embedder concat bebas-parameter<br><code>[ê_ecapa ; ê_redimnet]</code> (384-d)<br><span class="muted">satu embedder untuk SEMUA arm ablasi</span></div>
+      <div class="arrow">▼</div>
+      <div class="node newp"><strong>DualASNorm</strong> — AS-Norm per-ruang (cohort sama, c300/k200)<br>
+        <code>z = w·z_ecapa + (1−w)·z_redimnet</code><br>
+        <span class="muted">A3: w=0.3 (dikunci validasi) · A1: w=1 · A2: w=0</span></div>
+      <div class="arrow">▼</div>
+      <div class="node">threshold target-FRR 5%, kalibrasi per-arm (P4) → continual update (running average di ruang concat)</div>
+      <div class="arrow">▼</div>
+      <div class="node out">0.908 — A3 &gt; A1 signifikan (pertama kali)</div>
+    </div>
+  </div>
+
+  <div class="eq">z_x(q, c_k) = ½ [ (d_x − μ_topK(q→C_x)) / σ_topK(q→C_x) + (d_x − μ_topK(c_k→C_x)) / σ_topK(c_k→C_x) ]
+skor(q, c_k) = w · z_ecapa(q, c_k) + (1 − w) · z_redimnet(q, c_k)      (w = 0.3, dikunci validasi)</div>
+
+  <p><strong>Tiga keputusan arsitektural kunci:</strong></p>
+  <ul>
+    <li><strong>Fusi di level z-score, bukan embedding.</strong> Pelajaran exp2/exp4: jarak mentah dua backbone
+        berskala beda (fusi mentah ill-posed), dan statistik AS-Norm bergantung pada query/prototype sehingga
+        trik konkatenasi berbobot exp2 tidak berlaku. <code>DualASNorm</code> menormalkan tiap ruang sendiri lalu
+        menjumlah — kedua term berbagi satuan σ-cohort. Skala konstan per-paruh terbukti tak berpengaruh
+        (test invariansi), sehingga satu embedder concat melayani semua arm dan ablasi terjadi murni di bobot normalizer.</li>
+    <li><strong>Backbone kedua = model speaker heterogen, bukan model ASR.</strong> ReDimNet (topologi reshape
+        1D↔2D, Interspeech 2024) kontras arsitektural maksimal terhadap TDNN-1D ECAPA — pola error-nya beda
+        (plafon oracle +0.069 vs Whisper +0.023), persis resep fusi juara VoxSRC.</li>
+    <li><strong>Semua disiplin exp3 dipertahankan:</strong> threshold target-FRR 5%, kalibrasi per-konfigurasi
+        (P4), AS-Norm c300/k200, update running-average, hyperparameter dikunci di paruh-validasi — hanya
+        backbone kedua dan mekanisme fusinya yang berubah.</li>
+  </ul>
+
+  <h3>2.1 Perubahan kode (semua di belakang feature flag; default = perilaku lama persis)</h3>
+  <table>
+    <tr><th>Field <code>ExperimentConfig</code> baru/diperluas</th><th>Default (lama)</th><th>exp5b</th><th>Fungsi</th></tr>
+    <tr><td><code>fusion_strategy</code></td><td>"embedding"</td><td><strong>"score_norm"</strong> <span class="muted">(nilai baru)</span></td><td>fusi skor dua-ruang ternormalisasi via DualASNorm</td></tr>
+    <tr><td><code>score_fusion_weight</code></td><td>0.4 <span class="muted">(exp2, ruang mentah)</span></td><td><strong>0.3</strong> <span class="muted">(dikunci sweep validasi)</span></td><td>bobot ECAPA di ruang z-score</td></tr>
+    <tr><td><code>whisper_backbone</code></td><td>"whisper"</td><td><strong>"redimnet_b2"</strong></td><td>nama cache backbone kedua (kini generik)</td></tr>
+    <tr><td><code>dump_detection_scores</code></td><td>False</td><td><strong>True</strong></td><td>simpan skor genuine/unknown per-rep → uji aturan deteksi 4c post-hoc</td></tr>
+  </table>
+  <table>
+    <tr><th>File</th><th>Status</th><th>Isi</th></tr>
+    <tr><td><code>src/models/redimnet.py</code></td><td>baru</td><td>ekstraktor ReDimNet-b2 ft_lm via torch.hub (beku, L2-norm, pola <code>whisper_encoder.py</code>)</td></tr>
+    <tr><td><code>src/models/wavlm_encoder.py</code></td><td>baru</td><td>ekstraktor WavLM (kandidat #1; dipertahankan sebagai negative result terdokumentasi + jalur all-layer untuk sweep)</td></tr>
+    <tr><td><code>src/prototypical/score_norm.py</code></td><td>+<code>DualASNorm</code></td><td>fusi z-score dua-ruang; <code>ASNorm</code> lama tak diubah</td></tr>
+    <tr><td><code>src/features/cache.py</code></td><td>+registrasi</td><td>backbone <code>redimnet_b2</code> (mode durasi <code>ecapa_inference</code>, namespace cache sendiri)</td></tr>
+    <tr><td><code>src/prototypical/data.py</code></td><td>digeneralisasi</td><td><code>split_raw_embedding</code>: paruh kedua = sisa dimensi (identik utk 704-d lama; benar utk 384-d exp5)</td></tr>
+    <tr><td><code>src/evaluation/ablation.py</code></td><td>+param</td><td><code>second_dim</code> (default 512 = perilaku lama)</td></tr>
+    <tr><td><code>scripts/run_full_evaluation.py</code></td><td>+cabang</td><td>cabang <code>score_norm</code> (embedder tunggal + DualASNorm per-arm), dump skor deteksi, fix baseline ProtoNet mengikuti backbone aktif</td></tr>
+    <tr><td><code>scripts/exp5_wavlm_layer_sweep.py</code> · <code>exp5_validation_sweep.py</code> · <code>exp5_detection_rules.py</code></td><td>baru</td><td>sweep layer kandidat #1 · sweep kunci-w (G5.3) · uji aturan deteksi 4c pada paruh-deteksi</td></tr>
+    <tr><td><code>tests/test_experiment5.py</code></td><td>baru</td><td>7 unit test (DualASNorm ekstrem = ASNorm tunggal, invariansi skala per-paruh, orientasi, split generalized, dimensi ablasi) — total suite <strong>156 test lolos</strong></td></tr>
+  </table>
+  <p><strong>Jaminan revert:</strong> semua tag lama (<code>baseline_v0</code> … <code>exp3c</code>) berperilaku
+     identik — nilai default setiap field baru mereproduksi jalur lama, diverifikasi 156 unit test. Berpindah
+     eksperimen = <code>$env:ACTIVE_EXPERIMENT = "&lt;tag&gt;"</code>, tanpa mengubah kode. Tag aktif default kini
+     <code>exp5b_redimnet_fusion</code>.</p>
+
+  <h2>3. Audit leakage (Fase 0a — diungkap penuh)</h2>
+  <table>
+    <tr><th>Split</th><th>n</th><th>VoxCeleb2-<strong>dev</strong></th><th>VoxCeleb2-test</th><th>VoxCeleb1</th></tr>
+    <tr><td>task_speakers</td><td>100</td><td><strong>80</strong></td><td>1</td><td>19</td></tr>
+    <tr><td>reserved_unknown_pool</td><td>221</td><td>173</td><td>7</td><td>41</td></tr>
+    <tr><td>base_train</td><td>5156</td><td>4196</td><td>92</td><td>868</td></tr>
+    <tr><td>calibration_impostor_pool</td><td>1888</td><td>1545</td><td>20</td><td>323</td></tr>
+  </table>
+  <p>ReDimNet-b2 dilatih pada VoxCeleb2-dev → kemungkinan besar pernah melihat 80/100 task speaker saat
+     pretraining. <strong>Konteks yang membuat perbandingan tetap adil:</strong> ECAPA SpeechBrain (backbone utama
+     sistem dan baseline-nya sejak Experiment 0) juga dilatih pada VoxCeleb — paparan setara di kedua sisi,
+     dan semua angka dihitung dengan protokol identik. Kandidat bebas-leakage (WavLM) sudah diuji lebih dulu
+     dan gagal karena batasan bebas-pelatihan (§1). Irisan ini wajib dituliskan di bab keterbatasan tesis.
+     Artefak: <code>experiments/exp5_leakage_audit.json</code>.</p>
+
+  <h2>4. Hasil resmi (5 seed, 99/100 task speaker, 10 sesi, 530 query unknown nyata)</h2>
+  <div class="exp">
+    <h3>4.1 Tabel utama <span class="pill tag">exp5b_redimnet_fusion</span></h3>
+    <table>
+      <tr><th>Konfigurasi</th><th>Open-set Acc</th><th>Closed-set</th><th>Forgetting</th><th>det-EER</th><th>AUROC</th><th>TAR@1%FAR</th></tr>
+      <tr class="best"><td>Usulan (A3, fusi w=0.3, running_avg)</td><td><strong>0.908 ± 0.019</strong></td><td><strong>0.908</strong></td><td>0.0022</td><td><strong>0.075</strong></td><td><strong>0.972</strong></td><td>0.748</td></tr>
+      <tr><td>A2 — ReDimNet saja</td><td>0.902 ± 0.016</td><td>0.902</td><td>0.0004</td><td>0.075</td><td>0.971</td><td><strong>0.766</strong></td></tr>
+      <tr><td>B1 — static (tanpa continual)</td><td>0.869 ± 0.007</td><td>0.869</td><td>0.0296</td><td>0.176</td><td>0.900</td><td>0.432</td></tr>
+      <tr><td>A1 — ECAPA saja</td><td>0.866 ± 0.008</td><td>0.866</td><td>0.0022</td><td>0.111</td><td>0.952</td><td>0.594</td></tr>
+      <tr><td>Baseline ECAPA (closed-set)</td><td>0.788 ± 0.017</td><td>0.788</td><td>0.0530</td><td>0.277</td><td>0.802</td><td>0.313</td></tr>
+      <tr><td>Baseline ProtoNet vanilla</td><td>0.402 ± 0.010</td><td>0.402</td><td>0.1244</td><td>0.457</td><td>0.566</td><td>0.053</td></tr>
+      <tr><td>Baseline x-vector+PLDA-lite</td><td>0.264 ± 0.014</td><td>0.264</td><td>0.1199</td><td>0.455</td><td>0.559</td><td>0.044</td></tr>
+    </table>
+    <p><strong>Signifikansi (paired t-test, α_Bonferroni = 0.00833, 6 perbandingan):</strong></p>
+    <table>
+      <tr><th>Perbandingan</th><th>p</th><th>Verdik</th></tr>
+      <tr class="best"><td>Usulan vs A1 (ECAPA saja)</td><td><strong>0.0041</strong></td><td>✅ signifikan — <strong>kontribusi fusi terukur untuk pertama kalinya</strong> (exp1–4: p=1.0)</td></tr>
+      <tr class="best"><td>Usulan vs baseline ECAPA closed-set</td><td><strong>0.0005</strong></td><td>✅ signifikan (+0.120)</td></tr>
+      <tr><td>Usulan vs A2 (ReDimNet saja)</td><td>0.209</td><td>⚠️ tidak signifikan — fusi <em>setara</em> backbone tunggal terkuat (jujur: bukan melampaui)</td></tr>
+      <tr><td>B1 vs usulan (continual membantu?)</td><td>0.0128</td><td>⚠️ arah mendukung continual (+0.039) tapi tak lolos α terkoreksi (exp3b: p=0.0036 ✅) — kekuatan continual kini sebagian diserap kualitas backbone</td></tr>
+      <tr><td>Usulan vs ProtoNet / x-vector</td><td>&lt;0.0001</td><td>✅ signifikan</td></tr>
+    </table>
+  </div>
+
+  <div class="exp">
+    <h3>4.2 Aturan deteksi dua-ruang (tindak lanjut G4.3 — pada 530 unknown murni)</h3>
+    <table>
+      <tr><th>Aturan skor</th><th>EER</th><th>AUROC</th><th>TAR@1%FAR</th></tr>
+      <tr class="best"><td>Skor produksi A3 (w=0.3)</td><td><strong>0.0749 ± 0.0071</strong></td><td><strong>0.9719</strong></td><td>0.7479</td></tr>
+      <tr><td><code>b_only</code> (ReDimNet)</td><td>0.0745</td><td>0.9713</td><td><strong>0.7665</strong></td></tr>
+      <tr><td><code>mean</code> (temuan exp4c)</td><td>0.0824</td><td>0.9706</td><td>0.7406</td></tr>
+      <tr><td><code>a_only</code> (ECAPA)</td><td>0.1110</td><td>0.9525</td><td>0.5935</td></tr>
+      <tr><td><code>max</code></td><td>0.0837</td><td>0.9658</td><td>0.7273</td></tr>
+    </table>
+    <p>Hipotesis "saksi kedua" exp4c <strong>terkonfirmasi terhadap ECAPA-saja</strong> (mean 0.082 &lt; 0.111 − 0.01) —
+       tetapi <strong>skor produksi w=0.3 sudah menyerap seluruh manfaatnya</strong> (0.075): tidak perlu mekanisme
+       deteksi terpisah. Pertanyaan terbuka exp4 selesai. Artefak:
+       <code>experiments/exp5_detection_rules_exp5b_redimnet_fusion.json</code>.</p>
+  </div>
+
+  <div class="exp">
+    <h3>4.3 Uji signifikansi EER — bootstrap CI 95% (Bab 4.11 proposal; Bengio &amp; Mariéthoz 2004)</h3>
+    <p class="muted">Melengkapi uji Accuracy (Shapiro-Wilk → paired t-test): selisih EER diuji dengan bootstrap
+       resampling 1000× pada skor genuine/unknown per-rep (input dari <code>dump_detection_scores</code>);
+       signifikan bila 0 di luar CI 95%. Dijalankan pertama kali di exp5 — implementasi F11-05 sudah ada &amp;
+       teruji unit sejak awal, tetapi belum pernah dipanggil harness di eksperimen sebelumnya.</p>
+    <table>
+      <tr><th>Perbandingan (EER deteksi)</th><th>ΔEER (pooled)</th><th>CI 95%</th><th>Per-rep signifikan</th><th>Verdik</th></tr>
+      <tr class="best"><td>Usulan vs A1 (ECAPA saja)</td><td>−0.036</td><td>[−0.047, −0.025]</td><td>4/5</td><td>✅ <strong>SIGNIFIKAN</strong> — fusi menurunkan EER deteksi</td></tr>
+      <tr class="best"><td>B1 static vs usulan (continual membantu?)</td><td>+0.101</td><td>[+0.088, +0.114]</td><td>5/5</td><td>✅ <strong>SIGNIFIKAN</strong> — pada metrik deteksi, continual update unggul telak (melengkapi p=0.0128 pada Accuracy yang tak lolos Bonferroni)</td></tr>
+      <tr><td>Usulan vs A2 (ReDimNet saja)</td><td>+0.001</td><td>[−0.008, +0.012]</td><td>0/5</td><td>setara (konsisten dengan Accuracy)</td></tr>
+      <tr><td>Usulan vs baseline ECAPA / ProtoNet / x-vector</td><td>−0.201 / −0.383 / −0.380</td><td>semua jauh dari 0</td><td>5/5 semua</td><td>✅ SIGNIFIKAN</td></tr>
+    </table>
+    <p>Artefak: <code>experiments/exp5_bootstrap_eer_exp5b_redimnet_fusion.json</code> ·
+       script <code>scripts/exp5_bootstrap_eer.py</code>.</p>
+  </div>
+
+  <h2>5. Perbandingan lintas eksperimen (1 → 5)</h2>
+  <table>
+    <tr><th></th><th>Exp 1</th><th>Exp 2a</th><th>Exp 3b</th><th>Exp 4</th><th><strong>Exp 5b (ini)</strong></th></tr>
+    <tr><td>Backbone kedua</td><td>Whisper L3</td><td>Whisper L4</td><td>Whisper L3</td><td>Whisper L3/L4 (analisis)</td><td><strong>ReDimNet-b2</strong></td></tr>
+    <tr><td>Mekanisme fusi</td><td>gated embedding</td><td>score mentah w=0.4</td><td>gated + AS-Norm 1-ruang</td><td>oracle + score ternormalisasi (uji)</td><td><strong>score ternormalisasi dua-ruang, w=0.3</strong></td></tr>
+    <tr><td>Open-set Acc usulan</td><td>0.731</td><td>0.733</td><td>0.865 ± 0.008</td><td>— (analisis)</td><td><strong>0.908 ± 0.019</strong></td></tr>
+    <tr><td>A3 vs A1</td><td>≡ (p=1.0)</td><td>≡</td><td>≡ (p=1.0)</td><td>fusi &lt; A1 di semua w (Whisper)</td><td><strong>A3 &gt; A1, p=0.0041 ✅</strong></td></tr>
+    <tr><td>Standalone backbone kedua</td><td>~0.17–0.22</td><td>0.200</td><td>0.216</td><td>0.24 (asnorm)</td><td><strong>0.902</strong></td></tr>
+    <tr><td>det-EER / AUROC / TAR@1%</td><td>—</td><td>—</td><td>0.111 / 0.952 / 0.594</td><td>—</td><td><strong>0.075 / 0.972 / 0.748</strong></td></tr>
+    <tr><td>Forgetting</td><td>0.0004</td><td>0.0004</td><td>0.0022</td><td>—</td><td>0.0022</td></tr>
+    <tr><td>vs baseline ECAPA 0.788</td><td>di bawah</td><td>di bawah</td><td>+0.077 (p=0.0015)</td><td>—</td><td><strong>+0.120 (p=0.0005)</strong></td></tr>
+    <tr><td>Kontribusi utama</td><td>selamatkan ruang ECAPA (residual, beku)</td><td>diagnosis threshold</td><td>AS-Norm + target-FRR</td><td>tutup fusi Whisper (2 ruang, terukur)</td><td><strong>backbone kedua yang benar + fusi z-score → fusi akhirnya bekerja</strong></td></tr>
+  </table>
+
+  <h2>6. Kriteria keberhasilan (§4 rencana) — evaluasi akhir</h2>
+  <table>
+    <tr><th>Metrik</th><th>Target</th><th>Hasil</th><th>Status</th></tr>
+    <tr><td>A3 vs A1</td><td>A3 &gt; A1, p &lt; 0.00833</td><td>0.908 vs 0.866, p=0.0041</td><td>✅ <strong>inti klaim multi-backbone tercapai</strong></td></tr>
+    <tr><td>Open-set Acc</td><td>&gt; 0.865</td><td><strong>0.908 ± 0.019</strong></td><td>✅ (+0.043)</td></tr>
+    <tr><td>Closed-set Acc</td><td>&gt; 0.865</td><td>0.908</td><td>✅</td></tr>
+    <tr><td>Forgetting</td><td>&lt; 0.01</td><td>0.0022</td><td>✅</td></tr>
+    <tr><td>det-EER / AUROC / TAR@1%FAR</td><td>tidak memburuk; TAR = ruang perbaikan terbesar</td><td>0.075 / 0.972 / <strong>0.748 (+0.154)</strong></td><td>✅ semua membaik tajam</td></tr>
+    <tr><td>A2 standalone</td><td>≥ 0.70</td><td>0.902</td><td>✅</td></tr>
+    <tr><td>Aturan deteksi <code>mean</code> (exp4c)</td><td>konfirmasi/tolak di 530 unknown</td><td>terkonfirmasi vs ECAPA-saja; diserap skor produksi</td><td>✅ pertanyaan ditutup</td></tr>
+    <tr><td>A3 vs A2</td><td><span class="muted">(tidak ditargetkan eksplisit)</span></td><td>p=0.209 — setara</td><td>⚠️ dilaporkan jujur sebagai keterbatasan</td></tr>
+  </table>
+
+  <h2>7. Analisis singkat</h2>
+  <ul>
+    <li><strong>Kenapa fusi akhirnya bekerja?</strong> Dua syarat yang selama exp1–4 tak pernah terpenuhi bersamaan:
+        backbone kedua yang kuat sendiri (0.902, vs Whisper 0.216) <em>dan</em> ruang fusi yang well-posed
+        (z-score per-ruang). Plafon oracle ECAPA∪ReDimNet (+0.069) tiga kali plafon Whisper (+0.023), dan
+        w=0.3 menangkap sebagiannya: 0.908 dari plafon snapshot ~0.91.</li>
+    <li><strong>Kenapa w condong ke ReDimNet (0.3 ECAPA)?</strong> ReDimNet lebih akurat, jadi bobot optimal
+        menempatkannya dominan; ECAPA tetap menyumbang — A3 mengungguli A2 di 4/5 seed (0.908 vs 0.902) dan
+        TAR@1%FAR sedikit trade-off (0.748 vs 0.766). Plateau w ≤ 0.7 berarti sistem tak sensitif terhadap
+        pilihan w — properti robustness yang baik.</li>
+    <li><strong>Continual update:</strong> tetap menyumbang (+0.039 vs B1 static; forgetting 0.0022 vs 0.0296)
+        tapi p=0.0128 tak lolos Bonferroni — dengan backbone sekuat ini, prototype 1-shot statis sudah bagus,
+        sehingga ruang kontribusi update mengecil. Laporkan sebagai temuan, bukan disembunyikan.</li>
+    <li><strong>Whisper resmi pensiun dari sistem</strong> — perannya dalam tesis: bukti empiris (exp1–4) bahwa
+        backbone ASR bukan pasangan fusi yang tepat, yang memotivasi kriteria seleksi backbone exp5
+        (kuat-standalone + heterogen), didukung literatur (Whisper-SV; WSI; IDLab VoxSRC — daftar lengkap di
+        <a href="experiment-5.md">experiment-5.md §7</a>).</li>
+  </ul>
+
+  <h2>8. Reproduksi</h2>
+  <pre># Fase 0a -- audit leakage (metadata resmi vox2 sudah di data/meta/)
+# hasil: experiments/exp5_leakage_audit.json
+
+# Fase 0b -- sweep layer WavLM (negative result kandidat #1)
+.venv\Scripts\python.exe scripts\exp5_wavlm_layer_sweep.py
+
+# Fase 1 -- precompute ReDimNet (46 mnt; cache sudah terisi)
+.venv\Scripts\python.exe scripts\precompute_embeddings.py `
+    --manifest data/raw/audio/eval_capped/manifest.csv `
+    --manifest data/raw/audio/vox1_sample/manifest.csv `
+    --manifest data/raw/audio/base_train_capped/manifest.csv `
+    --backbone redimnet_b2
+
+# Fase 2 -- screening (gerbang G5.1/G5.2)
+.venv\Scripts\python.exe scripts\exp4_complementarity_asnorm.py `
+    --second-backbone redimnet_b2 --out experiments/exp5_screening_redimnet_b2.json
+
+# Fase 3 -- sweep validasi kunci w (gerbang G5.3)
+.venv\Scripts\python.exe scripts\exp5_validation_sweep.py
+
+# Fase 4 -- run resmi + analisis aturan deteksi
+$env:ACTIVE_EXPERIMENT = "exp5b_redimnet_fusion"   # (kini juga default)
+.venv\Scripts\python.exe scripts\run_full_evaluation.py
+.venv\Scripts\python.exe scripts\exp5_detection_rules.py exp5b_redimnet_fusion
+
+# unit test (regresi penuh)
+.venv\Scripts\python.exe -m pytest tests -q          # 156 passed
+
+# revert ke eksperimen mana pun -- tanpa mengubah kode:
+$env:ACTIVE_EXPERIMENT = "exp3b_asnorm"; .venv\Scripts\python.exe scripts\run_full_evaluation.py</pre>
+
+  <p class="muted" style="margin-top:2.5em;border-top:1px solid var(--line);padding-top:1em">
+     Laporan Experiment 5 · terkait: <a href="experiment-1.html">experiment-1.html</a> ·
+     <a href="experiment-2.html">experiment-2.html</a> · <a href="experiment-3.html">experiment-3.html</a> ·
+     <a href="experiment-4.html">experiment-4.html</a> · <a href="experiment-5.md">experiment-5.md</a> ·
+     <a href="README.md">README.md</a> · <code>src/experiments.py</code>.</p>
+
+</div>
+</body>
+</html>

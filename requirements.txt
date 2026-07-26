@@ -1,0 +1,46 @@
+# F0-02: pinned core dependencies for reproducibility [NFR-01]
+# GPU present: NVIDIA GeForce RTX 3050 (CUDA driver 13.1) -> install torch/torchaudio
+# from the cu121 index (see scripts/setup_env.ps1 / setup_env.sh).
+
+# --- deep learning core ---
+torch==2.4.1
+torchaudio==2.4.1
+
+# --- backbones ---
+speechbrain==1.0.2        # ECAPA-TDNN pretrained speaker embeddings [3.4]
+transformers==4.45.2      # Whisper encoder [3.3]
+huggingface_hub==0.25.2
+
+# --- VAD & audio I/O / DSP ---
+silero-vad==5.1.2
+soundfile==0.12.1
+librosa==0.10.2.post1
+pyloudnorm==0.1.1         # -20 dB LUFS normalization [4.4]
+noisereduce==3.0.3        # basic pre-VAD noise reduction [4.4 poin 2, F2-02]
+
+# --- data / metadata handling ---
+numpy==1.26.4
+pandas==2.2.3
+pyyaml==6.0.2
+
+# --- evaluation / statistics ---
+scipy==1.14.1
+scikit-learn==1.5.2       # silhouette_score [Pers. 4.7]
+
+# --- experiment tracking / utils ---
+tqdm==4.66.5
+
+# --- testing ---
+pytest==8.3.3
+
+# --- sample-audio acquisition only (scripts/fetch_sample_audio.py, F1) ---
+# Streams a small real-audio subset (public VoxCeleb1 test-split mirror) for
+# pipeline development without the full credentialed VGG download.
+datasets==3.0.1
+pyarrow==24.0.0
+
+# --- capped base_train audio acquisition (scripts/fetch_capped_base_train_audio.py, F1) ---
+# Random-access reads (HTTP Range) into large remote ZIP archives on the
+# ungated ProgramComputer/voxceleb HF mirror, without downloading the full
+# 30-80GB archives. See src/data/remote_zip_audio.py for details.
+remotezip==0.12.3

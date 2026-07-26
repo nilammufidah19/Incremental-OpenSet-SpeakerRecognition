@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Virtual environment (F0-02) -- reproducible via requirements.txt, not committed
+.venv/
+
+# Raw audio archives (F1: VoxCeleb1/2, multi-hundred GB, credential-gated) and
+# derived embedding cache (F3-06) -- never commit large binary datasets.
+data/raw/audio/
+data/cache/
+data/processed/
+
+# Keep: data/raw/metadata/ (small official CSV/TXT, <5MB total) and
+# data/splits/ (small JSON/MD split manifests) so the speaker-disjoint split
+# is reproducible/auditable without re-downloading anything.
+
+# Pretrained model weights -- auto-downloaded via SpeechBrain's
+# EncoderClassifier.from_hparams(savedir="pretrained_models/...") on first
+# run, not source we author. Multi-hundred-MB checkpoints, never commit.
+pretrained_models/
+
+# OS
+Thumbs.db
+.DS_Store

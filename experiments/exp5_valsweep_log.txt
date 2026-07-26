@@ -1,0 +1,17 @@
+validation task: 10x10-way k=1 n_query=4; detection half untouched: 111 speakers
+base_train index: 111 speakers, 1190 utterances (cached for ecapa+redimnet_b2)
+cohort: (300, 384) (concat dim = 192 + 192)
+impostor pool: 295 speakers
+  w=1.00 thr= -2.0254 calEER=0.2693 val_acc=0.8875±0.0054 [0.8799999999999999, 0.8924999999999998, 0.89]
+  w=0.95 thr= -2.0133 calEER=0.2616 val_acc=0.8925±0.0071 [0.8825, 0.8975, 0.8975]
+  w=0.90 thr= -2.0147 calEER=0.2510 val_acc=0.8983±0.0094 [0.885, 0.9049999999999999, 0.9049999999999999]
+  w=0.80 thr= -2.0163 calEER=0.2389 val_acc=0.9125±0.0074 [0.9099999999999999, 0.9225, 0.9049999999999999]
+  w=0.70 thr= -2.0869 calEER=0.2174 val_acc=0.9167±0.0042 [0.9149999999999998, 0.9225, 0.9125]
+  w=0.60 thr= -2.0749 calEER=0.2123 val_acc=0.9167±0.0103 [0.9049999999999999, 0.93, 0.915]
+  w=0.50 thr= -2.1239 calEER=0.1985 val_acc=0.9133±0.0125 [0.9, 0.93, 0.9099999999999999]
+  w=0.30 thr= -2.2203 calEER=0.1978 val_acc=0.9183±0.0085 [0.9099999999999999, 0.93, 0.915]
+  w=0.00 thr= -2.3205 calEER=0.2067 val_acc=0.9200±0.0094 [0.9175000000000001, 0.9324999999999999, 0.9099999999999999]
+
+BEST: w=0.0 val_acc=0.9200 vs ECAPA-only(w=1.0) 0.8875 (menang di 3/3 seed)
+Gate G5.3 (fusi > ECAPA-only konsisten): LOLOS
+saved C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\experiments\exp5_validation_sweep.json (4.2 min)

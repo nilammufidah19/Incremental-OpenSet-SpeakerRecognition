@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Experiment 4 — Gerbang Keputusan Fusi: Plafon Komplementaritas di Ruang AS-Norm</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1d24; --muted:#5b6472; --line:#e3e7ee; --card:#f7f9fc;
+    --accent:#2f6df6; --accent2:#12b886; --warn:#e8590c; --good:#2f9e44; --plan:#f59f00;
+    --code-bg:#f0f3f8; --shadow:0 1px 3px rgba(20,30,50,.08);
+    --box1:#e7f0ff; --box1b:#b9d2ff; --box2:#e6fbf3; --box2b:#a5e8d0; --box3:#fff3e6; --box3b:#ffd8a8;
+    --boxr:#ffe9ec; --boxrb:#ffb3bf;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1319; --fg:#e6eaf2; --muted:#9aa5b5; --line:#242c38; --card:#151b24;
+      --accent:#5b8cff; --accent2:#26c99a; --warn:#ff922b; --good:#51cf66; --plan:#ffc94d;
+      --code-bg:#161d27; --shadow:0 1px 3px rgba(0,0,0,.3);
+      --box1:#16233a; --box1b:#2b4a7a; --box2:#0f2b23; --box2b:#1e5c49; --box3:#2e2113; --box3b:#6b4a1f;
+      --boxr:#331319; --boxrb:#7a2b3a;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:960px;margin:0 auto;padding:32px 22px 80px}
+  h1{font-size:1.85rem;line-height:1.2;margin:.2em 0 .1em}
+  h2{font-size:1.35rem;margin:2.1em 0 .5em;padding-top:.4em;border-top:1px solid var(--line)}
+  h3{font-size:1.1rem;margin:1.5em 0 .4em}
+  .sub{color:var(--muted);font-size:1.02rem;margin:.2em 0 1.2em}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:var(--code-bg);padding:.12em .38em;border-radius:5px;font-size:.88em;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre{background:var(--code-bg);padding:14px 16px;border-radius:9px;overflow-x:auto;font-size:.86rem;border:1px solid var(--line)}
+  .eq{font-family:ui-monospace,Consolas,monospace;font-size:.84rem;background:var(--code-bg);
+    padding:10px 14px;border-radius:8px;border:1px solid var(--line);overflow-x:auto;white-space:pre}
+  table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+  th{background:var(--card);font-weight:600}
+  tr:nth-child(even) td{background:var(--card)}
+  .pill{display:inline-block;padding:.15em .6em;border-radius:999px;font-size:.8rem;font-weight:600}
+  .pill.done{background:#e6fbf3;color:#0b7a4b;border:1px solid #a5e8d0}
+  @media (prefers-color-scheme: dark){.pill.done{background:#0f2b23;color:var(--accent2);border-color:#1e5c49}}
+  .pill.tag{background:var(--box1);color:var(--accent);border:1px solid var(--box1b)}
+  .callout{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);padding:12px 16px;border-radius:8px;margin:1.2em 0}
+  .callout.warn{border-left-color:var(--warn)} .callout.good{border-left-color:var(--good)} .callout.plan{border-left-color:var(--plan)}
+  .muted{color:var(--muted)}
+  .exp{border:1px solid var(--line);border-radius:12px;padding:4px 18px 14px;margin:1.2em 0;box-shadow:var(--shadow);background:var(--card)}
+  .exp h3{margin-top:.9em}
+  .best td{background:var(--box2)!important;font-weight:600}
+  .worst td{background:var(--boxr)!important}
+  .sev-hi{color:var(--warn);font-weight:700}
+  /* --- diagram arsitektur --- */
+  .arch{display:flex;gap:18px;flex-wrap:wrap;margin:1.2em 0}
+  .arch .col{flex:1 1 320px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card);box-shadow:var(--shadow)}
+  .arch .col h4{margin:.1em 0 .7em;font-size:.98rem}
+  .node{border:1px solid var(--box1b);background:var(--box1);border-radius:8px;padding:7px 10px;margin:7px 0;font-size:.86rem;text-align:center}
+  .node.frozen{border-style:dashed}
+  .node.newp{background:var(--box3);border-color:var(--box3b)}
+  .node.out{background:var(--box2);border-color:var(--box2b);font-weight:600}
+  .node.dead{background:var(--boxr);border-color:var(--boxrb)}
+  .arrow{text-align:center;color:var(--muted);font-size:.85rem;line-height:1;margin:-2px 0}
+  .split{display:flex;gap:8px}
+  .split>div{flex:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Experiment 4 — Gerbang Keputusan Fusi</h1>
+  <div class="sub">
+    <span class="pill done">✅ SUDAH DIJALANKAN — 18 Juli 2026</span>
+    <span class="pill tag">analisis · exp4a ceiling · exp4b sweep fusi · exp4c deteksi dua-ruang</span><br>
+    Basis: <a href="experiment-3.html">Experiment 3b</a> (0.865, AS-Norm c300/k200).
+    Pertanyaan: apakah kesimpulan "Whisper bukan lever" (<a href="experiment-2.html">Experiment 2</a>,
+    diambil di ruang jarak <em>mentah</em>) masih berlaku di ruang skor <em>ternormalisasi</em> yang
+    sekarang dipakai produksi? Batasan tetap: strict 1-shot, bebas-pelatihan.
+    Versi rinci: <a href="experiment-4.md">experiment-4.md</a>.
+  </div>
+
+  <div class="callout warn">
+    <strong>🧭 Verdik utama:</strong> fusi ECAPA+Whisper untuk <em>identifikasi</em> resmi
+    <strong>DITUTUP</strong> — kini dengan bukti di <strong>kedua ruang skor</strong>. Plafon oracle di ruang
+    AS-Norm hanya <strong>+0.0225 ± 0.0054</strong> (whisper_l4), dan score-fusion nyata tidak menangkap
+    sedikit pun: terbaik <strong>0.8408 (w=0.95) &lt; ECAPA-saja 0.8417</strong> → gerbang
+    <strong>G4.2 GAGAL</strong>. Jalur multi-backbone tesis pindah ke
+    <a href="experiment-5.md"><strong>Experiment 5</strong></a> (backbone pengganti Whisper).
+    Temuan sekunder (4c): aturan deteksi dua-ruang <code>mean</code> menurunkan EER validasi
+    0.165 → <strong>0.151</strong> (AUROC 0.909 → <strong>0.924</strong>) — sinyal "saksi kedua", tapi baru
+    diukur pada 40 query unknown → kandidat untuk run resmi Experiment 5, bukan produksi.
+  </div>
+
+  <h2>1. Kenapa eksperimen ini perlu ada</h2>
+  <p>Semua kesimpulan fusi sebelumnya diambil di ruang jarak <em>mentah</em>. Padahal Experiment 3
+     membuktikan AS-Norm bisa <em>membalikkan</em> kesimpulan yang diambil di ruang mentah:</p>
+  <table>
+    <tr><th>Kesimpulan</th><th>Ruang mentah</th><th>Ruang AS-Norm</th></tr>
+    <tr><td>Continual update membantu?</td><td>❌ B1 &gt; B2 (drift, exp3a p=0.0003)</td><td>✅ B2 &gt; B1 (exp3b p=0.0036)</td></tr>
+    <tr><td>Akurasi ECAPA</td><td>0.732</td><td>0.865 (+0.133, efek hubness)</td></tr>
+    <tr><td>Kontribusi fusi Whisper</td><td>~0 (exp1, exp2)</td><td><strong>❓ belum pernah diukur → Experiment 4</strong></td></tr>
+  </table>
+  <p>Dua hipotesis tandingan yang dipisahkan eksperimen ini:
+     <strong>(H1)</strong> AS-Norm membuka ruang komplementaritas baru untuk Whisper → fusi layak dicoba ulang;
+     <strong>(H2)</strong> error yang diperbaiki AS-Norm adalah superset dari error yang bisa dikoreksi Whisper → plafon makin kecil, fusi resmi ditutup.
+     <strong>Hasil: H2 yang menang</strong> (plafon praktis tak berubah: +0.021 → +0.023).</p>
+
+  <h2>2. Arsitektur — apa yang diubah dan apa yang TIDAK diubah</h2>
+
+  <div class="callout good">
+    <strong>Prinsip feature-flag (permintaan eksplisit):</strong> karena gerbang G4.2 gagal, Experiment 4
+    <strong>tidak mengubah satu pun jalur produksi</strong>. Tidak ada field <code>ExperimentConfig</code> baru,
+    tidak ada tag baru — perilaku <code>baseline_v0</code> … <code>exp3c_dualmetric</code> identik bit-per-bit.
+    Semua kode exp4 <em>aditif</em> (1 modul analisis + 1 script + 1 file test). <strong>Revert = tidak
+    menjalankan script-nya;</strong> revert ke eksperimen mana pun tetap
+    <code>$env:ACTIVE_EXPERIMENT = "&lt;tag&gt;"</code> seperti biasa.
+  </div>
+
+  <div class="arch">
+    <div class="col">
+      <h4>Jalur produksi (exp3b — TIDAK diubah)</h4>
+      <div class="node frozen">audio → preprocessing → backbone beku<br>ECAPA 192-d &nbsp;+&nbsp; Whisper 512-d (cache)</div>
+      <div class="arrow">▼</div>
+      <div class="node">Gated Attention Fusion 256-d<br><span class="muted">(residual-init, beku; gate ~0.98 → ≈ECAPA)</span></div>
+      <div class="arrow">▼</div>
+      <div class="node">AS-Norm — 1 ruang fusi<br><span class="muted">cohort base_train c300, top-k 200</span></div>
+      <div class="arrow">▼</div>
+      <div class="node">threshold target-FRR 5% → keputusan open-set</div>
+      <div class="arrow">▼</div>
+      <div class="node out">continual update (running average)<br>Acc 0.865 — tetap konfigurasi aktif</div>
+    </div>
+    <div class="col">
+      <h4>Jalur analisis Experiment 4 (BARU — hanya untuk mengukur)</h4>
+      <div class="node frozen">audio → embedding backbone dari cache yang sama</div>
+      <div class="arrow">▼ &nbsp;(dua ruang NATIF terpisah, L2-norm)</div>
+      <div class="split">
+        <div>
+          <div class="node newp">ruang ECAPA<br>192-d, ê = e/‖e‖</div>
+          <div class="arrow">▼</div>
+          <div class="node newp">AS-Norm ruang-E<br><span class="muted">cohort C (300 utt)</span></div>
+        </div>
+        <div>
+          <div class="node newp">ruang Whisper<br>512-d (L3 / L4)</div>
+          <div class="arrow">▼</div>
+          <div class="node newp">AS-Norm ruang-W<br><span class="muted">cohort C yang sama</span></div>
+        </div>
+      </div>
+      <div class="arrow">▼ &nbsp;z_e , z_w (satuan σ-cohort per ruang)</div>
+      <div class="node newp">4a&nbsp;oracle: benar bila argmin ruang-E <em>atau</em> ruang-W benar<br>
+        4b&nbsp;fusi: argmin [ w·z_e + (1−w)·z_w ]<br>
+        4c&nbsp;deteksi: mean / max / penalti-disagreement</div>
+      <div class="arrow">▼</div>
+      <div class="node dead">verdik: plafon +0.02, fusi &lt; ECAPA-saja<br>→ tidak dipromosikan ke produksi</div>
+    </div>
+  </div>
+
+  <p><strong>Dua keputusan arsitektural penting</strong> (dan alasannya):</p>
+  <ul>
+    <li><strong>Ruang natif per backbone, bukan proyeksi gated-fusion.</strong> Residual-init hanya melindungi
+        sisi ECAPA; <code>proj_whisper</code> tetap random-init, dan exp1 membuktikan proyeksi acak yang tak
+        terlatih <em>menghancurkan</em> sebuah ruang embedding (A1 kolaps 79%→16% sebelum fix). Mengukur Whisper
+        lewat proyeksi itu berarti menghakimi Whisper pada versi terburuknya — ruang natif adalah pengukuran
+        yang adil.</li>
+    <li><strong>Score-fusion di ruang z-score, bukan konkatenasi berbobot.</strong> Trik ekuivalensi exp2
+        (<code>[√w·ê_e ; √(1−w)·ê_w]</code>) tidak berlaku lagi: AS-Norm bergantung pada query & prototype
+        (statistik top-K per baris/kolom), sehingga fusi harus dihitung di level skor sungguhan:
+        <div class="eq">skor(q, k) = w · z_e(q, c_k) + (1 − w) · z_w(q, c_k)
+z_x(q, c_k) = ½ [ (d_x − μ_topK(q→C_x))/σ_topK(q→C_x) + (d_x − μ_topK(c_k→C_x))/σ_topK(c_k→C_x) ]</div>
+        Kedua term berskala z-score, jadi penjumlahan berbobot <em>well-posed</em> — memperbaiki cacat exp2
+        yang menjumlah cosine distance mentah berskala beda. Ini justru membuat kegagalannya makin
+        konklusif: bahkan pada formulasi yang benar, Whisper tetap tidak menambah apa pun.</li>
+  </ul>
+
+  <h3>2.1 File yang dibuat (semuanya aditif)</h3>
+  <table>
+    <tr><th>File</th><th>Status</th><th>Isi</th></tr>
+    <tr><td><code>src/evaluation/complementarity.py</code></td><td><strong>baru</strong></td>
+        <td>helper murni-numpy: <code>l2_normalize</code>, <code>oracle_report</code> (plafon + hitungan rescue),
+            <code>fusion_accuracy</code>, <code>detection_scores</code> (aturan mean/max/disagreement) —
+            akan dipakai ulang untuk screening kandidat Experiment 5</td></tr>
+    <tr><td><code>scripts/exp4_complementarity_asnorm.py</code></td><td><strong>baru</strong></td>
+        <td>driver 4a+4b+4c: task validasi identik konstruksi sweep exp3, AS-Norm per-ruang dengan kelas
+            <code>ASNorm</code> produksi (tanpa modifikasi), output <code>experiments/exp4_ceiling_asnorm.json</code></td></tr>
+    <tr><td><code>tests/test_experiment4.py</code></td><td><strong>baru</strong></td>
+        <td>7 unit test: oracle menghitung "salah satu benar", fusi ekstrem memulihkan ruang tunggal, fusi bisa
+            melampaui kedua ruang pada error komplementer sintetis, aturan deteksi, invariansi-skala AS-Norm
+            per-ruang (properti yang membuat 4b well-posed). Regresi: 11 test exp3 tetap lolos.</td></tr>
+    <tr><td><code>src/experiments.py</code>, <code>manager.py</code>, <code>calibration.py</code>, <code>system.py</code>, …</td>
+        <td><strong>tak diubah</strong></td><td>jalur keputusan produksi identik dengan exp3b</td></tr>
+  </table>
+
+  <h2>3. Protokol (anti-overfit, konsisten exp3 §4)</h2>
+  <ul>
+    <li><strong>Task validasi:</strong> 100 speaker pertama paruh-validasi <code>reserved_unknown_pool</code>
+        (speaker-disjoint dari task resmi; 108 usable dari 110), 1-shot support + 4 query/speaker
+        = 400 query genuine per seed; 3 seed (0/1/2, sama dengan sweep exp3). Prototype <em>statis</em>
+        (plafon = properti geometri identifikasi; dinamika continual hanya diuji di run resmi).</li>
+    <li><strong>Unknown 4c:</strong> 8 speaker sisa paruh-validasi (40 utterance) — <strong>paruh-deteksi
+        (111 speaker) tetap murni</strong>, tidak disentuh analisis/tuning mana pun.</li>
+    <li><strong>AS-Norm:</strong> cohort 300 utterance base_train yang <em>sama</em> untuk kedua ruang
+        (round-robin antar speaker), top-k 200 — nilai terkunci exp3b, tidak di-tuning ulang.</li>
+    <li><strong>Biaya:</strong> run pertama menghitung 540 embedding <code>whisper_l4</code> paruh-validasi
+        (~13 menit, RTX 3050); analisis dengan cache panas 0.2 menit.</li>
+  </ul>
+
+  <h2>4. Hasil</h2>
+
+  <div class="exp">
+    <h3>4a — Plafon oracle <span class="pill tag">gerbang G4.1</span></h3>
+    <table>
+      <tr><th>Varian</th><th>Ruang</th><th>ECAPA saja</th><th>Whisper saja</th><th>Oracle</th><th>Δ plafon</th></tr>
+      <tr><td>whisper_l4</td><td>mentah</td><td>0.8117</td><td>0.2167</td><td>0.8325</td><td>+0.0208 ± 0.0101</td></tr>
+      <tr><td>whisper_l4</td><td><strong>AS-Norm</strong></td><td>0.8417</td><td>0.2425</td><td>0.8642</td><td><strong>+0.0225 ± 0.0054</strong></td></tr>
+      <tr><td>whisper (L3)</td><td>mentah</td><td>0.8117</td><td>0.2300</td><td>0.8242</td><td>+0.0125 ± 0.0074</td></tr>
+      <tr><td>whisper (L3)</td><td><strong>AS-Norm</strong></td><td>0.8350</td><td>0.2317</td><td>0.8483</td><td><strong>+0.0133 ± 0.0042</strong></td></tr>
+    </table>
+    <p>AS-Norm <strong>tidak membuka ruang komplementaritas baru</strong> (H2 menang): plafon praktis identik
+       di kedua ruang. Kasus "Whisper benar &amp; ECAPA salah" tetap langka — <strong>11 dari 63 error
+       ECAPA</strong> (seed 0, whisper_l4), tersebar acak antar speaker (tak ada pola sistematis yang bisa
+       dieksploitasi selector sederhana). Ambang G4.1 (+0.02) nominal terlewati tipis oleh whisper_l4
+       (0.5σ) → keputusan diserahkan ke uji langsung G4.2.</p>
+  </div>
+
+  <div class="exp">
+    <h3>4b — Sweep score-fusion ternormalisasi <span class="pill tag">gerbang G4.2 — penentu</span></h3>
+    <table>
+      <tr><th>w (bobot ECAPA)</th><th>0.5</th><th>0.6</th><th>0.7</th><th>0.8</th><th>0.9</th><th>0.95</th><th>ECAPA saja</th></tr>
+      <tr><td>whisper_l4 (AS-Norm)</td><td>0.6992</td><td>0.7450</td><td>0.7942</td><td>0.8317</td><td>0.8367</td><td>0.8408</td><td class="sev-hi">0.8417</td></tr>
+      <tr><td>whisper L3 (AS-Norm)</td><td>0.6875</td><td>0.7325</td><td>0.7875</td><td>0.8183</td><td>0.8275</td><td>0.8325</td><td class="sev-hi">0.8350</td></tr>
+      <tr><td class="muted">whisper_l4 (mentah, pembanding)</td><td class="muted">0.8025</td><td class="muted">0.8092</td><td class="muted">0.8167</td><td class="muted">0.8117</td><td class="muted">0.8150</td><td class="muted">0.8133</td><td class="muted">0.8117</td></tr>
+    </table>
+    <p><strong>Akurasi monoton naik menuju w→1 dan tak pernah melewati ECAPA-saja</strong>: setiap campuran
+       Whisper hanya menyuntik noise; plafon oracle (+0.0225) membutuhkan <em>selector per-query sempurna</em>
+       yang tidak tersedia dalam rezim bebas-pelatihan. Catatan jujur: di ruang mentah w=0.7 sempat +0.005 di
+       atas ECAPA (replikasi gain kecil closed-set exp2) — tetapi tidak bertahan di ruang AS-Norm yang dipakai
+       produksi. <strong>G4.2 GAGAL di kedua varian → tag produksi <code>exp4b_scorefusion_asnorm</code> tidak
+       dibuat.</strong></p>
+  </div>
+
+  <div class="exp">
+    <h3>4c — Deteksi unknown dua-ruang <span class="pill tag">gerbang G4.3 — eksploratif</span></h3>
+    <p class="muted">400 genuine vs 40 unknown (8 speaker sisa paruh-validasi); skor = jarak ternormalisasi
+       terbaik; whisper_l4.</p>
+    <table>
+      <tr><th>Aturan</th><th>EER ↓</th><th>AUROC ↑</th><th>TAR@1%FAR ↑</th></tr>
+      <tr><td><code>a_only</code> — ECAPA saja (baseline)</td><td>0.1654 ± 0.0296</td><td>0.9090</td><td><strong>0.7108</strong></td></tr>
+      <tr class="best"><td><code>mean</code> — ½(s_e + s_w)</td><td><strong>0.1508 ± 0.0209</strong></td><td><strong>0.9244</strong></td><td>0.6808</td></tr>
+      <tr><td><code>a_disagree</code> — s_e + 0.5·[argmin beda]</td><td>0.1775</td><td>0.9068</td><td>0.7058</td></tr>
+      <tr><td><code>b_only</code> — Whisper saja</td><td>0.2842</td><td>0.7853</td><td>0.4050</td></tr>
+      <tr><td><code>max</code> — keduanya harus genuine</td><td>0.2675</td><td>0.8001</td><td>0.4233</td></tr>
+    </table>
+    <p>Aturan <code>mean</code> menurunkan EER −0.0146 dan menaikkan AUROC +0.0154 (lolos ambang G4.3 ≥0.01) —
+       Whisper yang gagal sebagai <em>pengidentifikasi</em> ternyata membawa sedikit informasi sebagai
+       <em>saksi kedua penolak impostor</em>. Tetapi: TAR@1%FAR justru turun (0.711→0.681), perbaikan tidak
+       seragam antar seed (1 dari 3 seed seri), dan n unknown hanya 40. <strong>Status: sinyal awal yang layak
+       diuji pada 530 query unknown paruh-deteksi di run resmi Experiment 5 — bukan perubahan produksi.</strong></p>
+  </div>
+
+  <h2>5. Gerbang keputusan — verdik</h2>
+  <table>
+    <tr><th>Gerbang</th><th>Kriteria (ditetapkan sebelum run)</th><th>Hasil</th><th>Verdik</th></tr>
+    <tr><td>G4.1</td><td>Δ plafon AS-Norm &lt; +0.02 → tutup fusi</td><td>whisper_l4 +0.0225 (0.5σ di atas ambang); L3 +0.0133</td><td>ambigu → diputuskan G4.2</td></tr>
+    <tr><td><strong>G4.2</strong></td><td>∃w: acc fusi &gt; ECAPA-saja</td><td>terbaik 0.8408 &lt; 0.8417 (l4); 0.8325 &lt; 0.8350 (L3)</td><td>❌ <strong>GAGAL — fusi Whisper DITUTUP</strong></td></tr>
+    <tr><td>G4.3</td><td>aturan deteksi: ΔEER ≥ 0.01</td><td><code>mean</code>: −0.0146 EER, +0.0154 AUROC; TAR −0.030; n=40</td><td>⚠️ lolos nominal, underpowered → kandidat exp5</td></tr>
+  </table>
+
+  <h2>6. Perbedaan dengan eksperimen sebelumnya</h2>
+  <table>
+    <tr><th></th><th>Exp 0/1</th><th>Exp 2a</th><th>Exp 3b (aktif)</th><th><strong>Exp 4 (ini)</strong></th></tr>
+    <tr><td>Jenis</td><td>run resmi</td><td>run resmi</td><td>run resmi (headline)</td><td><strong>analisis gerbang keputusan</strong></td></tr>
+    <tr><td>Mekanisme fusi yang diuji</td><td>gated <em>embedding</em> (gate ~0.98 → A3≡A1)</td><td><em>score</em> mentah, w=0.4, Whisper L4</td><td>gated (warisan exp1) + AS-Norm 1-ruang</td><td><em>score</em> ternormalisasi per-ruang + <em>oracle</em> (batas atas semua mekanisme)</td></tr>
+    <tr><td>Ruang skor</td><td>mentah (fusi 256-d)</td><td>mentah (konkatenasi berbobot)</td><td>AS-Norm pada ruang fusi</td><td><strong>AS-Norm per ruang natif backbone (2 ruang)</strong></td></tr>
+    <tr><td>Perubahan kode produksi</td><td>ya (flag)</td><td>ya (flag)</td><td>ya (flag)</td><td><strong>tidak ada</strong> — aditif murni</td></tr>
+    <tr><td>Tag baru</td><td><code>baseline_v0</code>, <code>exp1_frozen_residual</code></td><td><code>exp2a_scorefusion_L4</code></td><td><code>exp3a/b/c</code></td><td><strong>tidak ada</strong> (G4.2 gagal; <code>exp3b_asnorm</code> tetap aktif)</td></tr>
+    <tr><td>Kesimpulan fusi Whisper</td><td>kontribusi ~0 (ruang mentah)</td><td>plafon +2.6–4% (ruang mentah); tak ada gain open-set</td><td>A3 ≡ A1 (p=1.0), belum diuji ulang di ruang norm</td><td><strong>ditutup definitif di kedua ruang</strong>: plafon +0.022, fusi nyata &lt; ECAPA-saja pada semua w</td></tr>
+    <tr><td>Akurasi usulan</td><td>0.235 → 0.731</td><td>0.733</td><td><strong>0.865 ± 0.008</strong></td><td>— (bukan run resmi; tidak mengubah 0.865)</td></tr>
+  </table>
+
+  <h2>7. Implikasi untuk tesis & langkah berikutnya</h2>
+  <ul>
+    <li><strong>Klaim yang kini bisa ditulis:</strong> <em>"Fusi ECAPA+Whisper dieksplorasi tuntas pada tiga
+        mekanisme (embedding gated, score mentah, score ternormalisasi) dan dibatasi dari atas lewat analisis
+        oracle di kedua ruang skor; plafonnya ≤ +0.023 dan tak tercapai oleh fusi bebas-pelatihan mana pun —
+        kontribusi sistem berasal dari pipeline AS-Norm + kalibrasi target-FRR + continual update."</em>
+        Negative result yang terukur dan defensible di sidang.</li>
+    <li><strong>Akar penyebab terkonfirmasi:</strong> Whisper (backbone ASR) jarang benar saat ECAPA salah —
+        11/63 error, tanpa pola — konsisten dengan literatur bahwa representasi ASR menekan identitas speaker
+        (lihat dasar literatur di <a href="experiment-5.md">experiment-5.md §1</a>).</li>
+    <li><strong>Experiment 5 GO:</strong> prasyarat gerbang terpenuhi. Backbone kedua diganti model
+        speaker-discriminative heterogen (ReDimNet / WavLM dst.); screening kandidat memakai ulang
+        <code>complementarity.py</code> + script exp4 (Fase 2 rencana exp5). Aturan deteksi <code>mean</code>
+        (4c) ikut diuji di run resmi exp5 terhadap 530 unknown paruh-deteksi.</li>
+  </ul>
+
+  <h2>8. Reproduksi</h2>
+  <pre># analisis lengkap 4a + 4b + 4c (kedua varian Whisper, 3 seed)
+.venv\Scripts\python.exe scripts\exp4_complementarity_asnorm.py
+# hasil: experiments\exp4_ceiling_asnorm.json (+ log experiments\exp4_run_log.txt)
+
+# unit test Experiment 4 (+ regresi exp3)
+.venv\Scripts\python.exe -m pytest tests\test_experiment4.py tests\test_experiment3.py -q
+
+# jalur produksi tak berubah -- revert/aktivasi eksperimen tetap seperti biasa:
+$env:ACTIVE_EXPERIMENT = "exp3b_asnorm"   # (atau tag lain mana pun)
+.venv\Scripts\python.exe scripts\run_full_evaluation.py</pre>
+
+  <p class="muted" style="margin-top:2.5em;border-top:1px solid var(--line);padding-top:1em">
+     Laporan Experiment 4 · terkait: <a href="experiment-2.html">experiment-2.html</a> ·
+     <a href="experiment-3.html">experiment-3.html</a> · <a href="experiment-4.md">experiment-4.md</a> ·
+     <a href="experiment-5.md">experiment-5.md</a> · <a href="README.md">README.md</a> ·
+     <code>src/evaluation/complementarity.py</code> · <code>scripts/exp4_complementarity_asnorm.py</code>.</p>
+
+</div>
+</body>
+</html>

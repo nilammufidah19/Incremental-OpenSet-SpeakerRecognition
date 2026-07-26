@@ -1,0 +1,205 @@
+{
+  "experiment_id": "exp1_frozen_residual",
+  "experiment_title": "Experiment 1 -- frozen residual-init fusion",
+  "residual_init": true,
+  "continual_mode": "running_average",
+  "summary": {
+    "proposed_A3_running_average": {
+      "mean_accuracy": 0.7310666666666666,
+      "std_accuracy": 0.020539585387763695,
+      "mean_forgetting": 0.0004444444444444449,
+      "accs": [
+        0.7342222222222222,
+        0.7475555555555554,
+        0.7544444444444445,
+        0.7228888888888889,
+        0.6962222222222221
+      ],
+      "mean_closed_set_accuracy": 0.7352444444444444,
+      "std_closed_set_accuracy": 0.020439419672368606,
+      "closed_accs": [
+        0.7364444444444445,
+        0.7559999999999999,
+        0.7566666666666666,
+        0.7248888888888889,
+        0.7022222222222222
+      ]
+    },
+    "B1_static": {
+      "mean_accuracy": 0.6656444444444445,
+      "std_accuracy": 0.023675418308844374,
+      "mean_forgetting": 0.012790123456790124,
+      "accs": [
+        0.6526666666666667,
+        0.6486666666666667,
+        0.7115555555555555,
+        0.6651111111111111,
+        0.6502222222222223
+      ],
+      "mean_closed_set_accuracy": 0.7876,
+      "std_closed_set_accuracy": 0.017189948254362302,
+      "closed_accs": [
+        0.7831111111111111,
+        0.7993333333333333,
+        0.8064444444444444,
+        0.7922222222222223,
+        0.7568888888888889
+      ]
+    },
+    "A1_ecapa_only": {
+      "mean_accuracy": 0.7310666666666666,
+      "std_accuracy": 0.020539585387763695,
+      "mean_forgetting": 0.0004444444444444449,
+      "accs": [
+        0.7342222222222222,
+        0.7475555555555554,
+        0.7544444444444445,
+        0.7228888888888889,
+        0.6962222222222221
+      ],
+      "mean_closed_set_accuracy": 0.7352444444444444,
+      "std_closed_set_accuracy": 0.020439419672368606,
+      "closed_accs": [
+        0.7364444444444445,
+        0.7559999999999999,
+        0.7566666666666666,
+        0.7248888888888889,
+        0.7022222222222222
+      ]
+    },
+    "A2_whisper_only": {
+      "mean_accuracy": 0.17062222222222223,
+      "std_accuracy": 0.015134230679872858,
+      "mean_forgetting": 0.011111111111111113,
+      "accs": [
+        0.14866666666666667,
+        0.19555555555555557,
+        0.17355555555555555,
+        0.16488888888888892,
+        0.17044444444444445
+      ],
+      "mean_closed_set_accuracy": 0.17062222222222223,
+      "std_closed_set_accuracy": 0.015134230679872858,
+      "closed_accs": [
+        0.14866666666666667,
+        0.19555555555555557,
+        0.17355555555555555,
+        0.16488888888888892,
+        0.17044444444444445
+      ]
+    },
+    "ECAPA_standard_baseline": {
+      "mean_accuracy": 0.7876,
+      "std_accuracy": 0.01690315187205852,
+      "mean_forgetting": 0.05298765432098764,
+      "accs": [
+        0.7831111111111111,
+        0.7993333333333333,
+        0.8044444444444444,
+        0.7942222222222222,
+        0.7568888888888889
+      ],
+      "mean_closed_set_accuracy": 0.7876,
+      "std_closed_set_accuracy": 0.01690315187205852,
+      "closed_accs": [
+        0.7831111111111111,
+        0.7993333333333333,
+        0.8044444444444444,
+        0.7942222222222222,
+        0.7568888888888889
+      ]
+    },
+    "ProtoNet_vanilla_baseline": {
+      "mean_accuracy": 0.4045777777777778,
+      "std_accuracy": 0.017439900328178215,
+      "mean_forgetting": 0.12138271604938271,
+      "accs": [
+        0.3713333333333333,
+        0.40822222222222226,
+        0.41577777777777775,
+        0.4064444444444445,
+        0.4211111111111111
+      ],
+      "mean_closed_set_accuracy": 0.4045777777777778,
+      "std_closed_set_accuracy": 0.017439900328178215,
+      "closed_accs": [
+        0.3713333333333333,
+        0.40822222222222226,
+        0.41577777777777775,
+        0.4064444444444445,
+        0.4211111111111111
+      ]
+    },
+    "xvector_PLDA_baseline": {
+      "mean_accuracy": 0.2637333333333334,
+      "std_accuracy": 0.014110953629917367,
+      "mean_forgetting": 0.11990123456790122,
+      "accs": [
+        0.26511111111111113,
+        0.25022222222222223,
+        0.27088888888888885,
+        0.24688888888888894,
+        0.2855555555555555
+      ],
+      "mean_closed_set_accuracy": 0.2637333333333334,
+      "std_closed_set_accuracy": 0.014110953629917367,
+      "closed_accs": [
+        0.26511111111111113,
+        0.25022222222222223,
+        0.27088888888888885,
+        0.24688888888888894,
+        0.2855555555555555
+      ]
+    }
+  },
+  "statistics": {
+    "proposed_A3_running_average_vs_A1_ecapa_only": {
+      "test_used": "degenerate_identical_diffs",
+      "p_value": 1.0,
+      "significant": false
+    },
+    "proposed_A3_running_average_vs_A2_whisper_only": {
+      "test_used": "paired_t_test",
+      "p_value": 8.21689078854099e-07,
+      "significant": true
+    },
+    "B1_static_vs_proposed_A3_running_average": {
+      "test_used": "paired_t_test",
+      "p_value": 0.0037220364026823165,
+      "significant": true
+    },
+    "proposed_A3_running_average_vs_ECAPA_standard_baseline": {
+      "test_used": "paired_t_test",
+      "p_value": 0.0001832388152758949,
+      "significant": true
+    },
+    "proposed_A3_running_average_vs_ProtoNet_vanilla_baseline": {
+      "test_used": "paired_t_test",
+      "p_value": 2.496924093770099e-05,
+      "significant": true
+    },
+    "proposed_A3_running_average_vs_xvector_PLDA_baseline": {
+      "test_used": "paired_t_test",
+      "p_value": 6.192341946460573e-06,
+      "significant": true
+    }
+  },
+  "calibration_threshold": 0.9266010848012891,
+  "calibration_eer": 0.21926792911168774,
+  "n_reps": 5,
+  "n_train_episodes": 0,
+  "n_task_speakers_available": 99,
+  "n_sessions_available": 10,
+  "calibration_strategy": "eer",
+  "target_frr": null,
+  "calibration_far_at_threshold": null,
+  "calibration_frr_at_threshold": null,
+  "per_config_calibration": false,
+  "calibration_threshold_a1": 0.9266010848012891,
+  "calibration_threshold_a2": 0.9266010848012891,
+  "score_norm": "none",
+  "asnorm_cohort_size": null,
+  "asnorm_top_k": null,
+  "n_unknown_queries": 0,
+  "elapsed_minutes": 2.6308934688568115
+}

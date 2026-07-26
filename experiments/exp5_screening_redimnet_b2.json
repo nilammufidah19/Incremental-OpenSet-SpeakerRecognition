@@ -1,0 +1,632 @@
+{
+  "variants": {
+    "redimnet_b2": {
+      "per_seed": [
+        {
+          "seed": 0,
+          "raw": {
+            "acc_a": 0.8125,
+            "acc_b": 0.87,
+            "acc_oracle": 0.9,
+            "delta_ceiling": 0.08750000000000002,
+            "b_rescues_a": 35,
+            "a_rescues_b": 12,
+            "n_queries": 400
+          },
+          "asnorm": {
+            "acc_a": 0.84,
+            "acc_b": 0.8825,
+            "acc_oracle": 0.91,
+            "delta_ceiling": 0.07000000000000006,
+            "b_rescues_a": 28,
+            "a_rescues_b": 11,
+            "n_queries": 400
+          },
+          "fusion_raw": {
+            "0.5": 0.8675,
+            "0.6": 0.8775,
+            "0.7": 0.8575,
+            "0.8": 0.8525,
+            "0.9": 0.835,
+            "0.95": 0.82
+          },
+          "fusion_asnorm": {
+            "0.5": 0.8925,
+            "0.6": 0.8775,
+            "0.7": 0.8725,
+            "0.8": 0.86,
+            "0.9": 0.8475,
+            "0.95": 0.845
+          },
+          "detection": {
+            "a_only": {
+              "eer": 0.1975,
+              "auroc": 0.88175,
+              "tar_at_far1": 0.68
+            },
+            "b_only": {
+              "eer": 0.15125,
+              "auroc": 0.9248125,
+              "tar_at_far1": 0.7275
+            },
+            "mean": {
+              "eer": 0.17625,
+              "auroc": 0.916125,
+              "tar_at_far1": 0.775
+            },
+            "max": {
+              "eer": 0.17375,
+              "auroc": 0.90625,
+              "tar_at_far1": 0.7325
+            },
+            "a_disagree": {
+              "eer": 0.20375,
+              "auroc": 0.8778125,
+              "tar_at_far1": 0.6775
+            }
+          }
+        },
+        {
+          "seed": 1,
+          "raw": {
+            "acc_a": 0.81,
+            "acc_b": 0.885,
+            "acc_oracle": 0.915,
+            "delta_ceiling": 0.10499999999999998,
+            "b_rescues_a": 42,
+            "a_rescues_b": 12,
+            "n_queries": 400
+          },
+          "asnorm": {
+            "acc_a": 0.8325,
+            "acc_b": 0.8875,
+            "acc_oracle": 0.9175,
+            "delta_ceiling": 0.08499999999999996,
+            "b_rescues_a": 34,
+            "a_rescues_b": 12,
+            "n_queries": 400
+          },
+          "fusion_raw": {
+            "0.5": 0.89,
+            "0.6": 0.89,
+            "0.7": 0.885,
+            "0.8": 0.8575,
+            "0.9": 0.84,
+            "0.95": 0.82
+          },
+          "fusion_asnorm": {
+            "0.5": 0.9,
+            "0.6": 0.905,
+            "0.7": 0.9,
+            "0.8": 0.875,
+            "0.9": 0.865,
+            "0.95": 0.8525
+          },
+          "detection": {
+            "a_only": {
+              "eer": 0.1475,
+              "auroc": 0.9144375,
+              "tar_at_far1": 0.755
+            },
+            "b_only": {
+              "eer": 0.12,
+              "auroc": 0.94225,
+              "tar_at_far1": 0.79
+            },
+            "mean": {
+              "eer": 0.12125,
+              "auroc": 0.9429375,
+              "tar_at_far1": 0.8125
+            },
+            "max": {
+              "eer": 0.13,
+              "auroc": 0.925375,
+              "tar_at_far1": 0.75
+            },
+            "a_disagree": {
+              "eer": 0.13374999999999998,
+              "auroc": 0.91825,
+              "tar_at_far1": 0.76
+            }
+          }
+        },
+        {
+          "seed": 2,
+          "raw": {
+            "acc_a": 0.8125,
+            "acc_b": 0.86,
+            "acc_oracle": 0.89,
+            "delta_ceiling": 0.07750000000000001,
+            "b_rescues_a": 31,
+            "a_rescues_b": 12,
+            "n_queries": 400
+          },
+          "asnorm": {
+            "acc_a": 0.8375,
+            "acc_b": 0.865,
+            "acc_oracle": 0.89,
+            "delta_ceiling": 0.05249999999999999,
+            "b_rescues_a": 21,
+            "a_rescues_b": 10,
+            "n_queries": 400
+          },
+          "fusion_raw": {
+            "0.5": 0.8725,
+            "0.6": 0.8725,
+            "0.7": 0.8675,
+            "0.8": 0.855,
+            "0.9": 0.8425,
+            "0.95": 0.825
+          },
+          "fusion_asnorm": {
+            "0.5": 0.8775,
+            "0.6": 0.87,
+            "0.7": 0.86,
+            "0.8": 0.8525,
+            "0.9": 0.85,
+            "0.95": 0.8475
+          },
+          "detection": {
+            "a_only": {
+              "eer": 0.18,
+              "auroc": 0.911,
+              "tar_at_far1": 0.6825
+            },
+            "b_only": {
+              "eer": 0.1275,
+              "auroc": 0.9229375,
+              "tar_at_far1": 0.7925
+            },
+            "mean": {
+              "eer": 0.12875,
+              "auroc": 0.929125,
+              "tar_at_far1": 0.8125
+            },
+            "max": {
+              "eer": 0.15125,
+              "auroc": 0.925375,
+              "tar_at_far1": 0.7875
+            },
+            "a_disagree": {
+              "eer": 0.17625,
+              "auroc": 0.916125,
+              "tar_at_far1": 0.74
+            }
+          }
+        }
+      ],
+      "summary": {
+        "raw/acc_a": {
+          "mean": 0.8116666666666666,
+          "std": 0.001178511301977554,
+          "per_seed": [
+            0.8125,
+            0.81,
+            0.8125
+          ]
+        },
+        "raw/acc_b": {
+          "mean": 0.8716666666666666,
+          "std": 0.010274023338281637,
+          "per_seed": [
+            0.87,
+            0.885,
+            0.86
+          ]
+        },
+        "raw/acc_oracle": {
+          "mean": 0.9016666666666667,
+          "std": 0.010274023338281637,
+          "per_seed": [
+            0.9,
+            0.915,
+            0.89
+          ]
+        },
+        "raw/delta_ceiling": {
+          "mean": 0.09000000000000001,
+          "std": 0.011365151414154865,
+          "per_seed": [
+            0.08750000000000002,
+            0.10499999999999998,
+            0.07750000000000001
+          ]
+        },
+        "asnorm/acc_a": {
+          "mean": 0.8366666666666666,
+          "std": 0.003118047822311601,
+          "per_seed": [
+            0.84,
+            0.8325,
+            0.8375
+          ]
+        },
+        "asnorm/acc_b": {
+          "mean": 0.8783333333333333,
+          "std": 0.009646530752325171,
+          "per_seed": [
+            0.8825,
+            0.8875,
+            0.865
+          ]
+        },
+        "asnorm/acc_oracle": {
+          "mean": 0.9058333333333334,
+          "std": 0.011606990230986759,
+          "per_seed": [
+            0.91,
+            0.9175,
+            0.89
+          ]
+        },
+        "asnorm/delta_ceiling": {
+          "mean": 0.06916666666666667,
+          "std": 0.013281147875424346,
+          "per_seed": [
+            0.07000000000000006,
+            0.08499999999999996,
+            0.05249999999999999
+          ]
+        },
+        "fusion_asnorm/0.5": {
+          "mean": 0.89,
+          "std": 0.00935414346693488,
+          "per_seed": [
+            0.8925,
+            0.9,
+            0.8775
+          ]
+        },
+        "fusion_asnorm/0.6": {
+          "mean": 0.8841666666666667,
+          "std": 0.015046225071056513,
+          "per_seed": [
+            0.8775,
+            0.905,
+            0.87
+          ]
+        },
+        "fusion_asnorm/0.7": {
+          "mean": 0.8775,
+          "std": 0.01670828137980286,
+          "per_seed": [
+            0.8725,
+            0.9,
+            0.86
+          ]
+        },
+        "fusion_asnorm/0.8": {
+          "mean": 0.8624999999999999,
+          "std": 0.009354143466934842,
+          "per_seed": [
+            0.86,
+            0.875,
+            0.8525
+          ]
+        },
+        "fusion_asnorm/0.9": {
+          "mean": 0.8541666666666666,
+          "std": 0.007728015412913077,
+          "per_seed": [
+            0.8475,
+            0.865,
+            0.85
+          ]
+        },
+        "fusion_asnorm/0.95": {
+          "mean": 0.8483333333333333,
+          "std": 0.0031180478223116403,
+          "per_seed": [
+            0.845,
+            0.8525,
+            0.8475
+          ]
+        },
+        "fusion_raw/0.5": {
+          "mean": 0.8766666666666666,
+          "std": 0.009646530752325171,
+          "per_seed": [
+            0.8675,
+            0.89,
+            0.8725
+          ]
+        },
+        "fusion_raw/0.6": {
+          "mean": 0.88,
+          "std": 0.007359800721939866,
+          "per_seed": [
+            0.8775,
+            0.89,
+            0.8725
+          ]
+        },
+        "fusion_raw/0.7": {
+          "mean": 0.8700000000000001,
+          "std": 0.011365151414154865,
+          "per_seed": [
+            0.8575,
+            0.885,
+            0.8675
+          ]
+        },
+        "fusion_raw/0.8": {
+          "mean": 0.855,
+          "std": 0.002041241452319317,
+          "per_seed": [
+            0.8525,
+            0.8575,
+            0.855
+          ]
+        },
+        "fusion_raw/0.9": {
+          "mean": 0.8391666666666667,
+          "std": 0.0031180478223116403,
+          "per_seed": [
+            0.835,
+            0.84,
+            0.8425
+          ]
+        },
+        "fusion_raw/0.95": {
+          "mean": 0.8216666666666667,
+          "std": 0.0023570226039551605,
+          "per_seed": [
+            0.82,
+            0.82,
+            0.825
+          ]
+        },
+        "detection/a_only/eer": {
+          "mean": 0.17499999999999996,
+          "std": 0.020716338157760094,
+          "per_seed": [
+            0.1975,
+            0.1475,
+            0.18
+          ]
+        },
+        "detection/a_only/auroc": {
+          "mean": 0.9023958333333333,
+          "std": 0.014666104392631173,
+          "per_seed": [
+            0.88175,
+            0.9144375,
+            0.911
+          ]
+        },
+        "detection/a_only/tar_at_far1": {
+          "mean": 0.7058333333333334,
+          "std": 0.03478106125784867,
+          "per_seed": [
+            0.68,
+            0.755,
+            0.6825
+          ]
+        },
+        "detection/b_only/eer": {
+          "mean": 0.13291666666666666,
+          "std": 0.013320306135954817,
+          "per_seed": [
+            0.15125,
+            0.12,
+            0.1275
+          ]
+        },
+        "detection/b_only/auroc": {
+          "mean": 0.93,
+          "std": 0.008695814366693914,
+          "per_seed": [
+            0.9248125,
+            0.94225,
+            0.9229375
+          ]
+        },
+        "detection/b_only/tar_at_far1": {
+          "mean": 0.77,
+          "std": 0.030069364254447846,
+          "per_seed": [
+            0.7275,
+            0.79,
+            0.7925
+          ]
+        },
+        "detection/mean/eer": {
+          "mean": 0.14208333333333334,
+          "std": 0.02435273199367076,
+          "per_seed": [
+            0.17625,
+            0.12125,
+            0.12875
+          ]
+        },
+        "detection/mean/auroc": {
+          "mean": 0.9293958333333333,
+          "std": 0.010947832421179199,
+          "per_seed": [
+            0.916125,
+            0.9429375,
+            0.929125
+          ]
+        },
+        "detection/mean/tar_at_far1": {
+          "mean": 0.7999999999999999,
+          "std": 0.017677669529663678,
+          "per_seed": [
+            0.775,
+            0.8125,
+            0.8125
+          ]
+        },
+        "detection/max/eer": {
+          "mean": 0.15166666666666664,
+          "std": 0.017863292591855005,
+          "per_seed": [
+            0.17375,
+            0.13,
+            0.15125
+          ]
+        },
+        "detection/max/auroc": {
+          "mean": 0.9189999999999999,
+          "std": 0.009015611460128456,
+          "per_seed": [
+            0.90625,
+            0.925375,
+            0.925375
+          ]
+        },
+        "detection/max/tar_at_far1": {
+          "mean": 0.7566666666666667,
+          "std": 0.022943166496560315,
+          "per_seed": [
+            0.7325,
+            0.75,
+            0.7875
+          ]
+        },
+        "detection/a_disagree/eer": {
+          "mean": 0.17124999999999999,
+          "std": 0.028795254238618326,
+          "per_seed": [
+            0.20375,
+            0.13374999999999998,
+            0.17625
+          ]
+        },
+        "detection/a_disagree/auroc": {
+          "mean": 0.9040625000000001,
+          "std": 0.01858181514725261,
+          "per_seed": [
+            0.8778125,
+            0.91825,
+            0.916125
+          ]
+        },
+        "detection/a_disagree/tar_at_far1": {
+          "mean": 0.7258333333333334,
+          "std": 0.0351386144038467,
+          "per_seed": [
+            0.6775,
+            0.76,
+            0.74
+          ]
+        }
+      },
+      "rescue_examples_seed0": [
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id00342\\fTiPqUGU_Vg_00029.m4a",
+          "true_speaker": "id00342",
+          "ecapa_pred": "id04905"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id00351\\VmsGDwTiAF8_00021.m4a",
+          "true_speaker": "id00351",
+          "ecapa_pred": "id06591"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id00708\\wDq4cbdoRzE_00432.m4a",
+          "true_speaker": "id00708",
+          "ecapa_pred": "id10096"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id00747\\sMA8dW4JLRQ_00057.m4a",
+          "true_speaker": "id00747",
+          "ecapa_pred": "id07955"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id01105\\qxMlGJlyfA8_00081.m4a",
+          "true_speaker": "id01105",
+          "ecapa_pred": "id08249"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id02119\\YHr04IAVWr8_00083.m4a",
+          "true_speaker": "id02119",
+          "ecapa_pred": "id07571"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id02511\\3HTEgva2oM4_00003.m4a",
+          "true_speaker": "id02511",
+          "ecapa_pred": "id04851"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id02759\\YlnFERj4d_0_00044.m4a",
+          "true_speaker": "id02759",
+          "ecapa_pred": "id03827"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id02900\\Gen5CL8718w_00005.m4a",
+          "true_speaker": "id02900",
+          "ecapa_pred": "id03922"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id03656\\4JBsa76kqbo_00004.m4a",
+          "true_speaker": "id03656",
+          "ecapa_pred": "id07367"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id04905\\Io117ZuAjiM_00080.m4a",
+          "true_speaker": "id04905",
+          "ecapa_pred": "id07571"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id04905\\6_4jF9gMHvw_00022.m4a",
+          "true_speaker": "id04905",
+          "ecapa_pred": "id04736"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id05062\\ZIYjsOxUuBI_00141.m4a",
+          "true_speaker": "id05062",
+          "ecapa_pred": "id04173"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id06544\\m1u72HEKNkQ_00034.m4a",
+          "true_speaker": "id06544",
+          "ecapa_pred": "id06591"
+        },
+        {
+          "query": "data\\raw\\audio\\eval_capped\\id06763\\98Sb1gYMCEw_00005.m4a",
+          "true_speaker": "id06763",
+          "ecapa_pred": "id04851"
+        }
+      ],
+      "gates": {
+        "G4.1_ceiling_asnorm": {
+          "delta_ceiling_mean": 0.06916666666666667,
+          "threshold": 0.02,
+          "fusion_closed": false
+        },
+        "G4.2_best_fusion": {
+          "best_w": "0.5",
+          "best_fusion_acc": 0.89,
+          "acc_ecapa_alone": 0.8366666666666666,
+          "fusion_beats_ecapa": true
+        }
+      }
+    }
+  },
+  "protocol": {
+    "task": "100 validation-half speakers, k_shot=1, n_query=4, static 1-shot prototypes (snapshot)",
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "asnorm": {
+      "cohort_size": 300,
+      "top_k": 200
+    },
+    "fusion_w_grid": [
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      0.95
+    ],
+    "n_unknown_queries_4c": 40,
+    "unknown_source": "leftover validation-half speakers (detection half untouched)",
+    "gate_g41_min_ceiling": 0.02,
+    "disagree_penalty": 0.5
+  },
+  "elapsed_minutes": 0.21797152757644653
+}

@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Experiment 2 — Menaikkan Kontribusi Whisper</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1d24; --muted:#5b6472; --line:#e3e7ee; --card:#f7f9fc;
+    --accent:#2f6df6; --accent2:#12b886; --warn:#e8590c; --good:#2f9e44; --plan:#f59f00;
+    --code-bg:#f0f3f8; --shadow:0 1px 3px rgba(20,30,50,.08);
+    --box1:#e7f0ff; --box1b:#b9d2ff; --box2:#e6fbf3; --box2b:#a5e8d0; --box3:#fff3e6; --box3b:#ffd8a8;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1319; --fg:#e6eaf2; --muted:#9aa5b5; --line:#242c38; --card:#151b24;
+      --accent:#5b8cff; --accent2:#26c99a; --warn:#ff922b; --good:#51cf66; --plan:#ffc94d;
+      --code-bg:#161d27; --shadow:0 1px 3px rgba(0,0,0,.3);
+      --box1:#16233a; --box1b:#2b4a7a; --box2:#0f2b23; --box2b:#1e5c49; --box3:#2e2113; --box3b:#6b4a1f;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  h1{font-size:1.9rem;line-height:1.2;margin:.2em 0 .1em}
+  h2{font-size:1.35rem;margin:2.1em 0 .5em;padding-top:.4em;border-top:1px solid var(--line)}
+  h3{font-size:1.1rem;margin:1.5em 0 .4em}
+  .sub{color:var(--muted);font-size:1.02rem;margin:.2em 0 1.2em}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:var(--code-bg);padding:.12em .38em;border-radius:5px;font-size:.88em;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre{background:var(--code-bg);padding:14px 16px;border-radius:9px;overflow-x:auto;font-size:.86rem;border:1px solid var(--line)}
+  .eq{font-family:ui-monospace,Consolas,monospace;font-size:.84rem;background:var(--code-bg);
+    padding:10px 14px;border-radius:8px;border:1px solid var(--line);overflow-x:auto;white-space:pre}
+  table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+  th{background:var(--card);font-weight:600}
+  tr:nth-child(even) td{background:var(--card)}
+  .pill{display:inline-block;padding:.15em .6em;border-radius:999px;font-size:.8rem;font-weight:600}
+  .pill.done{background:var(--box2);color:var(--good);border:1px solid var(--box2b)}
+  .pill.plan{background:#fff4e0;color:#b8860b;border:1px solid #ffd8a8}
+  @media (prefers-color-scheme: dark){.pill.plan{background:#2e2113;color:var(--plan);border-color:#6b4a1f}}
+  .pill.tag{background:var(--box1);color:var(--accent);border:1px solid var(--box1b)}
+  .callout{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);padding:12px 16px;border-radius:8px;margin:1.2em 0}
+  .callout.warn{border-left-color:var(--warn)} .callout.good{border-left-color:var(--good)} .callout.plan{border-left-color:var(--plan)}
+  .muted{color:var(--muted)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:1.2em 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow)}
+  .stat .n{font-size:1.6rem;font-weight:700;color:var(--accent)}
+  .stat .l{font-size:.82rem;color:var(--muted)}
+  .warnrow td{background:#fff4e0!important}
+  @media (prefers-color-scheme: dark){.warnrow td{background:#2e2113!important}}
+  .best td{background:var(--box2)!important}
+  figure{margin:1.4em 0;text-align:center} figcaption{color:var(--muted);font-size:.85rem;margin-top:.5em}
+  svg{max-width:100%;height:auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Experiment 2 — Menaikkan Kontribusi Whisper</h1>
+  <div class="sub">
+    <span class="pill tag">exp2a_scorefusion_L4</span> <span class="pill done">✅ 2a DIJALANKAN</span>
+    <span class="pill plan">🟡 2b/2c rencana</span><br>
+    Batasan tetap: <strong>strict 1-shot</strong> &amp; <strong>bebas-pelatihan</strong>. Basis:
+    <a href="experiment-1.html">Experiment 1</a> (frozen residual fusion).
+  </div>
+
+  <div class="grid">
+    <div class="stat"><div class="n">0.733</div><div class="l">Akurasi usulan (2a) — ≈ exp1 0.731</div></div>
+    <div class="stat"><div class="n">+0.004</div><div class="l">Kontribusi Whisper (w=0.6 vs ECAPA murni)</div></div>
+    <div class="stat"><div class="n">0.22</div><div class="l">EER kalibrasi (tinggi → threshold menolak banyak)</div></div>
+    <div class="stat"><div class="n">≈closed</div><div class="l">open@p95 memulihkan penalti threshold</div></div>
+  </div>
+
+  <div class="callout warn">
+    <strong>Kesimpulan Experiment 2.</strong> Score-level fusion + Whisper-L4 <strong>tidak</strong> mengungguli
+    Experiment 1 (0.733 ≈ 0.731). Plafon komplementaritas Whisper kecil (+4% oracle) dan kontribusinya pada
+    metrik open-set ~0. <strong>Lever sesungguhnya untuk melampaui baseline adalah THRESHOLD</strong>, bukan
+    fusi — memicu Experiment 3.
+  </div>
+
+  <h2>1. Motivasi — gap dari Experiment 1</h2>
+  <ol>
+    <li>Kontribusi fusi Whisper = 0 (gate ~0.98 → A3 ≡ A1, p=1.0).</li>
+    <li>Belum melampaui baseline ECAPA closed-set (0.788).</li>
+  </ol>
+  <p>Tujuan: membuat kontribusi Whisper terukur — tanpa menaikkan shot, tanpa fine-tuning yang merusak.</p>
+
+  <h2>2. Yang diimplementasikan (2a)</h2>
+  <p><strong>a. Fitur Whisper → lapisan 4</strong> (bukan tengah/L3), di-cache terpisah sebagai backbone
+     <code>whisper_l4</code> (<code>layer_fraction = 4/6</code>).</p>
+  <p><strong>b. Fusi → score-level:</strong> keputusan di level jarak,
+     <code>skor = w·d_ecapa + (1−w)·d_whisper</code> (w=0.4). Direalisasikan tanpa mesin baru lewat
+     konkatenasi berbobot (ekuivalen, diverifikasi eksak):</p>
+  <div class="eq">out = [ √w · ê_ecapa ; √(1−w) · ê_whisper ]
+‖Δout‖² = 2·( w·cosdist_ecapa + (1−w)·cosdist_whisper )   ← persis score fusion</div>
+  <p>Modul <code>ScoreFusionEmbed</code> (bebas-parameter) menggantikan <code>GatedAttentionFusion</code>, sehingga
+     sistem prototype-distance, kalibrasi, dan harness FSCIL berjalan tanpa perubahan.
+     Ablasi memetakan ke bobot: ecapa_only→w=1, whisper_only→w=0, fusion→w=0.4.</p>
+  <table>
+    <tr><th>File diubah</th><th>Perubahan</th></tr>
+    <tr><td><code>src/models/fusion.py</code></td><td>tambah <code>ScoreFusionEmbed</code></td></tr>
+    <tr><td><code>src/features/cache.py</code></td><td>varian <code>whisper_l4</code> (cache terpisah)</td></tr>
+    <tr><td><code>src/prototypical/data.py</code></td><td><code>build_raw_embedding_index(whisper_backbone=…)</code></td></tr>
+    <tr><td><code>src/system.py</code></td><td>parameter <code>whisper_backbone</code></td></tr>
+    <tr><td><code>src/experiments.py</code></td><td>field baru + tag <code>exp2a_scorefusion_L4</code></td></tr>
+    <tr><td><code>scripts/run_full_evaluation.py</code></td><td>cabang strategi fusi (embedding vs score)</td></tr>
+  </table>
+
+  <h2>3. Eksplorasi pra-eksperimen</h2>
+  <h3>3.1 Plafon komplementaritas</h3>
+  <table>
+    <tr><th>Konfigurasi</th><th>Accuracy</th><th>vs ECAPA</th></tr>
+    <tr><td>ECAPA saja</td><td>0.853</td><td>—</td></tr>
+    <tr><td>Whisper saja</td><td>0.290</td><td>−0.563</td></tr>
+    <tr><td>Oracle (salah satu benar)</td><td>0.879</td><td><strong>+0.026</strong></td></tr>
+  </table>
+  <h3>3.2 Sweep ekstraksi Whisper (snapshot 100-way, 1-shot; ECAPA=0.756)</h3>
+  <table>
+    <tr><th>Config</th><th>Whisper-only</th><th>Oracle (plafon)</th><th>Score-fusion</th></tr>
+    <tr><td>L3/mean <span class="muted">(produksi lama)</span></td><td>0.208</td><td>0.778</td><td>0.764</td></tr>
+    <tr class="best"><td><strong>L4/mean</strong></td><td><strong>0.232</strong></td><td><strong>0.796 (+0.040)</strong></td><td><strong>0.770 (+0.014)</strong></td></tr>
+    <tr><td>L4/mean_std</td><td>0.192</td><td>0.796</td><td>0.766</td></tr>
+  </table>
+  <p class="muted">→ Dasar memilih 2a: L4 + score-fusion, w=0.4. (mean+std tak membantu.)</p>
+
+  <h2>4. Hasil Experiment 2a (run resmi, 5 seed)</h2>
+  <p class="muted">threshold terkalibrasi = 0.5967, EER = 0.2138, 103 menit (Whisper-L4 dihitung dari awal).</p>
+  <table>
+    <tr><th>Konfigurasi</th><th>Accuracy (mean ± std)</th><th>Forgetting</th></tr>
+    <tr><td><strong>Sistem usulan (A3, score-fusion w=0.4)</strong></td><td><strong>0.733 ± 0.017</strong></td><td><strong>0.0004</strong></td></tr>
+    <tr><td>B1 — Static prototype</td><td>0.675 ± 0.019</td><td>0.0123</td></tr>
+    <tr class="warnrow"><td>A1 — ECAPA saja (w=1.0)</td><td>0.069 ± 0.017 ⚠️ artefak (§5.1)</td><td>0.0</td></tr>
+    <tr class="warnrow"><td>A2 — Whisper saja (w=0.0)</td><td>0.200 ± 0.016 ⚠️ artefak</td><td>0.0133</td></tr>
+    <tr><td>Baseline: ECAPA standar (closed-set)</td><td>0.788 ± 0.017</td><td>0.0530</td></tr>
+    <tr><td>Baseline: ProtoNet vanilla</td><td>0.405 ± 0.017</td><td>0.1214</td></tr>
+    <tr><td>Baseline: x-vector + PLDA-lite</td><td>0.264 ± 0.014</td><td>0.1199</td></tr>
+  </table>
+  <div class="callout"><strong>Kesimpulan 4:</strong> A3 score-fusion (0.733) ≈ Experiment 1 (0.731). L4 + fusi skor
+     <strong>tidak</strong> memberi peningkatan berarti pada metrik open-set FSCIL. Continual tetap membantu
+     (usulan &gt; B1, p=0.0019); baseline ECAPA masih unggul (p=0.0005).</div>
+
+  <h2>5. Dua masalah yang terungkap</h2>
+  <h3>5.1 Artefak threshold pada ablasi</h3>
+  <p>Threshold dikalibrasi pada A3 (w=0.4) lalu dipakai bersama A1/A2. Karena score-fusion mengubah skala jarak
+     per-w, threshold salah untuk A1 (w=1.0) → anjlok 0.069 (artefak, bukan embedding). Perbaikan: kalibrasi
+     per-konfigurasi. Tidak memengaruhi angka A3.</p>
+
+  <h3>5.2 Threshold EER = sumber kerugian utama</h3>
+  <p>Sweep bobot dengan threshold dikalibrasi ulang <strong>per-w</strong>, tiga regime (3 seed):</p>
+  <table>
+    <tr><th>w (ECAPA)</th><th>closed (∞)</th><th>open @EER</th><th>open @p95</th><th>EER</th></tr>
+    <tr><td>0.0 (Whisper murni)</td><td>0.204</td><td>0.137</td><td>0.197</td><td>0.370</td></tr>
+    <tr><td>0.3</td><td>0.746</td><td>0.747</td><td>0.750</td><td>0.217</td></tr>
+    <tr><td>0.5</td><td>0.745</td><td>0.749</td><td>0.759</td><td>0.218</td></tr>
+    <tr class="best"><td><strong>0.6</strong></td><td><strong>0.749</strong></td><td>0.747</td><td><strong>0.761</strong></td><td>0.218</td></tr>
+    <tr><td>1.0 (ECAPA murni)</td><td>0.744</td><td>0.746</td><td>0.757</td><td>0.220</td></tr>
+  </table>
+  <div class="callout warn">
+    <ul style="margin:.3em 0">
+      <li><strong>open@p95 ≈ closed</strong> → threshold permisif (persentil-95 genuine, ~5% false-reject)
+          menghilangkan hampir seluruh penalti open-set; EER menolak terlalu banyak genuine.</li>
+      <li>Metrik FSCIL <strong>tidak punya query unknown</strong> → setiap penolakan = false-reject murni;
+          EER (menyeimbangkan FAR=FRR) adalah titik operasi yang salah untuk metrik ini.</li>
+      <li>Whisper marginal: w=0.6 terbaik hanya <strong>+0.004</strong> vs ECAPA murni.</li>
+    </ul>
+    → memicu <strong>Experiment 3 (fokus threshold)</strong>.
+  </div>
+
+  <h2>6. Analisis &amp; kesimpulan</h2>
+  <ol>
+    <li><strong>Whisper bukan jalan menembus baseline</strong> — plafon kecil, kontribusi open-set ~0.</li>
+    <li><strong>Threshold adalah lever nyata</strong> — EER menghukum sistem tanpa manfaat pada metrik tanpa-unknown;
+        titik operasi low-FRR (p95) memulihkan hampir semua kerugian.</li>
+    <li><strong>Forgetting tetap ~0</strong>, continual tetap membantu (B2 &gt; B1) — kekuatan kerangka bertahan.</li>
+  </ol>
+  <div class="callout good"><strong>Rekomendasi Experiment 3:</strong> (a) titik operasi EER → low-FRR
+     (<code>calibration_target_frr</code>), (b) laporkan akurasi closed-set berdampingan (apple-to-apple dengan
+     baseline), (c) opsional AS-Norm menurunkan EER 0.22. Peluang paling nyata menyamai/melampaui baseline.</div>
+
+  <h2>7. Status sub-eksperimen</h2>
+  <table>
+    <tr><th>Tag</th><th>Status</th><th>Hasil</th></tr>
+    <tr><td>exp2a_scorefusion_L4</td><td>✅ dijalankan</td><td>0.733 (≈ exp1; Whisper tak menambah)</td></tr>
+    <tr><td>exp2b_whisper_small</td><td>🟡 rencana</td><td>model lebih besar (belum)</td></tr>
+    <tr><td>exp2c_multilayer</td><td>🟡 rencana</td><td>agregasi L3–L5 (belum)</td></tr>
+  </table>
+  <p class="muted">Setelah 2a, prioritas bergeser ke Experiment 3 (threshold) karena Whisper bukan lever utama.</p>
+
+  <h2>8. Feature-flag &amp; reproduksi</h2>
+  <pre><code>$env:ACTIVE_EXPERIMENT = "exp2a_scorefusion_L4"
+.venv\Scripts\python.exe scripts\run_full_evaluation.py</code></pre>
+  <div class="callout plan"><strong>Catatan pelaporan:</strong> run 2a menimpa
+     <code>full_evaluation_summary.json</code> (termasuk artefak A1=0.069). Karena 2a inkonklusif,
+     <strong>Experiment 1 tetap hasil headline</strong>; summary/report sebaiknya dipulihkan ke exp1
+     (jalankan ulang tag <code>exp1_frozen_residual</code>, cepat karena cache panas).</div>
+
+  <p class="muted" style="margin-top:2.5em;border-top:1px solid var(--line);padding-top:1em">
+     Laporan Experiment 2 · terkait: <a href="experiment-1.html">experiment-1.html</a> ·
+     <a href="experiment-2.md">experiment-2.md</a> · <a href="README.md">README.md</a> · <code>src/experiments.py</code>.</p>
+
+</div>
+</body>
+</html>

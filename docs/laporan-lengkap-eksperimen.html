@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laporan Lengkap Eksperimen 1–5 — Incremental Open-Set Speaker Recognition</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1d24; --muted:#5b6472; --line:#e3e7ee; --card:#f7f9fc;
+    --accent:#2f6df6; --accent2:#12b886; --warn:#e8590c; --good:#2f9e44; --plan:#f59f00;
+    --code-bg:#f0f3f8; --shadow:0 1px 3px rgba(20,30,50,.08);
+    --box1:#e7f0ff; --box1b:#b9d2ff; --box2:#e6fbf3; --box2b:#a5e8d0; --box3:#fff3e6; --box3b:#ffd8a8;
+    --boxr:#ffe9ec; --boxrb:#ffb3bf;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1319; --fg:#e6eaf2; --muted:#9aa5b5; --line:#242c38; --card:#151b24;
+      --accent:#5b8cff; --accent2:#26c99a; --warn:#ff922b; --good:#51cf66; --plan:#ffc94d;
+      --code-bg:#161d27; --shadow:0 1px 3px rgba(0,0,0,.3);
+      --box1:#16233a; --box1b:#2b4a7a; --box2:#0f2b23; --box2b:#1e5c49; --box3:#2e2113; --box3b:#6b4a1f;
+      --boxr:#331319; --boxrb:#7a2b3a;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1000px;margin:0 auto;padding:32px 22px 90px}
+  h1{font-size:1.9rem;line-height:1.25;margin:.2em 0 .1em}
+  h2{font-size:1.4rem;margin:2.2em 0 .5em;padding-top:.5em;border-top:2px solid var(--line)}
+  h3{font-size:1.12rem;margin:1.6em 0 .4em}
+  h4{font-size:1rem;margin:1.2em 0 .3em}
+  .sub{color:var(--muted);font-size:1.02rem;margin:.2em 0 1.2em}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:var(--code-bg);padding:.12em .38em;border-radius:5px;font-size:.88em;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre{background:var(--code-bg);padding:14px 16px;border-radius:9px;overflow-x:auto;font-size:.85rem;border:1px solid var(--line)}
+  .eq{font-family:ui-monospace,Consolas,monospace;font-size:.84rem;background:var(--code-bg);
+    padding:10px 14px;border-radius:8px;border:1px solid var(--line);overflow-x:auto;white-space:pre}
+  table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+  th{background:var(--card);font-weight:600}
+  tr:nth-child(even) td{background:var(--card)}
+  .pill{display:inline-block;padding:.15em .6em;border-radius:999px;font-size:.8rem;font-weight:600}
+  .pill.done{background:#e6fbf3;color:#0b7a4b;border:1px solid #a5e8d0}
+  @media (prefers-color-scheme: dark){.pill.done{background:#0f2b23;color:var(--accent2);border-color:#1e5c49}}
+  .pill.tag{background:var(--box1);color:var(--accent);border:1px solid var(--box1b)}
+  .callout{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);padding:12px 16px;border-radius:8px;margin:1.2em 0}
+  .callout.warn{border-left-color:var(--warn)} .callout.good{border-left-color:var(--good)}
+  .muted{color:var(--muted)}
+  .best td{background:var(--box2)!important;font-weight:600}
+  .worst td{background:var(--boxr)!important}
+  .flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:1em 0}
+  .flow .step{border:1px solid var(--box1b);background:var(--box1);border-radius:8px;padding:6px 12px;font-size:.85rem}
+  .flow .sep{color:var(--muted)}
+  .arch{display:flex;gap:18px;flex-wrap:wrap;margin:1.2em 0}
+  .arch .col{flex:1 1 300px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card);box-shadow:var(--shadow)}
+  .arch .col h4{margin:.1em 0 .7em}
+  .node{border:1px solid var(--box1b);background:var(--box1);border-radius:8px;padding:7px 10px;margin:7px 0;font-size:.85rem;text-align:center}
+  .node.frozen{border-style:dashed}
+  .node.newp{background:var(--box3);border-color:var(--box3b)}
+  .node.out{background:var(--box2);border-color:var(--box2b);font-weight:600}
+  .arrow{text-align:center;color:var(--muted);font-size:.85rem;line-height:1;margin:-2px 0}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 20px;margin:1.2em 0;columns:2;column-gap:32px;font-size:.93rem}
+  .toc div{break-inside:avoid;margin:.2em 0}
+  @media (max-width:640px){.toc{columns:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Laporan Lengkap Eksperimen 1–5</h1>
+  <div class="sub">
+    <strong>Incremental Open-Set Speaker Recognition</strong> — sistem identifikasi pembicara
+    yang mampu mengenali pembicara baru secara bertahap (<em>incremental</em>) dengan hanya satu
+    contoh suara (<em>1-shot</em>), menolak pembicara tak dikenal (<em>open-set</em>), dan tidak
+    melupakan pembicara lama (<em>anti catastrophic forgetting</em>).<br>
+    <span class="pill done">Status: seluruh eksperimen selesai — 11–19 Juli 2026</span>
+    <span class="pill tag">Draft laporan · disusun 19 Juli 2026</span>
+  </div>
+
+  <div class="toc">
+    <div><a href="#s1">1. Ringkasan Eksekutif</a></div>
+    <div><a href="#s2">2. Alur Riset Lima Eksperimen</a></div>
+    <div><a href="#s3">3. Data: Sumber, Pengunduhan, Lisensi</a></div>
+    <div><a href="#s4">4. Pembagian Data (Split)</a></div>
+    <div><a href="#s5">5. Preprocessing Audio</a></div>
+    <div><a href="#s6">6. Ekstraksi Fitur (Backbone)</a></div>
+    <div><a href="#s7">7. Pemodelan &amp; Evolusi Arsitektur</a></div>
+    <div><a href="#s8">8. Protokol Evaluasi &amp; Uji Statistik</a></div>
+    <div><a href="#s9">9. Hasil Lengkap Setiap Eksperimen</a></div>
+    <div><a href="#s10">10. Analisis Lintas Eksperimen</a></div>
+    <div><a href="#s11">11. Keterbatasan &amp; Pengungkapan</a></div>
+    <div><a href="#s12">12. Reproduksi &amp; Feature Flag</a></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="s1">1. Ringkasan Eksekutif</h2>
+  <p>Penelitian ini melewati lima eksperimen berurutan. Setiap eksperimen dirancang untuk menjawab
+     satu pertanyaan spesifik yang muncul dari eksperimen sebelumnya, dan setiap konfigurasi
+     didaftarkan sebagai <em>feature flag</em> bertag stabil sehingga hasil mana pun dapat
+     direproduksi tanpa mengubah kode.</p>
+  <table>
+    <tr><th>Eksperimen</th><th>Pertanyaan yang dijawab</th><th>Perubahan kunci</th><th>Akurasi open-set</th></tr>
+    <tr class="worst"><td>0 — <code>baseline_v0</code></td><td>(konfigurasi awal)</td><td>Fusi gated dilatih 500 episode dari inisialisasi acak</td><td>0.235</td></tr>
+    <tr><td>1 — <code>exp1_frozen_residual</code></td><td>Mengapa sistem awal hancur?</td><td>Inisialisasi residual + <strong>bekukan</strong> lapisan fusi (0 episode)</td><td>0.731 ± 0.021</td></tr>
+    <tr><td>2a — <code>exp2a_scorefusion_L4</code></td><td>Bisakah kontribusi Whisper dinaikkan?</td><td>Fusi level-skor + Whisper layer-4 → <em>tidak bisa</em>; tersangka sebenarnya: threshold</td><td>0.733 ± 0.017</td></tr>
+    <tr><td>3b — <code>exp3b_asnorm</code></td><td>Bagaimana memperbaiki threshold open-set?</td><td>Titik operasi target-FRR + <strong>AS-Norm</strong> + kalibrasi per-konfigurasi</td><td>0.865 ± 0.008</td></tr>
+    <tr><td>4 — (analisis)</td><td>Masih adakah harapan untuk fusi Whisper?</td><td>Plafon oracle diukur di ruang ternormalisasi → <strong>tidak</strong>; fusi Whisper ditutup</td><td>— (gerbang keputusan)</td></tr>
+    <tr class="best"><td>5b — <code>exp5b_redimnet_fusion</code></td><td>Backbone kedua apa yang benar?</td><td>Whisper diganti <strong>ReDimNet</strong>; fusi z-score dua-ruang (DualASNorm, w=0.3)</td><td><strong>0.908 ± 0.019</strong></td></tr>
+  </table>
+  <div class="callout good">
+    <strong>Klaim akhir yang didukung data:</strong> sistem usulan mencapai
+    <strong>Accuracy 0.908 ± 0.019</strong> (melampaui baseline ECAPA closed-set 0.788, p = 0.0005),
+    dengan <strong>kontribusi fusi multi-backbone yang terukur secara statistik untuk pertama kalinya</strong>
+    (A3 &gt; A1, p = 0.0041), deteksi pembicara tak dikenal <strong>EER 0.075 / AUROC 0.972 /
+    TAR@FAR=1% 0.748</strong> terhadap 530 utterance dari 106 pembicara tak dikenal nyata, dan
+    <strong>Forgetting 0.0022</strong> (praktis tidak melupakan) — semuanya dalam rezim
+    <strong>strict 1-shot dan bebas-pelatihan</strong> (tidak ada parameter yang dilatih saat enrollment).
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="s2">2. Alur Riset Lima Eksperimen (Narasi Singkat)</h2>
+  <p>Perjalanan riset ini bukan garis lurus, melainkan siklus <em>diagnosis → perbaikan → verifikasi</em>:</p>
+  <ol>
+    <li><strong>Kegagalan awal (0.235).</strong> Konfigurasi awal melatih lapisan fusi selama 500 episode
+        dari inisialisasi acak. Diagnosis (Experiment 1) menemukan bahwa dengan hanya 71 pembicara pada
+        data latih dasar, pelatihan episodik justru <em>merusak</em> ruang embedding ECAPA yang sudah
+        dilatih penuh pada jutaan utterance. Solusinya kontra-intuitif namun efektif: <strong>jangan latih
+        apa pun</strong> — inisialisasi lapisan fusi agar mempertahankan ECAPA apa adanya, lalu bekukan.
+        Akurasi melonjak tiga kali lipat menjadi 0.731.</li>
+    <li><strong>Whisper tidak menyumbang (Experiment 2).</strong> Gate fusi konvergen ke ~0.98 sisi ECAPA
+        sehingga sistem usulan identik dengan ECAPA-saja. Upaya menaikkan kontribusi Whisper (layer
+        encoder yang lebih baik + fusi level-skor) tidak mengubah hasil (0.733 ≈ 0.731). Namun eksperimen
+        ini menemukan hal yang lebih penting: <strong>titik operasi threshold EER adalah sumber kerugian
+        utama</strong>, karena metrik FSCIL tidak memiliki query tak dikenal sehingga setiap penolakan
+        adalah kesalahan murni.</li>
+    <li><strong>Threshold dibenahi (Experiment 3).</strong> Tiga perbaikan: titik operasi dipindah ke
+        target-FRR (menolak hanya ~5% genuine), skor dinormalisasi dengan <strong>AS-Norm</strong> terhadap
+        cohort pembanding, dan setiap konfigurasi ablasi dikalibrasi threshold-nya sendiri-sendiri.
+        Hasil: 0.865 — untuk pertama kalinya melampaui baseline ECAPA closed-set secara signifikan.
+        Efek terbesar AS-Norm ternyata bukan pada penolakan, melainkan pada <em>identifikasi</em>
+        (mengoreksi bias per-kelas jarak nearest-prototype, efek <em>hubness</em> pada 1-shot).</li>
+    <li><strong>Fusi Whisper ditutup dengan bukti (Experiment 4).</strong> Karena AS-Norm pernah membalikkan
+        kesimpulan lain, plafon komplementaritas ECAPA∪Whisper diukur ulang di ruang ternormalisasi:
+        plafonnya tetap tipis (+0.0225) dan fusi nyata tidak pernah melampaui ECAPA-saja. Kesimpulan:
+        masalahnya bukan mekanisme fusi, melainkan <strong>pemilihan backbone kedua</strong> — Whisper
+        adalah model ASR yang representasinya menekan identitas pembicara.</li>
+    <li><strong>Backbone kedua diganti (Experiment 5).</strong> Melalui seleksi bertingkat yang diaudit
+        (WavLM gagal gerbang karena SSL beku membutuhkan head terlatih; ReDimNet lolos semua gerbang),
+        Whisper digantikan <strong>ReDimNet-b2</strong> — model verifikasi pembicara dengan arsitektur
+        yang kontras terhadap ECAPA. Fusi dilakukan di level z-score dua-ruang (DualASNorm). Hasil akhir
+        0.908 dengan kontribusi fusi yang, untuk pertama kalinya, signifikan secara statistik.</li>
+  </ol>
+
+  <!-- ============================================================ -->
+  <h2 id="s3">3. Data: Sumber, Pengunduhan, dan Lisensi</h2>
+  <h3>3.1 Dataset</h3>
+  <p>Seluruh eksperimen menggunakan <strong>VoxCeleb1 dan VoxCeleb2</strong> (Nagrani dkk., 2017; Chung
+     dkk., 2018) — korpus suara selebriti dari video YouTube dengan kondisi akustik bebas
+     (<em>in the wild</em>): total <strong>7.365 pembicara</strong> (VoxCeleb1: 1.251; VoxCeleb2: 6.114,
+     sesuai metadata resmi terkini — selisih +2 pembicara dari angka historis Tabel 4.1 proposal,
+     &lt;0,05%, terdokumentasi di <code>data/splits/summary.md</code>). Format audio: <code>.wav</code>
+     (vox1) dan <code>.m4a</code>/AAC (vox2), 16 kHz.</p>
+  <h3>3.2 Cara memperoleh data</h3>
+  <ul>
+    <li><strong>Metadata</strong> (daftar pembicara, pembagian dev/test): diunduh langsung dari situs resmi
+        Oxford VGG (terbuka, tanpa kredensial) oleh <code>scripts/download_voxceleb.py --stage metadata</code>:
+        <code>vox1_meta.csv</code>, <code>vox2_meta.csv</code>, <code>iden_split.txt</code>.</li>
+    <li><strong>Audio</strong>: distribusi resmi bersifat <em>gated</em> (harus mengajukan akses ke VGG;
+        arsip ratusan GB). Penelitian ini memakai mirror <em>ungated</em> arsip yang sama di HuggingFace Hub
+        (<code>ProgramComputer/voxceleb</code>, lisensi CC BY 4.0 sama dengan aslinya). Kunci efisiensinya:
+        server mendukung <code>Accept-Ranges: bytes</code>, sehingga modul
+        <code>src/data/remote_zip_audio.py</code> (berbasis <code>remotezip</code>) dapat membaca hanya
+        <em>central directory</em> ZIP lalu mengunduh <strong>hanya entri yang dibutuhkan</strong> — tanpa
+        pernah menarik arsip multi-GB utuh. Throughput terukur ±600–650 ms/file dengan 4 worker paralel.</li>
+    <li><strong>Subset "capped"</strong>: karena run berskala fungsional, audio diunduh dengan batas
+        per-pembicara (deterministik) oleh <code>scripts/fetch_capped_base_train_audio.py</code> dan
+        <code>fetch_capped_eval_audio.py</code>, masing-masing menulis <code>manifest.csv</code>
+        (kolom <code>speaker_id</code>, <code>path</code>) yang menjadi satu-satunya pintu masuk data ke
+        seluruh pipeline. Tiga kelompok manifest: <code>vox1_sample</code> + <code>base_train_capped</code>
+        (data latih dasar &amp; cohort), dan <code>eval_capped</code> (task, reserved pool, impostor kalibrasi
+        — impostor disampel 300 dari 1.888 karena kalibrasi hanya butuh keragaman impostor yang cukup).</li>
+  </ul>
+  <h3>3.3 Cakupan audio aktual pada run</h3>
+  <table>
+    <tr><th>Kelompok</th><th>Terisi audio nyata</th><th>Peran</th></tr>
+    <tr><td>Base train</td><td>71 pembicara, ±993 utterance</td><td>kalibrasi genuine, cohort AS-Norm, pelatihan baseline ProtoNet</td></tr>
+    <tr><td>Task speakers</td><td>99/100 pembicara, 10/10 sesi</td><td>evaluasi FSCIL resmi</td></tr>
+    <tr><td>Reserved pool</td><td>221 pembicara (540 + 530 utterance)</td><td>paruh-validasi (tuning) &amp; paruh-deteksi (uji unknown)</td></tr>
+    <tr><td>Impostor kalibrasi</td><td>295 pembicara</td><td>skor impostor untuk kalibrasi threshold</td></tr>
+  </table>
+  <p class="muted">Catatan skala: seluruh angka dihitung dari audio VoxCeleb nyata (bukan simulasi),
+     dengan cakupan dan repetisi yang dikurangi secara sadar agar setiap run selesai dalam satu sesi kerja
+     (lihat §11).</p>
+
+  <!-- ============================================================ -->
+  <h2 id="s4">4. Pembagian Data (Split)</h2>
+  <p>Split dibangun sekali di level <em>speaker ID</em> (bukan file) oleh
+     <code>scripts/build_splits.py</code> → <code>data/splits/full_split.json</code>, dengan
+     <strong>seed 0</strong> dan jaminan <strong>speaker-disjoint</strong> antar partisi yang ditegakkan
+     secara programatik (memicu <code>SpeakerOverlapError</code> bila dilanggar; diverifikasi ulang unit test).</p>
+  <table>
+    <tr><th>Partisi</th><th>Jumlah pembicara</th><th>Peran</th></tr>
+    <tr><td>Total gabungan vox1+vox2</td><td>7.365</td><td>—</td></tr>
+    <tr><td>Data Latih Awal (<code>base_train</code>, 70%)</td><td>5.156</td><td>genuine kalibrasi, cohort AS-Norm, baseline</td></tr>
+    <tr><td>Data Uji Global (30%)</td><td>2.209</td><td>—</td></tr>
+    <tr><td>├─ Reserved unknown pool (10% dari uji global)</td><td>221</td><td>sejak exp3 dibelah dua secara deterministik &amp; speaker-disjoint: <strong>paruh-validasi</strong> (110) untuk mengunci semua hyperparameter; <strong>paruh-deteksi</strong> (111 → 106 beraudio, 530 utterance) murni untuk metrik deteksi unknown</td></tr>
+    <tr><td>└─ Episodic pool (90%)</td><td>1.988</td><td>—</td></tr>
+    <tr><td>&nbsp;&nbsp;&nbsp;├─ Task speakers</td><td>100 (10 sesi × 10-way)</td><td>evaluasi FSCIL resmi — <strong>tidak pernah</strong> dipakai tuning</td></tr>
+    <tr><td>&nbsp;&nbsp;&nbsp;└─ Calibration impostor pool</td><td>1.888</td><td>impostor kalibrasi threshold</td></tr>
+  </table>
+  <div class="callout">
+    <strong>Disiplin anti-overfit (berlaku sejak Experiment 3):</strong> setiap hyperparameter
+    (titik operasi FRR, parameter AS-Norm, bobot fusi w, pemilihan layer backbone) hanya boleh dipilih
+    pada task validasi yang dibangun dari <em>paruh-validasi</em> reserved pool — tidak pernah pada task
+    speaker resmi, dan tidak pernah pada paruh-deteksi. Nilai terbaik lalu <em>dikunci</em> (hard-coded ke
+    tag eksperimen) sebelum run resmi dijalankan tepat satu kali.
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="s5">5. Preprocessing Audio</h2>
+  <p>Setiap file audio melewati pipeline yang sama (<code>src/preprocessing/pipeline.py</code>),
+     seluruhnya pada mono float32 16 kHz:</p>
+  <div class="flow">
+    <span class="step">Load + resample 16 kHz<br><span class="muted">librosa (fallback ffmpeg utk .m4a)</span></span><span class="sep">→</span>
+    <span class="step">Reduksi noise<br><span class="muted">noisereduce, spectral gating stasioner</span></span><span class="sep">→</span>
+    <span class="step">VAD<br><span class="muted">Silero VAD (speech ≥250 ms, silence ≥100 ms)</span></span><span class="sep">→</span>
+    <span class="step">Agregasi segmen ucapan<br><span class="muted">buang bagian hening</span></span><span class="sep">→</span>
+    <span class="step">Normalisasi loudness<br><span class="muted">−20 LUFS (ITU-R BS.1770), anti-clipping</span></span><span class="sep">→</span>
+    <span class="step">Standardisasi durasi<br><span class="muted">mode per-backbone</span></span>
+  </div>
+  <p>Tahap terakhir menyesuaikan kebutuhan arsitektur tiap backbone:</p>
+  <table>
+    <tr><th>Mode</th><th>Strategi</th><th>Dipakai oleh</th></tr>
+    <tr><td><code>ecapa_inference</code></td><td>panjang asli apa adanya; sliding-window 30 s hanya bila audio &gt; 30 s</td><td>ECAPA, x-vector, <strong>ReDimNet</strong> (exp5), WavLM (uji kandidat)</td></tr>
+    <tr><td><code>whisper_inference</code></td><td>selalu dipotong/di-pad menjadi jendela tepat 30 s (arsitektur Whisper mewajibkannya)</td><td>Whisper L3/L4</td></tr>
+    <tr><td><code>ecapa_train</code> / <code>whisper_train</code></td><td>varian pelatihan (pad sirkular ≥3 s / pad-crop 30 s)</td><td>hanya jalur pelatihan episodik (exp0)</td></tr>
+  </table>
+
+  <!-- ============================================================ -->
+  <h2 id="s6">6. Ekstraksi Fitur — Backbone Beku &amp; Cache</h2>
+  <p>Semua backbone <strong>beku</strong> (pretrained, tidak pernah di-fine-tune). Embedding tiap utterance
+     dihitung sekali lalu di-<em>cache</em> ke disk (<code>data/cache/embeddings/&lt;backbone&gt;/sha1(path).npy</code>)
+     sehingga seluruh eksperimen berikutnya berjalan dalam hitungan menit.</p>
+  <table>
+    <tr><th>Backbone</th><th>Checkpoint</th><th>Dimensi</th><th>Dipakai di</th><th>Keterangan</th></tr>
+    <tr><td><strong>ECAPA-TDNN</strong></td><td><code>speechbrain/spkrec-ecapa-voxceleb</code></td><td>192</td><td>semua eksperimen</td><td>backbone utama; output L2-normalized</td></tr>
+    <tr><td>Whisper encoder (L3 tengah)</td><td><code>openai/whisper-base</code> (encoder saja)</td><td>512</td><td>exp0–3</td><td>mean-pool layer tengah — layer akhir terbukti empiris <em>menghapus</em> identitas pembicara</td></tr>
+    <tr><td>Whisper encoder (L4)</td><td>sama, <code>layer_fraction=4/6</code></td><td>512</td><td>exp2a, exp4</td><td>layer paling diskriminatif dari sweep exp2; namespace cache terpisah</td></tr>
+    <tr><td>WavLM-base-plus</td><td><code>microsoft/wavlm-base-plus</code></td><td>768</td><td>exp5 (kandidat #1, gagal gerbang)</td><td>13 hidden state; sweep layer di paruh-validasi</td></tr>
+    <tr><td><strong>ReDimNet-b2</strong></td><td>torch.hub <code>IDRnD/ReDimNet</code> (ft_lm, vox2)</td><td>192</td><td><strong>exp5b (final)</strong></td><td>5,1 juta parameter; frontend Mel di dalam model; 14.874 embedding di-cache (46 menit GPU, 0 gagal)</td></tr>
+    <tr><td>x-vector</td><td><code>speechbrain/spkrec-xvect-voxceleb</code></td><td>512</td><td>baseline saja</td><td>untuk baseline x-vector + PLDA-lite</td></tr>
+  </table>
+  <p class="muted">Catatan teknis: kunci cache = SHA-1 dari string path absolut. Bug kunci cache
+     (path relatif vs absolut) ditemukan dan diperbaiki pada Experiment 3.</p>
+
+  <!-- ============================================================ -->
+  <h2 id="s7">7. Pemodelan &amp; Evolusi Arsitektur</h2>
+
+  <h3>7.1 Kerangka yang tetap sama di semua eksperimen</h3>
+  <p>Sistem selalu berupa pipeline <em>prototype-based open-set identification</em>:</p>
+  <ol>
+    <li><strong>Enrollment (1-shot):</strong> satu utterance pembicara baru di-embed; embedding-nya menjadi
+        <em>prototype</em> pembicara itu di basis data (<code>SpeakerDatabase</code>).</li>
+    <li><strong>Identifikasi:</strong> query di-embed, dihitung jaraknya ke semua prototype; prediksi =
+        prototype terdekat (argmin).</li>
+    <li><strong>Keputusan open-set:</strong> jika jarak terbaik melebihi threshold terkalibrasi → tolak
+        ("tak dikenal"); jika tidak → terima dengan identitas prediksi.</li>
+    <li><strong>Continual update:</strong> sampel yang diterima memperbarui prototype pemiliknya dengan
+        <em>running average</em>; sampel yang ditolak masuk buffer pembicara-baru. Mode <code>static</code>
+        (tanpa update) menjadi arm ablasi B1.</li>
+  </ol>
+  <p>Yang berevolusi antar eksperimen adalah <strong>tiga komponen</strong>: (a) cara menggabungkan dua
+     backbone, (b) ruang skor tempat jarak dihitung, dan (c) cara memilih threshold.</p>
+
+  <h3>7.2 Experiment 0 → 1: menyelamatkan ruang embedding ECAPA</h3>
+  <div class="arch">
+    <div class="col">
+      <h4>Experiment 0 (gagal, 0.235)</h4>
+      <div class="node">Gated Attention Fusion 256-d<br><span class="muted">proj ECAPA 192→256, proj Whisper 512→256, gate sigmoid</span></div>
+      <div class="node worst" style="background:var(--boxr);border-color:var(--boxrb)">dilatih 500 episode prototypical loss<br>dari inisialisasi ACAK, hanya 71 pembicara</div>
+      <div class="arrow">▼</div>
+      <div class="node" style="background:var(--boxr);border-color:var(--boxrb)">proyeksi acak yang kurang-latih<br>menghancurkan ruang ECAPA (79% → 16%)</div>
+    </div>
+    <div class="col">
+      <h4>Experiment 1 (0.731)</h4>
+      <div class="node newp">inisialisasi RESIDUAL:<br>proj_ecapa = identitas parsial; bias gate +4 → g ≈ 0,982 (dominan ECAPA)</div>
+      <div class="node newp"><strong>0 episode — lapisan fusi dibekukan</strong><br><span class="muted">sweep membuktikan pelatihan episodik menurunkan akurasi secara monoton pada skala data ini</span></div>
+      <div class="arrow">▼</div>
+      <div class="node out">kualitas ECAPA terjaga sebagai batas bawah; threshold EER; continual update membantu (B2 &gt; B1)</div>
+    </div>
+  </div>
+  <div class="eq">e'_i = W_i·e_i + b_i ;  g = σ(W_g·[e'_1; e'_2] + b_g) ;  e_fusion = g⊙e'_1 + (1−g)⊙e'_2  (L2-norm)</div>
+
+  <h3>7.3 Experiment 2a: fusi level-skor + Whisper L4 (diagnosis)</h3>
+  <p>Karena gate ≈ 0,98 membuat kontribusi Whisper nol, fusi dipindah ke level skor:
+     <code>skor = 0,4·d_ecapa + 0,6·d_whisper</code> (jarak cosine di ruang natif masing-masing;
+     diimplementasikan sebagai konkatenasi berbobot <code>[√w·ê_e ; √(1−w)·ê_w]</code> yang terbukti
+     ekuivalen), dan fitur Whisper dinaikkan ke layer-4. Hasil tidak berubah (0.733) — tetapi eksperimen
+     ini menghasilkan dua temuan yang menentukan arah berikutnya: <strong>(P4)</strong> threshold hasil
+     kalibrasi satu model tidak boleh dipakai model ablasi lain (artefak A1 = 0.069), dan
+     <strong>(P5/threshold study)</strong> titik operasi EER menolak terlalu banyak genuine
+     (<code>open@p95 &gt; open@EER</code> di semua bobot) — memicu Experiment 3.</p>
+
+  <h3>7.4 Experiment 3: pembenahan threshold (AS-Norm + target-FRR)</h3>
+  <ul>
+    <li><strong>Titik operasi (3a):</strong> threshold = kuantil-(1−FRR) jarak genuine kalibrasi
+        (target-FRR 5%), menggantikan titik EER — karena metrik FSCIL tanpa query unknown menjadikan
+        setiap penolakan kesalahan murni.</li>
+    <li><strong>AS-Norm (3b):</strong> skor dinormalisasi adaptif terhadap <em>cohort</em> 300 utterance
+        base_train (top-K = 200 statistik paling kompetitif, simetris sisi query &amp; prototype):</li>
+  </ul>
+  <div class="eq">d_norm(q,p) = ½[ (d(q,p) − μ_topK(q→C))/σ_topK(q→C) + (d(q,p) − μ_topK(p→C))/σ_topK(p→C) ]</div>
+  <ul>
+    <li><strong>Kalibrasi per-konfigurasi (fix P4):</strong> setiap arm ablasi (A1/A2/A3) mendapat cohort,
+        normalizer, dan threshold-nya sendiri.</li>
+    <li><strong>Pelaporan dua-metrik (3c):</strong> jalur <code>score()</code> bebas-efek-samping
+        memungkinkan 530 query unknown dinilai tanpa mengotori basis data → metrik deteksi
+        (EER/AUROC/TAR@FAR) dilaporkan berdampingan dengan akurasi.</li>
+  </ul>
+  <p>Hasil 0.865. Temuan mekanistik penting: AS-Norm menaikkan akurasi terutama lewat
+     <em>identifikasi</em> (termnya di sisi prototype menormalkan bias per-kelas — efek hubness 1-shot,
+     argmin berubah), bukan lewat penolakan.</p>
+
+  <h3>7.5 Experiment 4: gerbang keputusan fusi (analisis, tanpa perubahan produksi)</h3>
+  <p>Plafon oracle ECAPA∪Whisper diukur di ruang AS-Norm pada task paruh-validasi: hanya
+     <strong>+0.0225 ± 0.0054</strong> (whisper_l4) — dan sweep fusi z-score nyata tidak pernah melampaui
+     ECAPA-saja (terbaik 0.8408 &lt; 0.8417). Fusi Whisper ditutup definitif di kedua ruang skor; karena
+     gerbang gagal, <strong>tidak ada satu pun kode produksi yang diubah</strong>. Temuan sekunder: aturan
+     deteksi dua-ruang <code>mean</code> memberi sinyal "saksi kedua" (dilanjutkan ke exp5).</p>
+
+  <h3>7.6 Experiment 5: backbone kedua yang benar + fusi z-score dua-ruang</h3>
+  <div class="arch">
+    <div class="col">
+      <h4>Seleksi kandidat (bergerbang &amp; diaudit)</h4>
+      <div class="node">Audit leakage: 80/100 task speaker ∈ VoxCeleb2-dev<br><span class="muted">metadata resmi; diungkap penuh</span></div>
+      <div class="arrow">▼</div>
+      <div class="node" style="background:var(--boxr);border-color:var(--boxrb)">Kandidat #1 WavLM-base-plus (bebas-VoxCeleb):<br>sweep 13 layer → terbaik 0.2925 &lt; 0.70 → <strong>GAGAL G5.1</strong></div>
+      <div class="arrow">▼</div>
+      <div class="node out">Kandidat #2 ReDimNet-b2 ft_lm:<br>standalone 0.878 · plafon +0.069 · fusi snapshot 0.890 → <strong>LOLOS semua gerbang</strong></div>
+    </div>
+    <div class="col">
+      <h4>Arsitektur final (exp5b)</h4>
+      <div class="node frozen">ECAPA 192-d &nbsp;+&nbsp; ReDimNet-b2 192-d (beku, cache)</div>
+      <div class="arrow">▼</div>
+      <div class="node newp">concat bebas-parameter [ê_ecapa ; ê_redimnet] (384-d)<br><span class="muted">satu embedder untuk semua arm ablasi</span></div>
+      <div class="arrow">▼</div>
+      <div class="node newp"><strong>DualASNorm</strong>: AS-Norm per-ruang (cohort sama, c300/k200)<br>skor = <strong>0,3·z_ecapa + 0,7·z_redimnet</strong><br><span class="muted">A1: w=1 · A2: w=0 · A3: w=0,3 (dikunci sweep validasi)</span></div>
+      <div class="arrow">▼</div>
+      <div class="node">threshold target-FRR 5% (kalibrasi per-arm) → continual running-average di ruang concat</div>
+    </div>
+  </div>
+  <p>Kenapa level z-score? Jarak mentah dua backbone berskala beda (cacat exp2), dan statistik AS-Norm
+     bergantung pada query/prototype sehingga trik konkatenasi berbobot tidak berlaku. Dengan z-score
+     per-ruang, kedua term berbagi satuan σ-cohort dan penjumlahan berbobot menjadi sahih; skala konstan
+     per-paruh terbukti tereliminasi (unit test invariansi). Bobot w=0,3 dikunci pada sweep validasi FSCIL
+     (plateau di w ≤ 0,7; w=0,3 adalah bobot fusi sungguhan terbaik, dan arm A2 di run resmi menjaga
+     transparansi perbandingan dengan ReDimNet-saja).</p>
+
+  <!-- ============================================================ -->
+  <h2 id="s8">8. Protokol Evaluasi &amp; Uji Statistik</h2>
+  <h3>8.1 Protokol FSCIL (adaptasi Tao dkk., 2020)</h3>
+  <ul>
+    <li><strong>10 sesi inkremental × 10-way</strong>: tiap sesi memperkenalkan 10 pembicara baru dengan
+        <strong>1 utterance enrollment</strong> (strict 1-shot) dan 5 utterance query.</li>
+    <li>Setelah tiap sesi, sistem diuji ulang pada query <em>semua</em> sesi yang sudah lewat — dasar
+        perhitungan <em>Average Accuracy</em> (Pers. 3.14) dan <em>Forgetting Measure</em> (Pers. 3.15).</li>
+    <li><strong>Akurasi open-set</strong>: query dihitung benar hanya bila <em>diterima</em> threshold
+        <em>dan</em> identitasnya tepat. <strong>Akurasi closed-set</strong> (argmin saja) dilaporkan
+        berdampingan sebagai perbandingan apel-ke-apel dengan baseline closed-set.</li>
+    <li><strong>Deteksi unknown</strong>: setelah sesi terakhir, 530 utterance dari 106 pembicara
+        paruh-deteksi dinilai lewat jalur bebas-efek-samping → EER, AUROC (formulasi Mann-Whitney eksak),
+        TAR@FAR=1%.</li>
+    <li><strong>5 repetisi</strong> dengan seed tetap [0..4]; hasil dilaporkan mean ± std.</li>
+  </ul>
+  <h3>8.2 Konfigurasi pembanding</h3>
+  <table>
+    <tr><th>Konfigurasi</th><th>Deskripsi</th></tr>
+    <tr><td>Usulan (A3)</td><td>fusi dua-backbone + threshold terkalibrasi + continual running-average</td></tr>
+    <tr><td>A1 / A2</td><td>ablasi fusi: backbone pertama saja / kedua saja (threshold &amp; normalizer masing-masing)</td></tr>
+    <tr><td>B1 static</td><td>ablasi continual: sistem sama tanpa update prototype</td></tr>
+    <tr><td>Baseline ECAPA standar</td><td>ECAPA closed-set (tanpa penolakan) — pembanding utama proposal</td></tr>
+    <tr><td>Baseline ProtoNet vanilla</td><td>prototypical network dilatih dari inisialisasi acak (500 episode)</td></tr>
+    <tr><td>Baseline x-vector + PLDA-lite</td><td>x-vector + pemutihan LDA</td></tr>
+  </table>
+  <h3>8.3 Uji signifikansi (Bab 4.11 proposal — status: semua dijalankan)</h3>
+  <table>
+    <tr><th>Uji</th><th>Prosedur</th><th>Status</th></tr>
+    <tr><td>Accuracy antar konfigurasi</td><td>Shapiro-Wilk pada selisih berpasangan → paired t-test (normal) / Wilcoxon signed-rank (tidak normal)</td><td>✅ setiap eksperimen</td></tr>
+    <tr><td>Koreksi pengujian berganda</td><td>Bonferroni: α = 0,05 / 6 perbandingan = 0,00833</td><td>✅ setiap eksperimen</td></tr>
+    <tr><td>EER antar konfigurasi</td><td>bootstrap resampling 1000× → CI 95% selisih EER (Bengio &amp; Mariéthoz, 2004); signifikan bila 0 di luar CI</td><td>✅ dijalankan pada exp5b (pertama kali dieksekusi; input dari dump skor per-rep)</td></tr>
+  </table>
+
+  <!-- ============================================================ -->
+  <h2 id="s9">9. Hasil Lengkap Setiap Eksperimen</h2>
+
+  <h3>9.1 Experiment 1 (dan baseline v0)</h3>
+  <table>
+    <tr><th>Konfigurasi</th><th>Open-set Acc</th><th>Forgetting</th></tr>
+    <tr class="worst"><td>Baseline v0 (fusi dilatih 500 episode)</td><td>0.235</td><td>0.0028</td></tr>
+    <tr class="best"><td>Usulan exp1 (residual, beku)</td><td><strong>0.731 ± 0.021</strong></td><td><strong>0.0004</strong></td></tr>
+    <tr><td>Baseline ECAPA closed-set</td><td>0.788 ± 0.017</td><td>0.0530</td></tr>
+  </table>
+  <p>Usulan menang atas semua baseline few-shot/incremental (signifikan), tetapi masih di bawah plafon
+     ECAPA closed-set; continual update terbukti membantu (B2 &gt; B1).</p>
+
+  <h3>9.2 Experiment 2a</h3>
+  <table>
+    <tr><th>Konfigurasi</th><th>Open-set Acc</th><th>Catatan</th></tr>
+    <tr><td>Usulan (score-fusion w=0,4, Whisper L4)</td><td>0.733 ± 0.017</td><td>≈ exp1: Whisper tetap tidak menyumbang</td></tr>
+    <tr><td>Oracle ceiling (analisis)</td><td>+2,6% (L3) → +4,0% (L4)</td><td>plafon komplementaritas kecil</td></tr>
+  </table>
+  <p>Nilai eksperimen ini pada diagnosisnya: artefak threshold ablasi (P4) dan bukti titik operasi EER
+     salah untuk metrik FSCIL — keduanya menjadi desain Experiment 3.</p>
+
+  <h3>9.3 Experiment 3 (3a / 3b)</h3>
+  <table>
+    <tr><th>Konfigurasi</th><th>Open-set Acc</th><th>Forgetting</th><th>det-EER</th><th>AUROC</th><th>TAR@1%FAR</th></tr>
+    <tr><td>3a — low-FRR saja</td><td>0.732 ± 0.025</td><td>0.0004</td><td>0.170</td><td>0.903</td><td>0.671</td></tr>
+    <tr class="best"><td><strong>3b — AS-Norm + low-FRR</strong></td><td><strong>0.865 ± 0.008</strong></td><td>0.0022</td><td>0.111</td><td>0.952</td><td>0.594</td></tr>
+    <tr><td>Baseline ECAPA closed-set</td><td>0.788 ± 0.017</td><td>0.0530</td><td>0.277</td><td>0.802</td><td>0.313</td></tr>
+  </table>
+  <p><strong>Signifikansi:</strong> usulan vs baseline ECAPA p = 0.0015 ✅ (pertama kali melampaui);
+     B2 vs B1 p = 0.0036 ✅ (drift teratasi di ruang ternormalisasi); usulan vs A1 p = 1.0
+     (Whisper tetap nol). Temuan 3a: pada threshold permisif <em>tanpa</em> AS-Norm, update running-average
+     justru drift (B1 &gt; B2, p = 0.0003) — peran ganda threshold sebagai gerbang update terukur eksplisit.</p>
+
+  <h3>9.4 Experiment 4 (analisis gerbang)</h3>
+  <table>
+    <tr><th>Ukuran</th><th>whisper_l4</th><th>whisper (L3)</th></tr>
+    <tr><td>Plafon oracle (ruang mentah)</td><td>+0.0208 ± 0.0101</td><td>+0.0125</td></tr>
+    <tr><td>Plafon oracle (ruang AS-Norm)</td><td>+0.0225 ± 0.0054</td><td>+0.0133</td></tr>
+    <tr><td>Fusi z-score terbaik vs ECAPA-saja</td><td>0.8408 &lt; 0.8417</td><td>0.8325 &lt; 0.8350</td></tr>
+  </table>
+  <p>Verdik: fusi Whisper ditutup definitif; sinyal deteksi dua-ruang <code>mean</code>
+     (EER validasi 0.165 → 0.151, n = 40) dibawa untuk diuji di exp5.</p>
+
+  <h3>9.5 Experiment 5b — hasil akhir</h3>
+  <table>
+    <tr><th>Konfigurasi</th><th>Open-set Acc</th><th>Closed-set</th><th>Forgetting</th><th>det-EER</th><th>AUROC</th><th>TAR@1%FAR</th></tr>
+    <tr class="best"><td><strong>Usulan (A3, fusi w=0,3, running-avg)</strong></td><td><strong>0.908 ± 0.019</strong></td><td><strong>0.908</strong></td><td>0.0022</td><td><strong>0.075</strong></td><td><strong>0.972</strong></td><td>0.748</td></tr>
+    <tr><td>A2 — ReDimNet saja</td><td>0.902 ± 0.016</td><td>0.902</td><td>0.0004</td><td>0.075</td><td>0.971</td><td>0.766</td></tr>
+    <tr><td>B1 — static</td><td>0.869 ± 0.007</td><td>0.869</td><td>0.0296</td><td>0.176</td><td>0.900</td><td>0.432</td></tr>
+    <tr><td>A1 — ECAPA saja</td><td>0.866 ± 0.008</td><td>0.866</td><td>0.0022</td><td>0.111</td><td>0.952</td><td>0.594</td></tr>
+    <tr><td>Baseline ECAPA closed-set</td><td>0.788 ± 0.017</td><td>0.788</td><td>0.0530</td><td>0.277</td><td>0.802</td><td>0.313</td></tr>
+    <tr><td>Baseline ProtoNet vanilla</td><td>0.402 ± 0.010</td><td>0.402</td><td>0.1244</td><td>0.457</td><td>0.566</td><td>0.053</td></tr>
+    <tr><td>Baseline x-vector + PLDA-lite</td><td>0.264 ± 0.014</td><td>0.264</td><td>0.1199</td><td>0.455</td><td>0.559</td><td>0.044</td></tr>
+  </table>
+  <h4>Uji signifikansi Accuracy (paired t-test; α terkoreksi 0,00833)</h4>
+  <table>
+    <tr><th>Perbandingan</th><th>p</th><th>Verdik</th></tr>
+    <tr class="best"><td>Usulan vs A1 (ECAPA saja)</td><td><strong>0.0041</strong></td><td>✅ signifikan — kontribusi fusi terukur pertama kalinya</td></tr>
+    <tr class="best"><td>Usulan vs baseline ECAPA</td><td><strong>0.0005</strong></td><td>✅ signifikan (+0.120)</td></tr>
+    <tr><td>Usulan vs A2 (ReDimNet saja)</td><td>0.209</td><td>setara — dilaporkan jujur</td></tr>
+    <tr><td>B1 vs usulan (continual)</td><td>0.0128</td><td>arah positif; tak lolos Bonferroni pada Accuracy (lihat bootstrap EER di bawah)</td></tr>
+    <tr><td>Usulan vs ProtoNet / x-vector</td><td>&lt;0.0001</td><td>✅ signifikan</td></tr>
+  </table>
+  <h4>Uji signifikansi EER — bootstrap CI 95% (Bengio &amp; Mariéthoz 2004; 1000 resample)</h4>
+  <table>
+    <tr><th>Perbandingan (EER deteksi)</th><th>ΔEER pooled</th><th>CI 95%</th><th>Verdik</th></tr>
+    <tr class="best"><td>Usulan vs A1</td><td>−0.036</td><td>[−0.047, −0.025]</td><td>✅ SIGNIFIKAN</td></tr>
+    <tr class="best"><td>B1 static vs usulan</td><td>+0.101</td><td>[+0.088, +0.114]</td><td>✅ SIGNIFIKAN (5/5 rep) — kontribusi continual terbukti kuat di metrik deteksi</td></tr>
+    <tr><td>Usulan vs A2</td><td>+0.001</td><td>[−0.008, +0.012]</td><td>setara</td></tr>
+    <tr><td>Usulan vs 3 baseline</td><td>−0.20 … −0.38</td><td>jauh dari 0</td><td>✅ SIGNIFIKAN semua</td></tr>
+  </table>
+  <p>Aturan deteksi dua-ruang <code>mean</code> (temuan exp4c) terkonfirmasi lebih baik daripada
+     ECAPA-saja pada 530 unknown (EER 0.082 vs 0.111) — namun skor produksi w=0,3 sudah menyerap seluruh
+     manfaatnya (0.075), sehingga tidak diperlukan mekanisme deteksi terpisah.</p>
+
+  <!-- ============================================================ -->
+  <h2 id="s10">10. Analisis Lintas Eksperimen</h2>
+  <table>
+    <tr><th></th><th>Exp 0</th><th>Exp 1</th><th>Exp 2a</th><th>Exp 3b</th><th>Exp 4</th><th>Exp 5b</th></tr>
+    <tr><td>Backbone kedua</td><td>Whisper L3</td><td>Whisper L3</td><td>Whisper L4</td><td>Whisper L3</td><td>(analisis L3+L4)</td><td><strong>ReDimNet-b2</strong></td></tr>
+    <tr><td>Mekanisme fusi</td><td>gated, dilatih</td><td>gated, beku</td><td>skor mentah</td><td>gated + AS-Norm</td><td>oracle + skor-z (uji)</td><td><strong>skor-z dua-ruang w=0,3</strong></td></tr>
+    <tr><td>Threshold</td><td>EER</td><td>EER</td><td>EER</td><td><strong>target-FRR 5%</strong></td><td>—</td><td>target-FRR 5%</td></tr>
+    <tr><td>Akurasi usulan</td><td>0.235</td><td>0.731</td><td>0.733</td><td>0.865</td><td>—</td><td><strong>0.908</strong></td></tr>
+    <tr><td>A3 vs A1</td><td>—</td><td>≡ (p=1.0)</td><td>≡</td><td>≡ (p=1.0)</td><td>fusi &lt; A1</td><td><strong>&gt; (p=0.0041)</strong></td></tr>
+    <tr><td>det-EER / TAR@1%</td><td>—</td><td>—</td><td>—</td><td>0.111 / 0.594</td><td>—</td><td><strong>0.075 / 0.748</strong></td></tr>
+    <tr><td>Pelajaran utama</td><td>episodik merusak</td><td>bekukan &amp; pertahankan ECAPA</td><td>threshold = lever</td><td>AS-Norm = lompatan</td><td>backbone-lah masalahnya</td><td>pasangan backbone yang benar</td></tr>
+  </table>
+  <p>Tiga pelajaran metodologis yang membentuk hasil akhir:</p>
+  <ol>
+    <li><strong>Pada rezim data kecil, "jangan melatih" bisa menjadi keputusan terbaik.</strong> Setiap
+        upaya melatih komponen (fusi exp0, head episodik) merusak representasi pretrained; seluruh
+        kemajuan datang dari cara <em>menggunakan</em> representasi beku dengan benar.</li>
+    <li><strong>Ruang skor menentukan kesimpulan.</strong> Kesimpulan yang diambil di ruang jarak mentah
+        (kontribusi Whisper, arah B1-vs-B2) berbalik atau berubah di ruang ternormalisasi — sehingga setiap
+        klaim harus diuji ulang di ruang skor produksi.</li>
+    <li><strong>Fusi hanya berguna jika kedua syarat terpenuhi:</strong> backbone kedua kuat secara mandiri
+        <em>dan</em> heterogen (pola error berbeda). Whisper memenuhi keduanya-tidak; ReDimNet memenuhi
+        keduanya — plafon oracle +0.069 vs +0.023, dan fusi nyata akhirnya menangkapnya.</li>
+  </ol>
+
+  <!-- ============================================================ -->
+  <h2 id="s11">11. Keterbatasan &amp; Pengungkapan (untuk bab keterbatasan tesis)</h2>
+  <ul>
+    <li><strong>Repetisi 5 dari target proposal 10.</strong> Deviasi skala fungsional yang sadar dan
+        seragam sejak Experiment 0 (tercatat di kode); dapat ditutup dengan menjalankan ulang tag kunci
+        pada 10 seed (cache sudah panas).</li>
+    <li><strong>Irisan data pretraining (leakage) — diaudit &amp; diungkap.</strong> 80/100 task speaker
+        berada di VoxCeleb2-dev, data latih ReDimNet; ECAPA SpeechBrain juga dilatih VoxCeleb, sehingga
+        seluruh perbandingan internal tetap apel-ke-apel. Kandidat bebas-leakage (WavLM) diuji lebih dulu
+        dan gagal karena batasan bebas-pelatihan. Angka lengkap: <code>experiments/exp5_leakage_audit.json</code>.</li>
+    <li><strong>Fusi setara (bukan melampaui) backbone tunggal terkuat</strong> (A3 vs A2 p = 0.209).
+        Klaim yang jujur: fusi menambah signifikan di atas ECAPA dan tidak kalah dari ReDimNet, dengan
+        keunggulan kecil konsisten (menang 4/5 seed).</li>
+    <li><strong>Kontribusi continual bergantung metrik</strong>: pada Accuracy p = 0.0128 (tak lolos
+        Bonferroni), pada EER deteksi signifikan telak (ΔEER +0.101, 5/5 rep) — keduanya dilaporkan.</li>
+    <li><strong>Baseline ke-4 (reimplementasi SOTA Transformer)</strong> memakai jalur fallback kualitatif
+        yang diizinkan proposal (hal. 53).</li>
+    <li><strong>Cakupan audio "capped"</strong> (subset per-pembicara) dan satu deviasi protokol kecil pada
+        task validasi (n_query = 4, karena pembicara reserved hanya punya 5 utterance) — keduanya
+        terdokumentasi.</li>
+  </ul>
+
+  <!-- ============================================================ -->
+  <h2 id="s12">12. Reproduksi &amp; Feature Flag</h2>
+  <p>Setiap konfigurasi adalah tag di <code>src/experiments.py</code>; berpindah eksperimen tidak pernah
+     mengubah kode:</p>
+  <pre># pilih eksperimen mana pun (contoh):
+$env:ACTIVE_EXPERIMENT = "exp1_frozen_residual"    # atau baseline_v0 / exp2a_scorefusion_L4 /
+                                                   # exp3a_lowfrr / exp3b_asnorm / exp3c_dualmetric /
+                                                   # exp5b_redimnet_fusion (default saat ini)
+.venv\Scripts\python.exe scripts\run_full_evaluation.py
+
+# analisis pendukung:
+.venv\Scripts\python.exe scripts\exp3_validation_sweep.py          # sweep validasi exp3
+.venv\Scripts\python.exe scripts\exp4_complementarity_asnorm.py    # gerbang exp4 (+ --second-backbone utk screening)
+.venv\Scripts\python.exe scripts\exp5_wavlm_layer_sweep.py         # sweep layer WavLM (negative result)
+.venv\Scripts\python.exe scripts\exp5_validation_sweep.py          # sweep kunci w exp5
+.venv\Scripts\python.exe scripts\exp5_detection_rules.py           # aturan deteksi dua-ruang
+.venv\Scripts\python.exe scripts\exp5_bootstrap_eer.py             # bootstrap EER (Bab 4.11)
+
+# regresi penuh:
+.venv\Scripts\python.exe -m pytest tests -q                        # 156 passed</pre>
+  <p><strong>Artefak hasil</strong> (folder <code>experiments/</code>):
+     <code>full_evaluation_summary_&lt;tag&gt;.json</code> per eksperimen ·
+     <code>exp3_validation_sweep.json</code> · <code>exp4_ceiling_asnorm.json</code> ·
+     <code>exp5_leakage_audit.json</code> · <code>exp5_wavlm_layer_sweep.json</code> ·
+     <code>exp5_screening_redimnet_b2.json</code> · <code>exp5_validation_sweep.json</code> ·
+     <code>detection_scores_exp5b_redimnet_fusion.json</code> ·
+     <code>exp5_detection_rules_*.json</code> · <code>exp5_bootstrap_eer_*.json</code>.</p>
+  <p><strong>Laporan per-eksperimen</strong> (detail lebih dalam dari ringkasan di dokumen ini):
+     <a href="experiment-1.html">Experiment 1</a> · <a href="experiment-2.html">Experiment 2</a> ·
+     <a href="experiment-3.html">Experiment 3</a> · <a href="experiment-4.html">Experiment 4</a> ·
+     <a href="experiment-5.html">Experiment 5</a> · daftar pustaka pendukung di
+     <a href="experiment-5.md">experiment-5.md §7</a>.</p>
+
+  <p class="muted" style="margin-top:2.5em;border-top:1px solid var(--line);padding-top:1em">
+     Draft laporan lengkap Eksperimen 1–5 · Incremental Open-Set Speaker Recognition ·
+     disusun 19 Juli 2026 · <a href="README.md">indeks dokumentasi</a>.</p>
+
+</div>
+</body>
+</html>

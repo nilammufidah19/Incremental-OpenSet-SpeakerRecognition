@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Experiment 1 — Frozen Residual-Init Fusion</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1d24; --muted:#5b6472; --line:#e3e7ee; --card:#f7f9fc;
+    --accent:#2f6df6; --accent2:#12b886; --warn:#e8590c; --good:#2f9e44;
+    --code-bg:#f0f3f8; --shadow:0 1px 3px rgba(20,30,50,.08);
+    --box1:#e7f0ff; --box1b:#b9d2ff; --box2:#e6fbf3; --box2b:#a5e8d0; --box3:#fff3e6; --box3b:#ffd8a8;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1319; --fg:#e6eaf2; --muted:#9aa5b5; --line:#242c38; --card:#151b24;
+      --accent:#5b8cff; --accent2:#26c99a; --warn:#ff922b; --good:#51cf66;
+      --code-bg:#161d27; --shadow:0 1px 3px rgba(0,0,0,.3);
+      --box1:#16233a; --box1b:#2b4a7a; --box2:#0f2b23; --box2b:#1e5c49; --box3:#2e2113; --box3b:#6b4a1f;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 22px 80px}
+  h1{font-size:2rem;line-height:1.2;margin:.2em 0 .1em}
+  h2{font-size:1.4rem;margin:2.2em 0 .5em;padding-top:.4em;border-top:1px solid var(--line)}
+  h3{font-size:1.12rem;margin:1.6em 0 .4em;color:var(--fg)}
+  p,li{color:var(--fg)}
+  .sub{color:var(--muted);font-size:1.02rem;margin:.2em 0 1.4em}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  code{background:var(--code-bg);padding:.12em .38em;border-radius:5px;font-size:.88em;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre{background:var(--code-bg);padding:14px 16px;border-radius:9px;overflow-x:auto;font-size:.86rem;
+    border:1px solid var(--line)}
+  pre code{background:none;padding:0}
+  table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+  th{background:var(--card);font-weight:600}
+  tr:nth-child(even) td{background:var(--card)}
+  .pill{display:inline-block;padding:.15em .6em;border-radius:999px;font-size:.8rem;font-weight:600}
+  .pill.good{background:var(--box2);color:var(--good);border:1px solid var(--box2b)}
+  .pill.tag{background:var(--box1);color:var(--accent);border:1px solid var(--box1b)}
+  .callout{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
+    padding:12px 16px;border-radius:8px;margin:1.2em 0}
+  .callout.warn{border-left-color:var(--warn)}
+  .callout.good{border-left-color:var(--good)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:1.2em 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow)}
+  .stat .n{font-size:1.7rem;font-weight:700;color:var(--accent)}
+  .stat .l{font-size:.82rem;color:var(--muted)}
+  figure{margin:1.4em 0;text-align:center}
+  figcaption{color:var(--muted);font-size:.85rem;margin-top:.5em}
+  .eq{font-family:ui-monospace,Consolas,monospace;font-size:.86rem;background:var(--code-bg);
+    padding:10px 14px;border-radius:8px;border:1px solid var(--line);overflow-x:auto;white-space:pre}
+  svg{max-width:100%;height:auto}
+  .muted{color:var(--muted)}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 20px;columns:2;font-size:.9rem}
+  @media(max-width:620px){.toc{columns:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Experiment 1 — Frozen Residual-Init Fusion</h1>
+  <div class="sub">
+    <span class="pill tag">exp1_frozen_residual</span> &nbsp;<span class="pill good">AKTIF</span><br>
+    Incremental Open-Set Speaker Recognition · Run 2026-07-11 · 2.8 menit · CUDA
+  </div>
+
+  <div class="grid">
+    <div class="stat"><div class="n">0.731</div><div class="l">Akurasi sistem usulan (naik dari 0.235)</div></div>
+    <div class="stat"><div class="n">0.0004</div><div class="l">Forgetting Measure (terbaik)</div></div>
+    <div class="stat"><div class="n">3×</div><div class="l">Peningkatan vs baseline_v0</div></div>
+    <div class="stat"><div class="n">0 ep</div><div class="l">Training fusi (beku)</div></div>
+  </div>
+
+  <div class="callout good">
+    <strong>Temuan inti.</strong> Pada skala base training kecil (71 speaker), fine-tuning episodik
+    <em>secara monoton merusak</em> ruang embedding ECAPA yang sudah dilatih penuh. Membekukan lapisan
+    fusi (dengan inisialisasi yang mempertahankan ECAPA) menaikkan akurasi sistem usulan 3× dan
+    menjadikannya kompetitif dengan baseline closed-set statis, sambil mempertahankan kemampuan
+    open-set + incremental.
+  </div>
+
+  <div class="toc">
+    <strong>Isi:</strong><br>
+    1. Data · 2. Preprocessing · 3. Backbone · 4. Arsitektur Fusi ·
+    5. Training · 6. Kalibrasi · 7. Continual Learning · 8. Evaluasi ·
+    9. Hasil · 10. Analisis · 11. Feature-Flag · 12. Reproduksi
+  </div>
+
+  <h2>1. Data</h2>
+  <p>Dataset <strong>VoxCeleb1 + VoxCeleb2</strong> (16 kHz native). Split seed <code>0</code>,
+     disjointness ditegakkan programatik (<code>SpeakerOverlapError</code>).</p>
+  <table>
+    <tr><th>Partisi</th><th>Speaker</th><th>Peran</th></tr>
+    <tr><td>Total (vox1 + vox2)</td><td>7365</td><td>1251 + 6114</td></tr>
+    <tr><td>base_train (70%)</td><td>5156</td><td>training & genuine pool kalibrasi</td></tr>
+    <tr><td>Data Uji Global (30%)</td><td>2209</td><td>—</td></tr>
+    <tr><td>├─ Reserved (10%)</td><td>221</td><td>cadangan</td></tr>
+    <tr><td>└─ Episodic pool (90%)</td><td>1988</td><td>—</td></tr>
+    <tr><td>&nbsp;&nbsp;&nbsp;├─ Task speakers (10×10-way)</td><td>100</td><td>evaluasi FSCIL</td></tr>
+    <tr><td>&nbsp;&nbsp;&nbsp;└─ Impostor kalibrasi</td><td>1888</td><td>impostor threshold</td></tr>
+  </table>
+  <p class="muted"><strong>Cakupan run fungsional:</strong> base train ter-cache = 71 speaker / 992 utterance;
+     task speaker dengan audio real = 99/100 di 10/10 sesi; impostor tersedia = 295; N_REPS = 5.</p>
+
+  <h2>2. Preprocessing</h2>
+  <p>Semua tahap: mono, float32, <code>TARGET_SR = 16000</code>.
+     Modul <code>src/preprocessing/pipeline.py</code>.</p>
+
+  <figure>
+  <svg viewBox="0 0 860 130" role="img" aria-label="Diagram pipeline preprocessing">
+    <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#8894a8"/></marker></defs>
+    <style>
+      .bx{fill:var(--box1);stroke:var(--box1b);stroke-width:1.2;rx:8}
+      .tx{fill:var(--fg);font:600 11px sans-serif}
+      .ln{stroke:#8894a8;stroke-width:1.4;marker-end:url(#ar)}
+    </style>
+    <g>
+      <rect class="bx" x="4"  y="34" width="98" height="46" rx="8"/><text class="tx" x="16" y="54">Load +</text><text class="tx" x="16" y="68">Resample</text>
+      <rect class="bx" x="126" y="34" width="98" height="46" rx="8"/><text class="tx" x="138" y="54">Noise</text><text class="tx" x="138" y="68">Reduction</text>
+      <rect class="bx" x="248" y="34" width="86" height="46" rx="8"/><text class="tx" x="270" y="60">VAD</text>
+      <rect class="bx" x="358" y="34" width="98" height="46" rx="8"/><text class="tx" x="368" y="54">Agregasi</text><text class="tx" x="368" y="68">segmen</text>
+      <rect class="bx" x="480" y="34" width="98" height="46" rx="8"/><text class="tx" x="492" y="54">Loudness</text><text class="tx" x="492" y="68">−20 LUFS</text>
+      <rect class="bx" x="602" y="34" width="106" height="46" rx="8"/><text class="tx" x="614" y="54">Std. Durasi</text><text class="tx" x="614" y="68">4 mode</text>
+      <rect class="bx" x="732" y="10" width="120" height="40" rx="8" style="fill:var(--box2);stroke:var(--box2b)"/><text class="tx" x="744" y="34">ECAPA wav</text>
+      <rect class="bx" x="732" y="66" width="120" height="40" rx="8" style="fill:var(--box3);stroke:var(--box3b)"/><text class="tx" x="744" y="90">Whisper 30s</text>
+      <line class="ln" x1="102" y1="57" x2="124" y2="57"/>
+      <line class="ln" x1="224" y1="57" x2="246" y2="57"/>
+      <line class="ln" x1="334" y1="57" x2="356" y2="57"/>
+      <line class="ln" x1="456" y1="57" x2="478" y2="57"/>
+      <line class="ln" x1="578" y1="57" x2="600" y2="57"/>
+      <line class="ln" x1="708" y1="50" x2="730" y2="34"/>
+      <line class="ln" x1="708" y1="64" x2="730" y2="82"/>
+    </g>
+  </svg>
+  <figcaption>Rantai preprocessing tunggal, bercabang ke dua backbone di akhir.</figcaption>
+  </figure>
+
+  <table>
+    <tr><th>Tahap</th><th>Modul</th><th>Parameter kunci</th></tr>
+    <tr><td>Load + resample</td><td>io.py</td><td>librosa, fallback ffmpeg untuk .m4a</td></tr>
+    <tr><td>Noise reduction</td><td>denoise.py</td><td>noisereduce, <code>stationary=True</code>; skip &lt;100 ms</td></tr>
+    <tr><td>VAD</td><td>vad.py</td><td>Silero VAD, min_speech 250 ms, min_silence 100 ms</td></tr>
+    <tr><td>Loudness</td><td>loudness.py</td><td>−20 dB LUFS (pyloudnorm), guard clipping</td></tr>
+    <tr><td>Durasi (ecapa_train)</td><td>duration.py</td><td>pad circular ≥ 3 s</td></tr>
+    <tr><td>Durasi (whisper_*)</td><td>duration.py</td><td>pad silence + crop tepat 30 s / sliding 30 s</td></tr>
+  </table>
+
+  <h2>3. Backbone (Beku)</h2>
+  <p>Kedua backbone <strong>frozen</strong>; embedding di-cache ke disk.</p>
+  <table>
+    <tr><th>Backbone</th><th>Checkpoint</th><th>Dim</th><th>Detail</th></tr>
+    <tr><td>ECAPA-TDNN</td><td>speechbrain/spkrec-ecapa-voxceleb</td><td>192</td><td>80 mel, 25/10 ms, Hamming; L2-norm</td></tr>
+    <tr><td>Whisper encoder</td><td>openai/whisper-base (encoder)</td><td>512</td><td>mean-pool lapisan tengah (frac 0.5); L2-norm</td></tr>
+    <tr><td>x-vector <span class="muted">(baseline)</span></td><td>speechbrain/spkrec-xvect-voxceleb</td><td>512</td><td>hanya untuk baseline x-vector+PLDA</td></tr>
+  </table>
+  <div class="callout"><strong>Kenapa lapisan tengah Whisper?</strong> Lapisan akhir terspesialisasi ASR
+    (konten/fonetik) dan menghapus identitas pembicara — divalidasi empiris: pooling lapisan akhir
+    memberi kemiripan same-speaker lebih rendah dari different-speaker. Lapisan tengah mempertahankan
+    lebih banyak sinyal speaker.</div>
+
+  <h2>4. Arsitektur — Gated Attention Fusion</h2>
+  <p><code>src/models/fusion.py</code>, <code>FUSION_DIM = 256</code>.</p>
+
+  <figure>
+  <svg viewBox="0 0 760 250" role="img" aria-label="Diagram arsitektur Gated Attention Fusion">
+    <style>
+      .n{fill:var(--fg);font:600 12px sans-serif} .s{fill:var(--muted);font:11px sans-serif}
+      .e{fill:var(--box1);stroke:var(--box1b);stroke-width:1.2}
+      .w{fill:var(--box3);stroke:var(--box3b);stroke-width:1.2}
+      .g{fill:var(--box2);stroke:var(--box2b);stroke-width:1.2}
+      .ln2{stroke:#8894a8;stroke-width:1.5;fill:none;marker-end:url(#ar2)}
+    </style>
+    <defs><marker id="ar2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#8894a8"/></marker></defs>
+    <rect class="e" x="10"  y="20" width="120" height="40" rx="8"/><text class="n" x="24" y="45">ECAPA 192-d</text>
+    <rect class="w" x="10"  y="190" width="120" height="40" rx="8"/><text class="n" x="24" y="215">Whisper 512-d</text>
+    <rect class="e" x="185" y="20" width="130" height="40" rx="8"/><text class="n" x="196" y="39">proj_ecapa</text><text class="s" x="196" y="54">Linear 192→256</text>
+    <rect class="w" x="185" y="190" width="130" height="40" rx="8"/><text class="n" x="196" y="209">proj_whisper</text><text class="s" x="196" y="224">Linear 512→256</text>
+    <rect class="g" x="370" y="105" width="130" height="42" rx="8"/><text class="n" x="384" y="123">gate σ</text><text class="s" x="384" y="139">Linear 512→256</text>
+    <rect class="g" x="560" y="105" width="150" height="42" rx="8"/><text class="n" x="572" y="123">e_fusion</text><text class="s" x="572" y="139">g⊙e′₁+(1−g)⊙e′₂</text>
+    <text class="n" x="330" y="44">e′₁</text><text class="n" x="330" y="214">e′₂</text>
+    <line class="ln2" x1="130" y1="40" x2="183" y2="40"/>
+    <line class="ln2" x1="130" y1="210" x2="183" y2="210"/>
+    <line class="ln2" x1="315" y1="40" x2="435" y2="103"/>
+    <line class="ln2" x1="315" y1="210" x2="435" y2="149"/>
+    <line class="ln2" x1="500" y1="126" x2="558" y2="126"/>
+    <line class="ln2" x1="315" y1="34" x2="560" y2="112"/>
+    <line class="ln2" x1="315" y1="216" x2="560" y2="140"/>
+    <text class="s" x="40" y="120">L2-normalize output → 256-d</text>
+  </svg>
+  <figcaption>Gate σ menghasilkan bobot per-dimensi yang memadukan proyeksi ECAPA & Whisper.</figcaption>
+  </figure>
+
+  <div class="eq">e'_i     = W_i · e_i + b_i                          (4.1)
+g        = sigmoid(W_g · [e'_1 ; e'_2] + b_g)      (4.2)
+e_fusion = g ⊙ e'_1 + (1 − g) ⊙ e'_2               (4.3)
+output   = e_fusion / ‖e_fusion‖₂</div>
+
+  <p><strong>Mode ablasi:</strong> <code>fusion</code> (A3, usulan) · <code>ecapa_only</code> (A1) ·
+     <code>whisper_only</code> (A2). Lapisan proyeksi identik antar-mode, mengisolasi kontribusi fusi.</p>
+
+  <h3>4.1 Inisialisasi Residual (kontribusi Experiment 1)</h3>
+  <p>Flag <code>residual_init=True</code> membuat output awal = ECAPA mentah:</p>
+  <ul>
+    <li><code>proj_ecapa.weight</code> = identitas parsial (blok 192×192 = I), bias 0 → <code>e'₁ = [ECAPA;0]</code>.</li>
+    <li><code>gate.weight</code> = 0, <code>gate.bias</code> = +4.0 → <code>g = σ(4) ≈ 0.982</code> (dominasi ECAPA).</li>
+    <li><code>proj_whisper</code> tetap random (trainable; A2 tak terpengaruh).</li>
+  </ul>
+  <p>Verifikasi: fusi residual-init <em>tanpa training</em> = <strong>0.783</strong> closed-set = baseline ECAPA.</p>
+
+  <h2>5. Training — Prototypical Network Episodik</h2>
+  <p>Hanya parameter fusi dilatih (backbone beku, embedding dari cache). <code>src/prototypical/train.py</code>.</p>
+  <table>
+    <tr><th>Hyperparameter</th><th>Experiment 1</th><th>baseline_v0</th></tr>
+    <tr><td>N-way / K-shot / N-query</td><td>10 / 1 / 5</td><td>10 / 1 / 5</td></tr>
+    <tr><td>Optimizer</td><td>Adam</td><td>Adam</td></tr>
+    <tr><td>Learning rate</td><td>1e-3</td><td>1e-3</td></tr>
+    <tr><td><strong>Episode training</strong></td><td><strong>0 (beku)</strong></td><td>500</td></tr>
+    <tr><td>Seed</td><td>0</td><td>0</td></tr>
+  </table>
+  <div class="eq">d(z_q, c_k) = ‖z_q − c_k‖₂                       (3.8)  Euclidean
+p(y=k|x_q)  = softmax(−d)                         (3.9)
+L           = −log p(y=y_true | x_q)              (3.10) NLL</div>
+  <p class="muted">Pada Experiment 1, <code>n_episodes=0</code> → loop training dilewati; model = init residual, langsung di-checkpoint. Alasan: lihat §10.2 (sweep).</p>
+
+  <h2>6. Kalibrasi Threshold Open-Set</h2>
+  <p><code>src/prototypical/calibration.py</code>. Threshold EER dari genuine (base_train held-out) vs
+     impostor (calibration pool); skor = min jarak ke prototype terdekat; sweep 1000 threshold, pilih FAR≈FRR.</p>
+  <div class="grid">
+    <div class="stat"><div class="n">0.9266</div><div class="l">Threshold terkalibrasi</div></div>
+    <div class="stat"><div class="n">0.2193</div><div class="l">Calibration EER</div></div>
+    <div class="stat"><div class="n">k=1</div><div class="l">enrollment_k</div></div>
+  </div>
+
+  <h2>7. Continual Learning (Open-Set Incremental)</h2>
+  <p><code>src/continual/manager.py</code>. Update running-average (Pers. 4.4–4.6, rata-rata berbobot
+     tak-bias, tanpa decay); registrasi speaker baru via buffer + Silhouette Coefficient ≥ 0.5 (buffer ≥ 2).</p>
+  <div class="eq">z̄_new  = (1/m) Σ f(x_new,i)                          (4.4)
+n_k(t) = n_k(t−1) + m                                (4.5)
+c_k(t) = [n_k(t−1)·c_k(t−1) + m·z̄_new] / n_k(t)      (4.6)</div>
+
+  <h2>8. Evaluasi</h2>
+  <p><strong>FSCIL</strong> (<code>src/evaluation/fscil.py</code>): 10 sesi × 10 speaker baru (K_SHOT=1),
+     tiap sesi menguji ulang query semua task sebelumnya (n_query=5). Query benar bila
+     <code>is_known</code> &amp; prediksi tepat. Metrik: Average Accuracy (3.14), Forgetting Measure (3.15).
+     N_REPS=5, seed [0..4]. Uji: Shapiro-Wilk → paired t-test/Wilcoxon, Bonferroni α=0.05/6=0.00833.</p>
+
+  <h2>9. Hasil</h2>
+
+  <figure>
+  <svg viewBox="0 0 640 250" role="img" aria-label="Grafik batang akurasi tiap konfigurasi">
+    <style>.bl{fill:var(--fg);font:600 11px sans-serif}.bv{fill:var(--muted);font:11px sans-serif}</style>
+    <!-- scale: 0..0.8 -> 0..460px, x0=170 -->
+    <g>
+      <!-- ECAPA 0.788 -->
+      <text class="bl" x="8" y="27">ECAPA standar</text>
+      <rect x="170" y="14" width="453" height="20" rx="3" fill="#adb5bd"/><text class="bv" x="628" y="29">0.788</text>
+      <!-- proposed 0.731 -->
+      <text class="bl" x="8" y="57">Usulan (A3)</text>
+      <rect x="170" y="44" width="420" height="20" rx="3" fill="#2f6df6"/><text class="bv" x="596" y="59">0.731</text>
+      <!-- A1 0.731 -->
+      <text class="bl" x="8" y="87">A1 ECAPA saja</text>
+      <rect x="170" y="74" width="420" height="20" rx="3" fill="#5b8cff"/><text class="bv" x="596" y="89">0.731</text>
+      <!-- B1 0.666 -->
+      <text class="bl" x="8" y="117">B1 static</text>
+      <rect x="170" y="104" width="383" height="20" rx="3" fill="#748ffc"/><text class="bv" x="559" y="119">0.666</text>
+      <!-- ProtoNet 0.405 -->
+      <text class="bl" x="8" y="147">ProtoNet vanilla</text>
+      <rect x="170" y="134" width="233" height="20" rx="3" fill="#e8590c"/><text class="bv" x="409" y="149">0.405</text>
+      <!-- xvector 0.264 -->
+      <text class="bl" x="8" y="177">x-vector+PLDA</text>
+      <rect x="170" y="164" width="152" height="20" rx="3" fill="#e8590c"/><text class="bv" x="328" y="179">0.264</text>
+      <!-- A2 0.171 -->
+      <text class="bl" x="8" y="207">A2 Whisper saja</text>
+      <rect x="170" y="194" width="98" height="20" rx="3" fill="#f08c00"/><text class="bv" x="274" y="209">0.171</text>
+      <line x1="170" y1="8" x2="170" y2="222" stroke="var(--line)" stroke-width="1"/>
+      <text class="bv" x="150" y="240">0.0</text><text class="bv" x="590" y="240">0.8 →</text>
+    </g>
+  </svg>
+  <figcaption>Akurasi Average per konfigurasi. Biru = sistem usulan & ablasinya; abu = baseline kuat; oranye = baseline lemah.</figcaption>
+  </figure>
+
+  <table>
+    <tr><th>Konfigurasi</th><th>Accuracy (mean ± std)</th><th>Forgetting</th></tr>
+    <tr><td><strong>Sistem usulan (A3 + running-average)</strong></td><td><strong>0.731 ± 0.021</strong></td><td><strong>0.0004</strong></td></tr>
+    <tr><td>B1 — Static prototype</td><td>0.666 ± 0.024</td><td>0.0128</td></tr>
+    <tr><td>A1 — ECAPA-TDNN saja</td><td>0.731 ± 0.021</td><td>0.0004</td></tr>
+    <tr><td>A2 — Whisper saja</td><td>0.171 ± 0.015</td><td>0.0111</td></tr>
+    <tr><td>Baseline: ECAPA standar (closed-set)</td><td>0.788 ± 0.017</td><td>0.0530</td></tr>
+    <tr><td>Baseline: ProtoNet vanilla (closed-set)</td><td>0.405 ± 0.017</td><td>0.1214</td></tr>
+    <tr><td>Baseline: x-vector + PLDA-lite (closed-set)</td><td>0.264 ± 0.014</td><td>0.1199</td></tr>
+  </table>
+
+  <h3>9.2 Signifikansi (α = 0.00833)</h3>
+  <table>
+    <tr><th>Perbandingan</th><th>Uji</th><th>p-value</th><th>Signifikan?</th></tr>
+    <tr><td>Usulan vs A1 (ECAPA saja)</td><td>degenerate (identik)</td><td>1.0000</td><td>Tidak (identik)</td></tr>
+    <tr><td>Usulan vs A2 (Whisper saja)</td><td>paired t-test</td><td>8.2e-07</td><td><strong>Ya</strong></td></tr>
+    <tr><td>B1 static vs Usulan</td><td>paired t-test</td><td>0.0037</td><td><strong>Ya</strong></td></tr>
+    <tr><td>Usulan vs ECAPA standar</td><td>paired t-test</td><td>1.8e-04</td><td><strong>Ya</strong> (baseline unggul)</td></tr>
+    <tr><td>Usulan vs ProtoNet vanilla</td><td>paired t-test</td><td>2.5e-05</td><td><strong>Ya</strong></td></tr>
+    <tr><td>Usulan vs x-vector + PLDA</td><td>paired t-test</td><td>6.2e-06</td><td><strong>Ya</strong></td></tr>
+  </table>
+
+  <h2>10. Analisis</h2>
+  <h3>10.1 Dekomposisi kesalahan</h3>
+  <p><code>scripts/diagnose_accuracy_gap.py</code> memecah error menjadi <em>confusion</em> (prototype
+     terdekat = speaker lain, ~66.9%) vs <em>false-reject</em> (benar tapi ditolak threshold, ~16.4%).
+     Confusion mendominasi → masalahnya kualitas embedding, bukan penalti open-set.</p>
+
+  <h3>10.2 Sweep jumlah training — bukti kunci</h3>
+  <table>
+    <tr><th>Episode / LR</th><th>closed-set</th><th>open-set</th></tr>
+    <tr><td><strong>0 (beku)</strong></td><td><strong>0.783</strong></td><td><strong>0.734</strong></td></tr>
+    <tr><td>300 / 1e-4</td><td>0.713</td><td>0.666</td></tr>
+    <tr><td>50 / 1e-3</td><td>0.668</td><td>0.547</td></tr>
+    <tr><td>500 / 1e-4</td><td>0.624</td><td>0.482</td></tr>
+    <tr><td>150 / 1e-3</td><td>0.538</td><td>0.379</td></tr>
+    <tr><td>500 / 1e-3</td><td>0.276</td><td>0.187</td></tr>
+  </table>
+  <div class="callout warn"><strong>Monoton menurun.</strong> Makin banyak training makin buruk. 71 speaker
+    terlalu sedikit untuk memperbaiki ECAPA yang sudah pretrained penuh — training hanya overfit &
+    merusaknya. Karena itu Experiment 1 membekukan fusi.</div>
+
+  <h3>10.3 Temuan penting</h3>
+  <ol>
+    <li>Membekukan menang telak: usulan 0.235 → 0.731; mengalahkan ProtoNet, x-vector, Whisper-saja
+        secara signifikan; hanya tertinggal tipis dari ECAPA closed-set (0.788).</li>
+    <li>Forgetting hampir nol (0.0004) vs ECAPA 0.053, ProtoNet 0.121 — keunggulan kerangka continual.</li>
+    <li>Continual update terbukti membantu: B2 (0.731) &gt; B1 (0.666), p=0.0037.</li>
+  </ol>
+
+  <div class="callout warn"><strong>Keterbatasan (harus disebut jujur).</strong> Karena gate condong ke ECAPA
+    (~0.98) dan fusi dibekukan, <strong>A3 ≈ A1</strong> (identik, p=1.0) — kontribusi <em>fusi Whisper</em>
+    belum terbukti pada skala ini. Nilai yang terbukti adalah kerangka open-set + continual. Membuktikan
+    fusi menambah nilai butuh base training skala penuh (VoxCeleb2 penuh) → kerja lanjutan (Experiment 2+).</div>
+
+  <h2>11. Skema Feature-Flag (Penandaan Eksperimen)</h2>
+  <p>Semua konfigurasi terdaftar di <code>src/experiments.py</code>. Yang aktif dipilih oleh
+     <code>ACTIVE_EXPERIMENT</code> (bisa override via env var). Pipeline membaca dari <code>active()</code>.</p>
+  <table>
+    <tr><th>Tag</th><th>residual_init</th><th>episodes</th><th>continual</th><th>Akurasi usulan</th></tr>
+    <tr><td>baseline_v0</td><td>False</td><td>500</td><td>running_average</td><td>0.235</td></tr>
+    <tr><td><strong>exp1_frozen_residual</strong> (aktif)</td><td>True</td><td>0</td><td>running_average</td><td><strong>0.731</strong></td></tr>
+  </table>
+  <pre><code># Experiment 1 (default)
+.venv\Scripts\python.exe scripts\run_full_evaluation.py
+
+# Konfigurasi lain tanpa mengubah kode
+$env:ACTIVE_EXPERIMENT = "baseline_v0"
+.venv\Scripts\python.exe scripts\run_full_evaluation.py</code></pre>
+  <p><strong>Menambah Experiment 2, 3, …:</strong> tambahkan satu <code>ExperimentConfig</code> ke
+     <code>EXPERIMENTS</code>, arahkan <code>ACTIVE_EXPERIMENT</code> ke tag baru. Tidak ada bagian lain yang perlu diubah.</p>
+
+  <h2>12. Reproduksi Cepat</h2>
+  <table>
+    <tr><th>Langkah</th><th>Perintah</th></tr>
+    <tr><td>Evaluasi penuh</td><td><code>python scripts\run_full_evaluation.py</code></td></tr>
+    <tr><td>Regenerasi laporan</td><td><code>python scripts\generate_report.py</code></td></tr>
+    <tr><td>Diagnostik error</td><td><code>python scripts\diagnose_accuracy_gap.py</code></td></tr>
+    <tr><td>Sweep training</td><td><code>python scripts\sweep_training.py</code></td></tr>
+  </table>
+  <p class="muted">Artefak: <code>experiments/full_evaluation_summary.json</code>,
+     <code>experiments/F8_F11_results_report.md</code>,
+     <code>experiments/checkpoints/fusion_A3_full_eval.ckpt</code>.</p>
+
+  <p class="muted" style="margin-top:2.5em;border-top:1px solid var(--line);padding-top:1em">
+     Dokumentasi Experiment 1 · file terkait: <code>src/experiments.py</code>,
+     <a href="experiment-1.md">experiment-1.md</a>, <a href="README.md">README.md</a>.</p>
+
+</div>
+</body>
+</html>

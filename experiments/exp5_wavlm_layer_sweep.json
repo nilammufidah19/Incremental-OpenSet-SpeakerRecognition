@@ -1,0 +1,99 @@
+{
+  "protocol": {
+    "n_speakers": 100,
+    "k_shot": 1,
+    "n_query": 4,
+    "seed": 0,
+    "cohort_size": 300,
+    "top_k": 200,
+    "model": "microsoft/wavlm-base-plus",
+    "source": "validation half snapshot (identical to exp4 script, seed 0)"
+  },
+  "results": [
+    {
+      "layer": 0,
+      "layer_fraction": 0.0,
+      "acc_raw": 0.14,
+      "acc_asnorm": 0.1575
+    },
+    {
+      "layer": 1,
+      "layer_fraction": 0.08333333333333333,
+      "acc_raw": 0.195,
+      "acc_asnorm": 0.205
+    },
+    {
+      "layer": 2,
+      "layer_fraction": 0.16666666666666666,
+      "acc_raw": 0.21,
+      "acc_asnorm": 0.215
+    },
+    {
+      "layer": 3,
+      "layer_fraction": 0.25,
+      "acc_raw": 0.2375,
+      "acc_asnorm": 0.245
+    },
+    {
+      "layer": 4,
+      "layer_fraction": 0.3333333333333333,
+      "acc_raw": 0.2525,
+      "acc_asnorm": 0.2675
+    },
+    {
+      "layer": 5,
+      "layer_fraction": 0.4166666666666667,
+      "acc_raw": 0.2625,
+      "acc_asnorm": 0.2925
+    },
+    {
+      "layer": 6,
+      "layer_fraction": 0.5,
+      "acc_raw": 0.23,
+      "acc_asnorm": 0.26
+    },
+    {
+      "layer": 7,
+      "layer_fraction": 0.5833333333333334,
+      "acc_raw": 0.2075,
+      "acc_asnorm": 0.245
+    },
+    {
+      "layer": 8,
+      "layer_fraction": 0.6666666666666666,
+      "acc_raw": 0.1825,
+      "acc_asnorm": 0.205
+    },
+    {
+      "layer": 9,
+      "layer_fraction": 0.75,
+      "acc_raw": 0.16,
+      "acc_asnorm": 0.1975
+    },
+    {
+      "layer": 10,
+      "layer_fraction": 0.8333333333333334,
+      "acc_raw": 0.16,
+      "acc_asnorm": 0.1975
+    },
+    {
+      "layer": 11,
+      "layer_fraction": 0.9166666666666666,
+      "acc_raw": 0.145,
+      "acc_asnorm": 0.17
+    },
+    {
+      "layer": 12,
+      "layer_fraction": 1.0,
+      "acc_raw": 0.1275,
+      "acc_asnorm": 0.1625
+    }
+  ],
+  "best": {
+    "layer": 5,
+    "layer_fraction": 0.4166666666666667,
+    "acc_raw": 0.2625,
+    "acc_asnorm": 0.2925
+  },
+  "elapsed_minutes": 2.3947395205497743
+}

@@ -1,0 +1,36 @@
+validation half: 110 speakers, usable 108; task 100, leftover (4c unknowns) 8; detection half untouched: 111
+4c unknown queries: 40 utterances (leftover validation-half speakers only; detection half stays pristine)
+
+=== variant: ecapa + whisper_l4 ===
+  seed 0: raw  acc_e=0.8125 acc_w=0.2200 oracle=0.8475 (+0.0350)
+          asnorm acc_e=0.8425 acc_w=0.2400 oracle=0.8700 (+0.0275)
+  seed 1: raw  acc_e=0.8100 acc_w=0.2175 oracle=0.8250 (+0.0150)
+          asnorm acc_e=0.8400 acc_w=0.2375 oracle=0.8650 (+0.0250)
+  seed 2: raw  acc_e=0.8125 acc_w=0.2125 oracle=0.8250 (+0.0125)
+          asnorm acc_e=0.8425 acc_w=0.2500 oracle=0.8575 (+0.0150)
+
+  [whisper_l4] ceiling raw   : +0.0208 ± 0.0101
+  [whisper_l4] ceiling asnorm: +0.0225 ± 0.0054 -> G4.1 OPEN (headroom exists)
+  [whisper_l4] best asnorm fusion: w=0.95 acc=0.8408 vs ecapa-alone 0.8417
+  [whisper_l4] 4c det b_only    : EER 0.2842 (ecapa-only 0.1654), AUROC 0.7853
+  [whisper_l4] 4c det mean      : EER 0.1508 (ecapa-only 0.1654), AUROC 0.9244
+  [whisper_l4] 4c det max       : EER 0.2675 (ecapa-only 0.1654), AUROC 0.8001
+  [whisper_l4] 4c det a_disagree: EER 0.1775 (ecapa-only 0.1654), AUROC 0.9068
+
+=== variant: ecapa + whisper ===
+  seed 0: raw  acc_e=0.8125 acc_w=0.2500 oracle=0.8350 (+0.0225)
+          asnorm acc_e=0.8375 acc_w=0.2550 oracle=0.8550 (+0.0175)
+  seed 1: raw  acc_e=0.8100 acc_w=0.2175 oracle=0.8150 (+0.0050)
+          asnorm acc_e=0.8325 acc_w=0.2175 oracle=0.8475 (+0.0150)
+  seed 2: raw  acc_e=0.8125 acc_w=0.2225 oracle=0.8225 (+0.0100)
+          asnorm acc_e=0.8350 acc_w=0.2225 oracle=0.8425 (+0.0075)
+
+  [whisper] ceiling raw   : +0.0125 ± 0.0074
+  [whisper] ceiling asnorm: +0.0133 ± 0.0042 -> G4.1 CLOSED (fusion not viable)
+  [whisper] best asnorm fusion: w=0.95 acc=0.8325 vs ecapa-alone 0.8350
+  [whisper] 4c det b_only    : EER 0.3237 (ecapa-only 0.1787), AUROC 0.7671
+  [whisper] 4c det mean      : EER 0.1579 (ecapa-only 0.1787), AUROC 0.9161
+  [whisper] 4c det max       : EER 0.3067 (ecapa-only 0.1787), AUROC 0.7891
+  [whisper] 4c det a_disagree: EER 0.1792 (ecapa-only 0.1787), AUROC 0.9018
+
+saved C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\experiments\exp4_ceiling_asnorm.json (0.2 min)

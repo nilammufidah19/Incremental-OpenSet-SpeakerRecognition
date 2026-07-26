@@ -1,0 +1,27 @@
+tag=exp5b_redimnet_fusion: 5 reps, n_bootstrap=1000
+
+proposed_A3_running_average vs A1_ecapa_only:
+  per-rep signifikan: 4/5  mean dEER=-0.0355
+  pooled dEER=-0.0359 CI95=[-0.0474, -0.0249] -> SIGNIFIKAN
+
+proposed_A3_running_average vs A2_whisper_only:
+  per-rep signifikan: 0/5  mean dEER=+0.0011
+  pooled dEER=+0.0012 CI95=[-0.0084, +0.0115] -> tidak signifikan
+
+B1_static vs proposed_A3_running_average:
+  per-rep signifikan: 5/5  mean dEER=+0.1011
+  pooled dEER=+0.1009 CI95=[+0.0882, +0.1138] -> SIGNIFIKAN
+
+proposed_A3_running_average vs ECAPA_standard_baseline:
+  per-rep signifikan: 5/5  mean dEER=-0.2000
+  pooled dEER=-0.2008 CI95=[-0.2143, -0.1875] -> SIGNIFIKAN
+
+proposed_A3_running_average vs ProtoNet_vanilla_baseline:
+  per-rep signifikan: 5/5  mean dEER=-0.3831
+  pooled dEER=-0.3832 CI95=[-0.3975, -0.3680] -> SIGNIFIKAN
+
+proposed_A3_running_average vs xvector_PLDA_baseline:
+  per-rep signifikan: 5/5  mean dEER=-0.3795
+  pooled dEER=-0.3802 CI95=[-0.3953, -0.3645] -> SIGNIFIKAN
+
+saved C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\experiments\exp5_bootstrap_eer_exp5b_redimnet_fusion.json (10.3 min)

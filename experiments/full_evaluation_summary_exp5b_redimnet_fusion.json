@@ -1,0 +1,226 @@
+{
+  "experiment_id": "exp5b_redimnet_fusion",
+  "experiment_title": "Experiment 5b -- ECAPA + ReDimNet dual-space AS-Norm score fusion",
+  "residual_init": true,
+  "continual_mode": "running_average",
+  "summary": {
+    "proposed_A3_running_average": {
+      "mean_accuracy": 0.9078222222222221,
+      "std_accuracy": 0.01879921196141932,
+      "mean_forgetting": 0.002222222222222222,
+      "accs": [
+        0.9262222222222223,
+        0.8899999999999999,
+        0.8993333333333334,
+        0.9342222222222223,
+        0.8893333333333334
+      ],
+      "mean_closed_set_accuracy": 0.9078222222222221,
+      "std_closed_set_accuracy": 0.01879921196141932,
+      "closed_accs": [
+        0.9262222222222223,
+        0.8899999999999999,
+        0.8993333333333334,
+        0.9342222222222223,
+        0.8893333333333334
+      ],
+      "mean_detection_eer": 0.0749342481417953,
+      "mean_detection_auroc": 0.9718871736230227,
+      "mean_detection_tar_at_far1": 0.7478787878787878
+    },
+    "B1_static": {
+      "mean_accuracy": 0.8690222222222221,
+      "std_accuracy": 0.007021096956255188,
+      "mean_forgetting": 0.029580246913580237,
+      "accs": [
+        0.8597777777777779,
+        0.8640000000000001,
+        0.8728888888888889,
+        0.8800000000000001,
+        0.8684444444444445
+      ],
+      "mean_closed_set_accuracy": 0.8690222222222221,
+      "std_closed_set_accuracy": 0.007021096956255188,
+      "closed_accs": [
+        0.8597777777777779,
+        0.8640000000000001,
+        0.8728888888888889,
+        0.8800000000000001,
+        0.8684444444444445
+      ],
+      "mean_detection_eer": 0.17558795502191732,
+      "mean_detection_auroc": 0.8999565465980559,
+      "mean_detection_tar_at_far1": 0.4319191919191919
+    },
+    "A1_ecapa_only": {
+      "mean_accuracy": 0.8659555555555556,
+      "std_accuracy": 0.007863527308300932,
+      "mean_forgetting": 0.0022222222222222244,
+      "accs": [
+        0.8675555555555554,
+        0.8640000000000001,
+        0.8546666666666667,
+        0.8791111111111111,
+        0.8644444444444446
+      ],
+      "mean_closed_set_accuracy": 0.8659555555555556,
+      "std_closed_set_accuracy": 0.007863527308300932,
+      "closed_accs": [
+        0.8675555555555554,
+        0.8640000000000001,
+        0.8546666666666667,
+        0.8791111111111111,
+        0.8644444444444446
+      ],
+      "mean_detection_eer": 0.11100057175528874,
+      "mean_detection_auroc": 0.9524589289117591,
+      "mean_detection_tar_at_far1": 0.5935353535353535
+    },
+    "A2_whisper_only": {
+      "mean_accuracy": 0.9019555555555556,
+      "std_accuracy": 0.015989749803090533,
+      "mean_forgetting": 0.0004444444444444449,
+      "accs": [
+        0.9242222222222223,
+        0.8799999999999999,
+        0.8951111111111111,
+        0.916,
+        0.8944444444444445
+      ],
+      "mean_closed_set_accuracy": 0.9019555555555556,
+      "std_closed_set_accuracy": 0.015989749803090533,
+      "closed_accs": [
+        0.9242222222222223,
+        0.8799999999999999,
+        0.8951111111111111,
+        0.916,
+        0.8944444444444445
+      ],
+      "mean_detection_eer": 0.0745302077377549,
+      "mean_detection_auroc": 0.9713177053554413,
+      "mean_detection_tar_at_far1": 0.7664646464646464
+    },
+    "ECAPA_standard_baseline": {
+      "mean_accuracy": 0.7876,
+      "std_accuracy": 0.01690315187205852,
+      "mean_forgetting": 0.05298765432098764,
+      "accs": [
+        0.7831111111111111,
+        0.7993333333333333,
+        0.8044444444444444,
+        0.7942222222222222,
+        0.7568888888888889
+      ],
+      "mean_closed_set_accuracy": 0.7876,
+      "std_closed_set_accuracy": 0.01690315187205852,
+      "closed_accs": [
+        0.7831111111111111,
+        0.7993333333333333,
+        0.8044444444444444,
+        0.7942222222222222,
+        0.7568888888888889
+      ],
+      "mean_detection_eer": 0.2770364017533829,
+      "mean_detection_auroc": 0.8023091290261102,
+      "mean_detection_tar_at_far1": 0.31272727272727274
+    },
+    "ProtoNet_vanilla_baseline": {
+      "mean_accuracy": 0.4018222222222222,
+      "std_accuracy": 0.009749859131619298,
+      "mean_forgetting": 0.12439506172839507,
+      "accs": [
+        0.3833333333333333,
+        0.40666666666666673,
+        0.41200000000000003,
+        0.404,
+        0.4031111111111111
+      ],
+      "mean_closed_set_accuracy": 0.4018222222222222,
+      "std_closed_set_accuracy": 0.009749859131619298,
+      "closed_accs": [
+        0.3833333333333333,
+        0.40666666666666673,
+        0.41200000000000003,
+        0.404,
+        0.4031111111111111
+      ],
+      "mean_detection_eer": 0.4573527730131504,
+      "mean_detection_auroc": 0.5656298837430913,
+      "mean_detection_tar_at_far1": 0.05252525252525253
+    },
+    "xvector_PLDA_baseline": {
+      "mean_accuracy": 0.2637333333333334,
+      "std_accuracy": 0.014110953629917367,
+      "mean_forgetting": 0.11990123456790122,
+      "accs": [
+        0.26511111111111113,
+        0.25022222222222223,
+        0.27088888888888885,
+        0.24688888888888894,
+        0.2855555555555555
+      ],
+      "mean_closed_set_accuracy": 0.2637333333333334,
+      "std_closed_set_accuracy": 0.014110953629917367,
+      "closed_accs": [
+        0.26511111111111113,
+        0.25022222222222223,
+        0.27088888888888885,
+        0.24688888888888894,
+        0.2855555555555555
+      ],
+      "mean_detection_eer": 0.4554392986468458,
+      "mean_detection_auroc": 0.5585446922050695,
+      "mean_detection_tar_at_far1": 0.04363636363636364
+    }
+  },
+  "statistics": {
+    "proposed_A3_running_average_vs_A1_ecapa_only": {
+      "test_used": "paired_t_test",
+      "p_value": 0.004116996248238153,
+      "significant": true
+    },
+    "proposed_A3_running_average_vs_A2_whisper_only": {
+      "test_used": "paired_t_test",
+      "p_value": 0.20918778065503418,
+      "significant": false
+    },
+    "B1_static_vs_proposed_A3_running_average": {
+      "test_used": "paired_t_test",
+      "p_value": 0.012791007418907246,
+      "significant": false
+    },
+    "proposed_A3_running_average_vs_ECAPA_standard_baseline": {
+      "test_used": "paired_t_test",
+      "p_value": 0.00045071466965701,
+      "significant": true
+    },
+    "proposed_A3_running_average_vs_ProtoNet_vanilla_baseline": {
+      "test_used": "paired_t_test",
+      "p_value": 2.3346551793081675e-06,
+      "significant": true
+    },
+    "proposed_A3_running_average_vs_xvector_PLDA_baseline": {
+      "test_used": "paired_t_test",
+      "p_value": 1.4236775365320617e-06,
+      "significant": true
+    }
+  },
+  "calibration_threshold": -1.576642983885192,
+  "calibration_eer": 0.20864124906552936,
+  "n_reps": 5,
+  "n_train_episodes": 0,
+  "n_task_speakers_available": 99,
+  "n_sessions_available": 10,
+  "calibration_strategy": "target_frr",
+  "target_frr": 0.05,
+  "calibration_far_at_threshold": 0.6971751412429379,
+  "calibration_frr_at_threshold": 0.0509761388286334,
+  "per_config_calibration": true,
+  "calibration_threshold_a1": -1.5231543768504205,
+  "calibration_threshold_a2": -1.6530498769186652,
+  "score_norm": "asnorm",
+  "asnorm_cohort_size": 300,
+  "asnorm_top_k": 200,
+  "n_unknown_queries": 530,
+  "elapsed_minutes": 5.889477097988129
+}
