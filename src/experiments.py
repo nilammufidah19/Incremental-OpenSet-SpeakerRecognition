@@ -165,11 +165,15 @@ EXPERIMENTS: dict[str, ExperimentConfig] = {
         continual_mode="running_average",
         calibration_strategy="target_frr",
         # LOCKED on the validation task (scripts/exp3_validation_sweep.py,
-        # experiments/exp3_validation_sweep.json): among no-normalization
-        # candidates, target_frr=0.01 gave val acc 0.7550 vs 0.7492 @EER.
-        target_frr=0.01,
+        # experiments/exp3_validation_sweep.json), re-run 2026-07-26 after the
+        # code-review AS-Norm-cohort-leakage and whisper-pooling fixes: among
+        # no-normalization candidates, target_frr=0.15 gave val acc 0.7158 vs
+        # 0.7125 @EER (0.01/0.05/0.1 all scored lower: 0.6950/0.7000/0.6967).
+        target_frr=0.15,
         per_config_calibration=True,
         report_open_set_detection=True,
+        n_reps=10,  # bumped from 5 to proposal's target 2026-08-02: several
+                    # borderline p-values warranted more statistical power
     ),
     "exp3b_asnorm": ExperimentConfig(
         id="exp3b_asnorm",
@@ -185,15 +189,19 @@ EXPERIMENTS: dict[str, ExperimentConfig] = {
         n_train_episodes=0,
         continual_mode="running_average",
         calibration_strategy="target_frr",
-        # LOCKED on the validation task (experiments/exp3_validation_sweep.json):
-        # asnorm cohort=300/top_k=200 + target_frr=0.05 was the overall best
-        # (val acc 0.8867; top_k 50/100 gave 0.8767/0.8758; EER point 0.8842).
-        target_frr=0.05,
+        # LOCKED on the validation task (experiments/exp3_validation_sweep.json),
+        # re-run 2026-07-26 after the code-review AS-Norm-cohort-leakage and
+        # whisper-pooling fixes: asnorm cohort=300/top_k=200 + target_frr=0.01
+        # was the overall best (val acc 0.8475; frr=0.05 close behind at
+        # 0.8467; top_k 50/100 gave 0.8342/0.8433 @EER).
+        target_frr=0.01,
         per_config_calibration=True,
         score_norm="asnorm",
         asnorm_cohort_size=300,
         asnorm_top_k=200,
         report_open_set_detection=True,
+        n_reps=10,  # bumped from 5 to proposal's target 2026-08-02: several
+                    # borderline p-values warranted more statistical power
     ),
     "exp3c_dualmetric": ExperimentConfig(
         id="exp3c_dualmetric",
@@ -211,12 +219,14 @@ EXPERIMENTS: dict[str, ExperimentConfig] = {
         n_train_episodes=0,
         continual_mode="running_average",
         calibration_strategy="target_frr",
-        target_frr=0.05,  # = exp3b (validation-best)
+        target_frr=0.01,  # = exp3b (validation-best, re-locked 2026-07-26)
         per_config_calibration=True,
-        score_norm="asnorm",  # validation: asnorm (0.8867) > none (0.7550)
+        score_norm="asnorm",  # validation: asnorm (0.8475) > none (0.7158)
         asnorm_cohort_size=300,
         asnorm_top_k=200,
         report_open_set_detection=True,
+        n_reps=10,  # bumped from 5 to proposal's target 2026-08-02: several
+                    # borderline p-values warranted more statistical power
     ),
     # --------------------------------------------------------------------- #
     # Experiment 5 (docs/experiment-5.md): replace Whisper with a strong,    #
@@ -232,36 +242,40 @@ EXPERIMENTS: dict[str, ExperimentConfig] = {
     # Fusion: dual-space concat embedder + DualASNorm z-score fusion         #
     # (w*z_ecapa + (1-w)*z_redimnet); per-arm normalizer weight makes        #
     # A1 (w=1) / A2 (w=0) / A3 (w) share one embedder. score_fusion_weight  #
-    # LOCKED on the validation FSCIL sweep (exp5_validation_sweep.json):    #
-    # w=0.3 = best genuine-fusion weight (val 0.9183 vs ECAPA-only 0.8875,  #
-    # 3/3 seeds; statistically tied with ReDimNet-only 0.9200 -- the A2 arm #
-    # of the official run keeps that comparison transparent).               #
+    # LOCKED on the validation FSCIL sweep (exp5_validation_sweep.json),    #
+    # re-run 2026-07-26 after the code-review AS-Norm-cohort-leakage fix    #
+    # (and exp3b's target_frr re-lock 0.05->0.01, which this sweep now      #
+    # calibrates against): w=0.5 = best genuine-fusion weight (val 0.9092   #
+    # vs ECAPA-only 0.8525, 3/3 seeds; w=0.3 was second-best at 0.9058).    #
+    # Gate G5.3 (fusion > ECAPA-only consistently) still PASSES.            #
     # --------------------------------------------------------------------- #
     "exp5b_redimnet_fusion": ExperimentConfig(
         id="exp5b_redimnet_fusion",
         title="Experiment 5b -- ECAPA + ReDimNet dual-space AS-Norm score fusion",
         description=(
             "Whisper replaced by frozen ReDimNet-b2 (ft_lm, vox2; Interspeech "
-            "2024) as the second backbone. Score = 0.3*z_ecapa + 0.7*z_redimnet "
+            "2024) as the second backbone. Score = 0.5*z_ecapa + 0.5*z_redimnet "
             "with per-space AS-Norm (c300/k200) over a shared base_train cohort, "
-            "target-FRR 5% threshold, per-config calibration, running-average "
-            "continual updates. Training-free, strict 1-shot, all exp3 "
-            "protocol discipline retained."
+            "target-FRR 1% threshold (exp3b's re-locked operating point), "
+            "per-config calibration, running-average continual updates. "
+            "Training-free, strict 1-shot, all exp3 protocol discipline retained."
         ),
         residual_init=True,
         n_train_episodes=0,
         continual_mode="running_average",
         fusion_strategy="score_norm",
-        score_fusion_weight=0.3,
+        score_fusion_weight=0.5,
         whisper_backbone="redimnet_b2",
         calibration_strategy="target_frr",
-        target_frr=0.05,
+        target_frr=0.01,
         per_config_calibration=True,
         score_norm="asnorm",
         asnorm_cohort_size=300,
         asnorm_top_k=200,
         report_open_set_detection=True,
         dump_detection_scores=True,
+        n_reps=10,  # bumped from 5 to proposal's target 2026-08-02: several
+                    # borderline p-values warranted more statistical power
     ),
 }
 
