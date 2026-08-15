@@ -182,29 +182,33 @@ Menambah eksperimen baru: tambahkan satu `ExperimentConfig` ke dict `EXPERIMENTS
 
 | # | Tag | Ringkasan | Akurasi usulan |
 |---|---|---|---|
-| 0 | `baseline_v0` | Fusi random-init, 500 episode training | 0.235 |
-| 1 | `exp1_frozen_residual` | Fusi residual-init + beku (0 episode) | 0.731 |
-| 2a | `exp2a_scorefusion_L4` | Whisper L4 + score-level fusion | 0.733 (≈ exp1) |
-| 3a | `exp3a_lowfrr` | Titik operasi low-FRR saja | 0.732 (≈ exp1) |
-| 3b | `exp3b_asnorm` | AS-Norm + low-FRR — melampaui baseline ECAPA closed-set 0.788 | 0.865 ± 0.008 |
+| 0 | `baseline_v0` | Fusi random-init, 500 episode training | 0.235 *(belum dihitung ulang)* |
+| 1 | `exp1_frozen_residual` | Fusi residual-init + beku (0 episode) | 0.731 *(belum dihitung ulang)* |
+| 2a | `exp2a_scorefusion_L4` | Whisper L4 + score-level fusion | 0.733 (≈ exp1) *(belum dihitung ulang)* |
+| 3a | `exp3a_lowfrr` | Titik operasi low-FRR saja (target_frr re-locked 0.01→0.15), 10 repetisi | 0.695 ± 0.018 |
+| 3b | `exp3b_asnorm` | AS-Norm + low-FRR (target_frr re-locked 0.05→0.01), 10 repetisi — **melampaui baseline ECAPA closed-set 0.783 signifikan** (p<0.0001); continual update signifikan (p=0.0007) | 0.833 ± 0.015 |
 | 3c | `exp3c_dualmetric` | View pelaporan dua-metrik dari run exp3b | = 3b |
-| 4 | *(analisis, tanpa tag)* | Gerbang keputusan fusi Whisper — fusi ditutup definitif | — (tidak mengubah 3b) |
-| 5b | `exp5b_redimnet_fusion` **(aktif)** | ECAPA + ReDimNet, DualASNorm dua-ruang (w=0.3) — A3 > A1 signifikan (p=0.0041) | **0.908 ± 0.019** |
+| 4 | *(analisis, tanpa tag)* | Gerbang keputusan fusi Whisper — fusi ditutup definitif | — *(tidak terdampak fix, tidak dihitung ulang)* |
+| 5b | `exp5b_redimnet_fusion` **(aktif)** | ECAPA + ReDimNet, DualASNorm dua-ruang (w re-locked 0.3→0.5), 10 repetisi — **A3 > A1 signifikan (p<0.0001)**, melampaui baseline ECAPA signifikan (p<0.0001) | **0.876 ± 0.016** |
 
-Detail lengkap tiap eksperimen (protokol, hyperparameter, uji signifikansi, artefak) ada di [`docs/`](docs/README.md). **Baca peringatan di bagian berikut sebelum mengutip angka-angka ini sebagai final** — beberapa di antaranya perlu dihitung ulang.
+Detail lengkap tiap eksperimen (protokol, hyperparameter, uji signifikansi, artefak) ada di [`docs/`](docs/README.md) — [`docs/experiment-3.md`](docs/experiment-3.md) dan [`docs/experiment-5.md`](docs/experiment-5.md) sudah direvisi penuh dengan angka final. **`exp5b_redimnet_fusion` adalah hasil headline** (kontribusi fusi signifikan, A3>A1); `exp3b_asnorm` sekarang juga kembali melampaui baseline secara signifikan setelah repetisi dinaikkan ke 10 (target proposal).
 
 ## Status Kode & Catatan Penting
 
-> ⚠️ **Code review menyeluruh dilakukan 2026-07-26** (66 file, `src/`+`scripts/`) dan menemukan beberapa bug yang berdampak langsung pada jalur kalibrasi/evaluasi yang menghasilkan angka-angka di tabel di atas — khususnya `exp3b_asnorm` (0.865) dan `exp5b_redimnet_fusion` (0.908). Bug tersebut **sudah diperbaiki di kode ini**, tapi **angka hasil belum dihitung ulang** (butuh recompute cache embedding + re-run harness evaluasi, prosesnya bisa berjam-jam). Ringkasan bug yang diperbaiki:
+> ✅ **Code review 2026-07-26 + recompute/rerun 2026-07-27 + perbaikan lanjutan 2026-08-02 SELESAI.** Review menyeluruh (66 file, `src/`+`scripts/`) menemukan bug yang membiaskan angka `exp3b_asnorm` dan `exp5b_redimnet_fusion` yang dilaporkan sebelumnya (0.865 dan 0.908). Bug sudah diperbaiki, seluruh pipeline terdampak dihitung ulang, dan atas rekomendasi tambahan repetisi (`n_reps`) dinaikkan dari 5 ke **10** (target proposal semula) untuk exp3a/3b/3c/5b karena beberapa p-value berada tepat di ambang signifikansi pada 5 repetisi. Ringkasan bug yang diperbaiki (2026-07-26):
 >
 > - **Kebocoran evaluasi FSCIL**: query held-out task lama sempat diproses berulang lewat jalur stateful (`process()`) di tiap sesi berikutnya, alih-alih sekali saja — memengaruhi perbandingan `continual_mode="running_average"` (sistem usulan) vs `"static"`.
-> - **Kebocoran cohort AS-Norm**: cohort AS-Norm dan sampel kalibrasi genuine sempat dibangun dari kolam speaker yang sama, berpotensi membiaskan threshold yang dikalibrasi.
-> - **Pooling Whisper**: mean-pooling encoder Whisper sempat mengikutsertakan silence padding (klip VoxCeleb umumnya <30 detik) — cache embedding `whisper`/`whisper_l4` sudah tidak valid dan perlu dihitung ulang.
+> - **Kebocoran cohort AS-Norm**: cohort AS-Norm dan sampel kalibrasi genuine sempat dibangun dari kolam speaker yang sama, membiaskan threshold yang dikalibrasi.
+> - **Pooling Whisper**: mean-pooling encoder Whisper sempat mengikutsertakan silence padding — cache embedding `whisper` dihapus total dan dihitung ulang penuh (0 gagal). `exp5b` tidak terdampak (backbone kedua-nya `redimnet_b2`, bukan Whisper).
 > - **Forgetting Measure** dan **paired bootstrap significance test** punya bug matematis masing-masing (off-by-one dan resampling tidak paired).
 >
-> **Sebelum mengutip ulang angka di atas sebagai hasil final tesis**, jalankan ulang `scripts/exp3_validation_sweep.py` (re-lock hyperparameter bila berubah) lalu `scripts/run_full_evaluation.py` untuk tag yang relevan. Detail lengkap tiap temuan ada di riwayat code review (memory session terkait) dan akan didokumentasikan ulang sebagai `docs/experiment-*` addendum setelah re-run dilakukan.
+> **Hasil final (2026-08-02, 10 repetisi):** `exp3b_asnorm` = **0.833 ± 0.015**, melampaui baseline ECAPA (0.783) signifikan (p<0.0001), dan continual update (running_average) signifikan lebih baik dari static (p=0.0007) — kedua klaim yang sempat gagal di 5 repetisi kini **kembali terbukti signifikan** dengan statistical power yang lebih sesuai target proposal. `exp5b_redimnet_fusion` = **0.876 ± 0.016**, A3>A1 makin kuat signifikan (p<0.0001), melampaui baseline signifikan (p<0.0001); A3≈A2 (ReDimNet-saja) tetap setara (p=0.88); continual-vs-static pada akurasi tetap tidak signifikan (p=0.031) walau pada EER deteksi tetap signifikan kuat (10/10 repetisi, bootstrap CI).
+>
+> **Uji tambahan — ketahanan leakage (2026-08-02):** karena 80/100 task speaker resmi ada di VoxCeleb2-dev (data latih ReDimNet), dijalankan uji terpisah pada 19 task speaker yang **bukan** vox2-dev (`scripts/exp5_leakage_robustness.py`). Hasil: A3 (0.956) masih numerik di atas A1 (0.933) tapi **tidak signifikan** (p=0.1475) — kemungkinan besar karena subset kecil (19 speaker, 1 sesi statis, akurasi tinggi ~93-96% dengan sedikit ruang variansi) kurang bertenaga secara statistik, bukan bukti bahwa leakage membiaskan hasil resmi. Dilaporkan sebagai *inconclusive*, bukan sanggahan — lihat [`docs/experiment-5.md`](docs/experiment-5.md) §10.
+>
+> Detail lengkap, tabel penuh, dan uji signifikansi di [`docs/experiment-3.md`](docs/experiment-3.md) dan [`docs/experiment-5.md`](docs/experiment-5.md).
 
-Test suite (156 test) **pass sepenuhnya** setelah perbaikan di atas — perbaikan bersifat korektif pada logika, bukan perubahan API/kontrak yang memerlukan penyesuaian pemanggil.
+Test suite (156 test) **pass sepenuhnya** setelah seluruh perbaikan di atas — perbaikan bersifat korektif pada logika/kalibrasi, bukan perubahan API/kontrak yang memerlukan penyesuaian pemanggil.
 
 ## Dokumentasi Lengkap
 

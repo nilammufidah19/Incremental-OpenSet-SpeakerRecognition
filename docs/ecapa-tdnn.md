@@ -202,7 +202,7 @@ implementasi: embedding = [√0,4·ê_ecapa ; √0,6·ê_whisper]   (ScoreFusion
 
 Proyeksi dibuang sama sekali: ECAPA dipakai di **ruang natif 192-d** (hanya L2-norm), dan kontribusinya diatur bobot skor tetap w=0,4. Trik implementasinya: konkatenasi berbobot dua vektor unit membuat jarak Euclidean kuadrat tepat sama dengan fusi skor berbobot — sehingga seluruh mesin prototype/threshold berjalan tanpa perubahan. Bagi ECAPA sendiri hasilnya netral (0.733 ≈ 0.731); nilai eksperimen ini ada pada diagnosis threshold (P4/P5) yang memicu Experiment 3.
 
-### 8.5 Experiment 3 (`exp3b_asnorm`) — jarak ECAPA dinormalisasi AS-Norm (0.865)
+### 8.5 Experiment 3 (`exp3b_asnorm`) — jarak ECAPA dinormalisasi AS-Norm (0.833)
 
 Arsitektur ECAPA-nya identik dengan Experiment 1 (residual, beku). Yang berubah adalah **perlakuan terhadap jarak**:
 
@@ -210,27 +210,27 @@ Arsitektur ECAPA-nya identik dengan Experiment 1 (residual, beku). Yang berubah 
 z(q,p) = ½[ (d(q,p) − μ_topK(q→cohort))/σ_topK(q→cohort) + (d(q,p) − μ_topK(p→cohort))/σ_topK(p→cohort) ]
 ```
 
-- **Cohort** = 300 utterance `base_train` (round-robin antar pembicara) yang di-embed lewat jalur ECAPA yang sama; top-K = 200.
-- Threshold dipindah ke titik operasi **target-FRR 5%** dan dikalibrasi **per-konfigurasi** (arm A1 ECAPA-saja mendapat cohort + threshold-nya sendiri — perbaikan bug P4 dari Experiment 2).
-- **Mengapa ini menaikkan ECAPA +0.13?** Pada 1-shot, sebagian prototype ECAPA menjadi "hub" — secara sistematis lebih dekat ke banyak query (bias per-kelas). Term sisi-prototype pada AS-Norm menormalkan bias itu, sehingga **argmin berubah** dan identifikasi (bukan hanya penolakan) membaik: 0.732 → 0.865.
+- **Cohort** = 300 utterance `base_train` (round-robin antar pembicara, speaker-disjoint dari sampel kalibrasi genuine sejak fix 2026-07-26) yang di-embed lewat jalur ECAPA yang sama; top-K = 200.
+- Threshold dipindah ke titik operasi **target-FRR 1%** (dikunci ulang 2026-07-27, sebelumnya 5%) dan dikalibrasi **per-konfigurasi** (arm A1 ECAPA-saja mendapat cohort + threshold-nya sendiri — perbaikan bug P4 dari Experiment 2).
+- **Mengapa ini menaikkan ECAPA +0.138?** Pada 1-shot, sebagian prototype ECAPA menjadi "hub" — secara sistematis lebih dekat ke banyak query (bias per-kelas). Term sisi-prototype pada AS-Norm menormalkan bias itu, sehingga **argmin berubah** dan identifikasi (bukan hanya penolakan) membaik: 0.695 → 0.833. *(Angka final 2026-08-02 setelah fix kebocoran cohort AS-Norm + kenaikan repetisi 5→10; lihat [experiment-3.md](experiment-3.md) §0/§0b — selisih terhadap baseline ECAPA closed-set 0.783 kini kembali signifikan secara statistik, p<0.0001.)*
 
 ### 8.6 Experiment 4 (analisis) — ruang ECAPA sebagai acuan pengukuran plafon
 
 Tanpa perubahan produksi. Dalam analisis, ECAPA dipakai di **ruang natif** (L2-norm 192-d, bukan proyeksi gated — karena proyeksi acak diketahui merusak ruang, pengukuran harus adil) dengan AS-Norm cohort-nya sendiri. Perannya menjadi *acuan*: plafon oracle ECAPA∪Whisper hanya +0.0225, dan setiap campuran skor Whisper terbukti menurunkan akurasi di bawah ECAPA-saja → fusi Whisper ditutup, kriteria backbone kedua dirumuskan.
 
-### 8.7 Experiment 5b (`exp5b_redimnet_fusion`) — ECAPA sebagai satu dari dua ruang skor (0.908)
+### 8.7 Experiment 5b (`exp5b_redimnet_fusion`) — ECAPA sebagai satu dari dua ruang skor (0.876)
 
 ```
 embedding  = [ ê_ecapa (192) ; ê_redimnet (192) ]        (concat bebas-parameter, 384-d)
-skor(q,p)  = 0,3 · z_ecapa(q,p) + 0,7 · z_redimnet(q,p)  (DualASNorm; tiap ruang di-AS-Norm sendiri,
+skor(q,p)  = 0,5 · z_ecapa(q,p) + 0,5 · z_redimnet(q,p)  (DualASNorm; tiap ruang di-AS-Norm sendiri,
                                                           cohort utterance yang sama, c300/k200)
 ```
 
 Peran final ECAPA:
-- **Paruh pertama** vektor concat; jaraknya dihitung dan di-z-normalisasi **di ruangnya sendiri** (`DualASNorm` memecah di dimensi 192), baru dijumlahkan berbobot dengan ruang ReDimNet. Bobot 0,3 dikunci lewat sweep validasi.
-- **Arm ablasi lewat bobot normalizer**: A1 (ECAPA-saja) = bobot 1,0; A2 = 0,0; A3 = 0,3 — satu embedder untuk semua arm, ablasi murni di normalizer.
+- **Paruh pertama** vektor concat; jaraknya dihitung dan di-z-normalisasi **di ruangnya sendiri** (`DualASNorm` memecah di dimensi 192), baru dijumlahkan berbobot dengan ruang ReDimNet. Bobot 0,5 dikunci lewat sweep validasi (dikunci ulang 2026-07-27, sebelumnya 0,3).
+- **Arm ablasi lewat bobot normalizer**: A1 (ECAPA-saja) = bobot 1,0; A2 = 0,0; A3 = 0,5 — satu embedder untuk semua arm, ablasi murni di normalizer.
 - **Continual update** (running average) bekerja pada vektor concat — rata-rata paruh ECAPA tetaplah rata-rata embedding ECAPA, jadi semantik prototype per-ruang terjaga.
-- **Kontribusinya terukur**: fusi menambah +0.042 di atas arm ECAPA-saja (0.866 → 0.908, p=0.0041) dan menurunkan EER deteksi −0.036 (bootstrap CI signifikan) — kontras arsitektur TDNN-1D (ECAPA) vs reshape-1D↔2D (ReDimNet) membuat pola error keduanya berbeda, dan di situlah nilai fusinya.
+- **Kontribusinya terukur**: fusi menambah +0.043 di atas arm ECAPA-saja (0.833 → 0.876, p<0.0001) dan menurunkan EER deteksi −0.031 (bootstrap CI signifikan, 10/10 repetisi) — kontras arsitektur TDNN-1D (ECAPA) vs reshape-1D↔2D (ReDimNet) membuat pola error keduanya berbeda, dan di situlah nilai fusinya. *(Angka final 2026-08-02 setelah fix kebocoran cohort AS-Norm + FSCIL + kenaikan repetisi 5→10; kesimpulan bertahan dan makin kuat — lihat [experiment-5.md](experiment-5.md) §0a/§0b/§9.)*
 
 ### 8.8 Peran pendukung: ECAPA di baseline
 
@@ -244,9 +244,11 @@ Peran final ECAPA:
 | 0 | proyeksi acak 192→256 | ya (500 ep) ❌ | — | 0.235 |
 | 1 | identitas residual (≈ natif), via gated beku | tidak | — | 0.731 |
 | 2a | natif (L2-norm), bobot skor 0,4 | tidak | — | 0.733 |
-| 3b | identitas residual (≈ natif) | tidak | AS-Norm 1-ruang | 0.865 |
+| 3b | identitas residual (≈ natif) | tidak | AS-Norm 1-ruang | 0.833 |
 | 4 | natif (analisis) | tidak | AS-Norm per-ruang (uji) | — |
-| 5b | natif, paruh concat, bobot z-score 0,3 | tidak | **DualASNorm dua-ruang** | **0.908** |
+| 5b | natif, paruh concat, bobot z-score 0,5 | tidak | **DualASNorm dua-ruang** | **0.876** |
+
+*(Baris 3b dan 5b melalui dua putaran revisi: 2026-07-27 setelah code review 2026-07-26 menemukan bug kebocoran cohort AS-Norm/FSCIL (angka interim 0.827/0.868), lalu 2026-08-02 setelah repetisi dinaikkan 5→10 ke target proposal (angka final 0.833/0.876 di atas). Angka versi 11–19 Juli 2026 (0.865/0.908) sudah tidak valid — lihat [experiment-3.md](experiment-3.md) §0/§0b dan [experiment-5.md](experiment-5.md) §0a/§0b.)*
 
 ## 9. Bacaan lanjutan
 

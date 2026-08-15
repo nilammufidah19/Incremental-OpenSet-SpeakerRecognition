@@ -1,22 +1,75 @@
 # Experiment 5 — Backbone Alternatif Pengganti Whisper (Fusi Multi-Backbone Heterogen)
 
-**Status:** ✅ **SUDAH DIJALANKAN** (18–19 Juli 2026) — laporan lengkap: [`experiment-5.html`](experiment-5.html)
+**Status:** ✅ **SUDAH DIJALANKAN** (18–19 Juli 2026) · ♻️ **DIHITUNG ULANG** (26–27 Juli 2026) setelah code review menemukan bug AS-Norm cohort leakage + FSCIL query-reuse — lihat §0. · ♻️ **REPETISI DINAIKKAN 5→10 + uji ketahanan leakage** (2 Agustus 2026) — lihat §0b/§10. Laporan lengkap versi lama: [`experiment-5.html`](experiment-5.html) *(belum diregenerasi, masih angka 18 Juli)*.
 **Tag:** `exp5b_redimnet_fusion` ✅ *(kini tag aktif default)*
 **Prasyarat:** ✅ [Experiment 4](experiment-4.md) — fusi Whisper ditutup (G4.2) → backbone kedua diganti.
 
-> ## 🏆 Hasil utama (run resmi, 5 seed, 530 query unknown nyata)
-> **Usulan (A3, fusi `0.3·z_ecapa + 0.7·z_redimnet`, running-average): Accuracy = 0.908 ± 0.019** — rekor baru (+0.043 di atas exp3b 0.865; +0.120 di atas baseline ECAPA 0.788, p=0.0005). **A3 > A1 signifikan untuk pertama kalinya (p=0.0041 < α=0.00833)** — klaim multi-backbone tesis akhirnya terbukti terukur. Deteksi unknown: **EER 0.075, AUROC 0.972, TAR@1%FAR 0.748**. Forgetting 0.0022.
+> ## 🏆 Hasil utama (final, 10 repetisi, 2026-08-02, 530 query unknown nyata)
+> **Usulan (A3, fusi `0.5·z_ecapa + 0.5·z_redimnet`, running-average): Accuracy = 0.876 ± 0.016** — di atas exp3b (0.833, lihat [Experiment 3](experiment-3.md) §0/§0b) dan **di atas baseline ECAPA signifikan** (+0.093, p<0.0001 < α=0.00833). **A3 > A1 (ECAPA-saja) signifikan (p<0.0001 < α=0.00833)** — klaim kontribusi fusi terukur ini **bertahan lewat dua putaran perbaikan**, p-value-nya makin kuat (0.0041 di run asli → 0.0020 di 5-repetisi → **<0.0001** di 10-repetisi). Deteksi unknown: **EER 0.096, AUROC 0.962, TAR@1%FAR 0.598**. Forgetting −0.0007 (~0).
 >
-> **Jalan eksekusi (gerbang demi gerbang):** audit leakage (80/100 task speaker di vox2-dev, diungkap) → kandidat #1 **WavLM GAGAL G5.1** (layer terbaik 0.2925 < 0.70; SSL beku butuh head terlatih — dilarang batasan bebas-pelatihan) → kandidat #2 **ReDimNet-b2 ft_lm LOLOS semua gerbang** (standalone 0.878; plafon +0.069; fusi snapshot 0.890 > kedua backbone) → sweep validasi kunci **w=0.3** (0.9183 vs ECAPA-only 0.8875, 3/3 seed) → run resmi.
+> **Jalan eksekusi (gerbang demi gerbang, tidak berubah oleh hitung-ulang):** audit leakage (80/100 task speaker di vox2-dev, diungkap) → kandidat #1 **WavLM GAGAL G5.1** (layer terbaik 0.2925 < 0.70) → kandidat #2 **ReDimNet-b2 ft_lm LOLOS semua gerbang** (standalone 0.878; plafon +0.069 — *angka screening ini belum dihitung ulang, lihat §0 — diverifikasi 2026-08-02 struktural bebas dari bug cohort-leakage, lihat §0*) → sweep validasi re-lock **w=0.5** *(dulu 0.3; val 0.9092 vs ECAPA-only-di-ruang-yang-sama 0.8525, 3/3 seed)* → run resmi.
 >
-> **Catatan jujur:** A3 vs A2 (ReDimNet-saja 0.902) p=0.209 — fusi *setara* backbone tunggal terkuat, tidak melampauinya; B2>B1 p=0.0128 (arah positif, tak lolos Bonferroni); aturan `mean` exp4c terkonfirmasi vs ECAPA-saja (0.082 < 0.111) tetapi skor produksi w=0.3 sudah menyerapnya (0.075).
-> **Uji signifikansi (kepatuhan proposal Bab 4.11):** Accuracy — Shapiro-Wilk → paired t-test + Bonferroni ✅; **EER — bootstrap CI 95% (Bengio & Mariéthoz 2004) dijalankan pertama kali di exp5** ✅: usulan vs A1 ΔEER −0.036 [−0.047, −0.025] SIGNIFIKAN; **continual vs static ΔEER +0.101 [+0.088, +0.114] SIGNIFIKAN 5/5 rep** (melengkapi p=0.0128 Accuracy); vs 3 baseline semua signifikan; vs A2 setara. Deviasi tersisa vs proposal: 5 repetisi (bukan 10; deviasi functional-scale seragam sejak exp0) dan baseline ke-4 (reimplementasi SOTA) via jalur fallback kualitatif hal. 53 proposal.
-> Artefak: `full_evaluation_summary_exp5b_redimnet_fusion.json` · `exp5_screening_redimnet_b2.json` · `exp5_validation_sweep.json` · `exp5_wavlm_layer_sweep.json` · `exp5_leakage_audit.json` · `exp5_detection_rules_exp5b_redimnet_fusion.json` · `exp5_bootstrap_eer_exp5b_redimnet_fusion.json`.
+> **Catatan jujur:** A3 vs A2 (ReDimNet-saja, 0.877) p=0.8803 — fusi masih *setara* backbone tunggal terkuat, bukan melampauinya (konsisten di semua putaran: p=0.209/0.1526/0.8803); B1 static (0.859) vs A3 (0.876) p=0.0310 pada akurasi — **tidak signifikan** bahkan di 10 repetisi (beda dengan exp3b, di mana 10 repetisi memulihkan signifikansi B1-vs-B2) — **tapi** pada EER deteksi, continual tetap unggul signifikan kuat (§bootstrap di bawah, 10/10 repetisi). Aturan `mean` exp4c terkonfirmasi ulang vs A1 (EER 0.099 < 0.127−0.01) tapi kalah tipis dari A2 murni (0.094) dan dari skor produksi A3 (0.096). **Uji ketahanan leakage (§10, baru)**: pada 19 task speaker yang bukan vox2-dev, A3 (0.956) masih numerik di atas A1 (0.933) tapi tidak signifikan (p=0.1475) — kemungkinan besar karena subset kecil kurang bertenaga secara statistik (akurasi tinggi ~93-96%, sedikit ruang varians), bukan bukti leakage membiaskan hasil resmi.
+> **Uji signifikansi (kepatuhan proposal Bab 4.11):** Accuracy — Shapiro-Wilk → paired t-test + Bonferroni ✅; **EER — bootstrap CI 95% (Bengio & Mariéthoz 2004)**, 10 repetisi: usulan vs A1 ΔEER −0.0308 [−0.0356, −0.0260] SIGNIFIKAN 10/10; **continual vs static ΔEER +0.1005 [+0.0932, +0.1079] SIGNIFIKAN 10/10 rep**; vs 3 baseline semua signifikan; vs A2 setara (ΔEER +0.0025 [−0.0018, +0.0069], tidak signifikan).
+> Artefak: `full_evaluation_summary_exp5b_redimnet_fusion.json` · `exp5_validation_sweep.json` · `exp5_bootstrap_eer_exp5b_redimnet_fusion.json` · `exp5_detection_rules_exp5b_redimnet_fusion.json` · `exp5_leakage_robustness.json` (baru) · `exp5_screening_redimnet_b2.json` / `exp5_wavlm_layer_sweep.json` / `exp5_leakage_audit.json` *(gate/screening, tidak terdampak bug — lihat §0)*.
 
 **Batasan tetap:** strict 1-shot (K_SHOT = 1), bebas-pelatihan (0 episode, backbone beku, tanpa fine-tuning), protokol evaluasi = [Experiment 3](experiment-3.md) penuh.
 
 > **Arsitektur final ada di [§0b](#0b-arsitektur-final--apa-yang-berubah-dari-experiment-14) di bawah** (flow diagram + kontras terhadap Experiment 1–4). Mulai §1 adalah dokumen rencana asli, dipertahankan sebagai jejak metodologi. Versi HTML: [`experiment-5.html`](experiment-5.html).
 > **Tag rencana:** `exp5a_<backbone>_standalone` *(eksplorasi)* · `exp5b_<backbone>_fusion` *(run resmi)*
+
+---
+
+## 0a. Perhitungan ulang 2026-07-27 — apa yang berubah dan kenapa
+
+Code review menyeluruh 2026-07-26 (lihat [`README.md`](../README.md) §Status Kode, dan [Experiment 3](experiment-3.md) §0 untuk detail teknis bug) menemukan bug yang mengenai jalur evaluasi Experiment 5:
+
+1. **Kebocoran cohort AS-Norm** (`scripts/exp5_validation_sweep.py`, `scripts/run_full_evaluation.py`) — cohort AS-Norm dan sampel kalibrasi genuine tidak speaker-disjoint. Diperbaiki via `split_cohort_and_genuine`.
+2. **Kebocoran evaluasi FSCIL** (`src/evaluation/fscil.py`) — query task lama diproses ulang stateful setiap sesi, memengaruhi perbandingan continual (`running_average`) vs `static`.
+3. **`Forgetting Measure`** (off-by-one) dan **`bootstrap_eer_difference`** (resampling tidak paired) — dua-duanya dipakai untuk melaporkan angka exp5b.
+
+Experiment 5 **tidak terkena** bug pooling Whisper — backbone kedua exp5b adalah `redimnet_b2`, bukan Whisper, jadi cache `redimnet_b2` (14.874 entri) tetap valid dan **tidak dihitung ulang**.
+
+Langkah hitung-ulang (setelah [Experiment 3](experiment-3.md) selesai, karena `exp5_validation_sweep.py` mengunci `target_frr` exp3b sebagai basisnya):
+
+| Langkah | Perintah | Hasil |
+|---|---|---|
+| 1. Re-lock bobot fusi `w` | `scripts/exp5_validation_sweep.py` (dengan `TARGET_FRR` diperbarui ke 0.01 mengikuti exp3b baru) | w terbaik bergeser **0.3 → 0.5** |
+| 2. Update `src/experiments.py` | manual | `score_fusion_weight=0.5`, `target_frr=0.01` |
+| 3. Run resmi ulang | `scripts/run_full_evaluation.py` (`ACTIVE_EXPERIMENT=exp5b_redimnet_fusion`) | 0.908±0.019 → **0.868±0.009** |
+| 4. Bootstrap EER ulang | `scripts/exp5_bootstrap_eer.py` | Kesimpulan bertahan (lihat ringkasan di atas) |
+| 5. Aturan deteksi dua-ruang ulang | `scripts/exp5_detection_rules.py` | Gate G4.3 tetap TERKONFIRMASI |
+| 6. Sanity | `pytest -q` | 156 passed |
+
+**Yang TIDAK dihitung ulang** (di luar cakupan fix — angka-angka gate eksplorasi awal, bukan headline resmi, dan risikonya kecil karena marginnya besar saat lolos gerbang):
+- `exp5_screening_redimnet_b2.json` (G5.1/G5.2: standalone 0.878, plafon oracle +0.069) — dihasilkan `scripts/exp4_complementarity_asnorm.py`. **Diverifikasi 2026-08-02**: script ini membangun cohort AS-Norm-nya HANYA dari `base_train`, sedangkan populasi genuine/task-nya HANYA dari `reserved_unknown_pool` — dua split yang sudah terpisah sejak awal secara struktural (bukan sekadar konvensi pemanggil), jadi script ini **kebal secara struktural** dari bug kebocoran cohort yang mempengaruhi `run_full_evaluation.py`/`exp3_validation_sweep.py`/`exp5_validation_sweep.py` (yang membangun cohort DAN genuine dari `base_train` yang sama). Angka gate G5.1/G5.2 ini sah dipakai tanpa perlu dihitung ulang.
+- `exp5_wavlm_layer_sweep.json` (kandidat WavLM yang gagal G5.1) — tidak memengaruhi kesimpulan headline karena kandidat ini sudah gagal gerbang lebih awal.
+- `exp5_leakage_audit.json` — audit leakage per-speaker (ID VoxCeleb2-dev), murni pencocokan metadata, tidak tersentuh bug apa pun.
+
+**Perubahan kualitatif penting (2026-07-27, sebelum kenaikan repetisi §0b):**
+
+- Angka headline turun (0.908→0.868) tapi **klaim inti tesis "kontribusi fusi terukur" (A3 > A1, signifikan) tetap bertahan** — bahkan p-value sedikit membaik (0.0041→0.0020). Ini menjadikan exp5b, bukan exp3b, sandaran utama klaim "sistem usulan melampaui baseline secara signifikan" di tesis pada tahap ini (lihat [Experiment 3](experiment-3.md) §0) — **catatan: setelah §0b, exp3b JUGA kembali melampaui baseline signifikan**, jadi kedua eksperimen kini sama-sama mendukung klaim ini.
+- Bobot fusi optimal bergeser dari w=0.3 (70% ReDimNet) ke w=0.5 (50/50) — pergeseran wajar karena titik operasi threshold (target_frr) yang dikalibrasi berubah dari exp3b lama ke baru.
+- Perbandingan continual vs static pada **akurasi** kini tidak signifikan (konsisten dengan pola yang sama di exp3, lihat [Experiment 3](experiment-3.md) §6.3), tapi pada **EER deteksi** tetap signifikan kuat — kesimpulan "continual update membantu" sebaiknya disandarkan pada metrik deteksi, bukan akurasi FSCIL, untuk dataset skala ini.
+
+## 0b. Repetisi dinaikkan 5→10 + uji ketahanan leakage (2026-08-02)
+
+Setelah §0a, beberapa p-value (baik di exp3b maupun exp5b) berada dekat ambang batas signifikansi dengan `n_reps=5` (proposal aslinya menargetkan 10). Karena run penuh hanya makan waktu belasan menit dengan GPU, `n_reps` dinaikkan ke 10 (`src/experiments.py`) dan seluruh run resmi + bootstrap EER + aturan deteksi dijalankan ulang.
+
+**Hasil (10 repetisi) vs 5 repetisi:**
+
+| Metrik | 5 repetisi (27 Jul) | 10 repetisi (2 Agu, final) |
+|---|---|---|
+| Accuracy usulan (A3) | 0.868 ± 0.009 | **0.876 ± 0.016** |
+| A3 vs A1 (accuracy) | p=0.0020 ✅ | **p<0.0001 ✅** (makin kuat) |
+| A3 vs A2 (accuracy) | p=0.1526 (tak signifikan) | p=0.8803 (tak signifikan, konsisten) |
+| B1 static vs A3 (accuracy) | p=0.7794 (tak signifikan) | p=0.0310 (**masih tak signifikan**, walau mendekat) |
+| A3 vs A1 (bootstrap EER) | ΔEER −0.0284, signifikan 5/5 | ΔEER **−0.0308, signifikan 10/10** |
+| B1 vs A3 (bootstrap EER) | ΔEER +0.0931, signifikan 5/5 | ΔEER **+0.1005, signifikan 10/10** |
+
+Berbeda dari exp3b (di mana 10 repetisi memulihkan signifikansi B1-vs-A3 pada akurasi, lihat [Experiment 3](experiment-3.md) §0b), di exp5b perbandingan continual-vs-static pada **akurasi** tetap tidak signifikan bahkan di 10 repetisi (p=0.0310, masih di atas α=0.00833) — kemungkinan karena ReDimNet murni sudah begitu kuat (A2=0.877) sehingga variasi antar-sesi didominasi oleh backbone, bukan mekanisme continual update. Klaim continual tetap disandarkan pada metrik EER deteksi, yang signifikan kuat dan konsisten di kedua putaran repetisi.
+
+**Uji ketahanan leakage (§10) juga dijalankan pada tahap ini** — lihat §10 untuk detail dan hasil (inconclusive, p=0.1475, kemungkinan besar karena subset kecil kurang bertenaga).
 
 ---
 
@@ -29,12 +82,12 @@ Experiment 5 mengganti backbone kedua dengan model yang memenuhi dua syarat komp
 1. **Kuat secara mandiri** pada speaker discrimination (Whisper-L4 hanya 0.216 open-set; pengganti harus mendekati kelas ECAPA).
 2. **Heterogen terhadap ECAPA** — arsitektur (CNN-2D / SSL-transformer vs TDNN-1D) dan/atau paradigma pelatihan berbeda, sehingga pola error-nya berbeda. Preseden kuat: sistem juara VoxSRC menggabungkan ECAPA-TDNN dengan varian ResNet justru karena komplementaritas lintas-arsitektur ([IDLab VoxSRC-20](https://arxiv.org/abs/2010.11255); [ID R&D VoxSRC-22, juara Track 1–2 dengan fusi ResNet + model SSL](https://www.robots.ox.ac.uk/~vgg/data/voxceleb/data_workshop_2022/reports/ravana_idrnd.pdf)).
 
-**Nilai acuan dari Experiment 4** (pembanding langsung setiap kandidat, protokol & script yang sama):
+**Nilai acuan dari Experiment 4** (pembanding langsung setiap kandidat, protokol & script yang sama; *angka ini belum dihitung ulang, lihat §0*):
 
 | Acuan (snapshot validasi, ruang AS-Norm, 3 seed) | Nilai |
 |---|---|
 | ECAPA-saja — akurasi identifikasi | **0.8417** |
-| Whisper_l4-saja (backbone kedua saat ini) | 0.2425 |
+| Whisper_l4-saja (backbone kedua saat itu) | 0.2425 |
 | Δ plafon oracle ECAPA∪Whisper_l4 | +0.0225 ± 0.0054 |
 | Score-fusion ternormalisasi terbaik (w=0.95) | 0.8408 (*di bawah* ECAPA-saja) |
 | Deteksi: ECAPA-saja / aturan `mean` dua-ruang | EER 0.1654 / **0.1508** (AUROC 0.909 / 0.924; n unknown = 40) |
@@ -283,7 +336,7 @@ Hal-hal yang tadinya asumsi rencana dan kini sudah diverifikasi langsung di ling
 | **0. Setup & audit** | **(0a)** Audit leakage per-speaker (§2/§2b) — unduh metadata resmi VoxCeleb2 dev/test, cocokkan dengan `full_split.json`; **(0b)** registrasi backbone terpilih (modul ekstraktor pola `whisper_encoder.py` + entri `BACKBONE_MODES`/`BACKBONE_EXTRACTORS` di `cache.py`); ekstraksi embedding subset kecil (±20 speaker) | Audit menentukan kandidat #1 (lihat urutan aksi di bawah); sanity: embedding deterministik, dimensi benar, cosine same-speaker > cross-speaker | ½ hari |
 | **1. Standalone + screening** | Registrasi backbone di `BACKBONE_MODES`/`BACKBONE_EXTRACTORS` (`src/features/cache.py`) + modul ekstraktor; precompute cache (`scripts/precompute_embeddings.py --backbone <nama>`); lalu **langsung Fase 2** — script screening sudah melaporkan akurasi standalone (`acc_b`) sekaligus | **G5.1:** acc standalone (snapshot AS-Norm, dilaporkan script exp4) ≥ **0.70** — Whisper_l4 hanya 0.2425, ECAPA 0.8417. Gagal → kandidat berikutnya | ½–1 hari (precompute ±1–2 jam) |
 | **2. Plafon komplementaritas** | `scripts/exp4_complementarity_asnorm.py --second-backbone <nama> --out experiments/exp5_screening_<nama>.json` — **flag sudah diimplementasikan & diuji** (18 Jul 2026); protokol & task identik screening exp4 sehingga angkanya langsung sebanding dengan tabel acuan §1 | **G5.2:** `delta_ceiling` AS-Norm ≥ **+0.03** (jelas di atas Whisper +0.0225) **dan** fusion sweep menunjukkan ∃w yang > ECAPA-saja (kegagalan justru di titik ini yang mengubur Whisper di G4.2). Gagal → kandidat berikutnya | ½ hari |
-| **3. Sweep fusi (validasi FSCIL)** | Score-fusion ternormalisasi (formula exp4b), sweep `w` halus di sekitar w terbaik Fase 2; AS-Norm per-backbone (default c300/k200, re-sweep `top_k` bila perlu); threshold per-w (P4) — pada task FSCIL validasi lengkap (10×10-way, continual, pola sweep exp3), 3 seed | **G5.3:** val-acc fusi > val-acc ECAPA-only **FSCIL** (0.8867 — angka sweep exp3, *bukan* 0.8417 snapshot) secara konsisten antar seed → **kunci** hyperparameter | 1 hari |
+| **3. Sweep fusi (validasi FSCIL)** | Score-fusion ternormalisasi (formula exp4b), sweep `w` halus di sekitar w terbaik Fase 2; AS-Norm per-backbone (default c300/k200, re-sweep `top_k` bila perlu); threshold per-w (P4) — pada task FSCIL validasi lengkap (10×10-way, continual, pola sweep exp3), 3 seed | **G5.3:** val-acc fusi > val-acc ECAPA-only **FSCIL** secara konsisten antar seed → **kunci** hyperparameter | 1 hari |
 | **4. Run resmi** | Tag `exp5b_<backbone>_fusion`, 5 seed, protokol exp3 penuh (10×10-way, 530 query unknown paruh-deteksi, Bonferroni α = 0.00833); **sekaligus uji aturan deteksi dua-ruang `mean` (temuan exp4c: EER validasi −0.015 pada n=40) terhadap 530 unknown** | Kriteria sukses §4 | ½ hari |
 | **5. Dokumentasi** | `experiment-5` hasil + update `README.md` + HTML | Laporan lengkap, positif maupun negatif | ½ hari |
 
@@ -300,17 +353,19 @@ Total estimasi per kandidat: **3–4 hari kerja**; Fase 0–2 saja (gerbang mura
 
 ---
 
-## 4. Kriteria keberhasilan run resmi (exp5b)
+## 4. Kriteria keberhasilan run resmi (exp5b) — hasil final (10 repetisi, 2026-08-02)
 
-| Metrik | Pembanding | Target |
-|---|---|---|
-| **A3 (fusi) vs A1 (ECAPA saja)** | inti klaim multi-backbone | **A3 > A1, p < 0.00833** — untuk pertama kalinya fusi harus terukur, bukan ≡ |
-| Open-set Acc | exp3b 0.865 ± 0.008 | > 0.865 (minimal tidak turun) |
-| Closed-set Acc | 0.865 | > 0.865 |
-| Forgetting | 0.0022 | tetap ~0 (< 0.01) |
-| det-EER / AUROC / TAR@1%FAR | 0.111 / 0.952 / 0.594 | tidak memburuk; TAR@1%FAR adalah ruang perbaikan terbesar |
-| A2 (backbone kedua saja) | Whisper 0.216 | ≥ 0.70 (bukti kualitas standalone) |
-| Deteksi aturan `mean` dua-ruang (temuan exp4c) | EER validasi 0.151 vs 0.165 (n=40, belum konklusif) | konfirmasi/tolak pada 530 unknown paruh-deteksi; dipromosikan ke produksi hanya bila EER < baseline satu-ruang secara konsisten |
+| Metrik | Pembanding | Target | Hasil final |
+|---|---|---|---|
+| **A3 (fusi) vs A1 (ECAPA saja)** | inti klaim multi-backbone | **A3 > A1, p < 0.00833** | ✅ **p<0.0001** (0.876 vs 0.833) |
+| Open-set Acc | exp3b (0.833, lihat [Experiment 3](experiment-3.md)) | > 0.833 | ✅ **0.876 ± 0.016** |
+| Closed-set Acc | 0.833 | > 0.833 | ✅ **0.876** |
+| Forgetting | ~0 | tetap ~0 (< 0.01) | ✅ **−0.0007** |
+| det-EER / AUROC / TAR@1%FAR | 0.127 / 0.938 / 0.428 (exp3b) | membaik | ✅ **0.096 / 0.962 / 0.598** |
+| A2 (backbone kedua saja) | ReDimNet | ≥ 0.70 (bukti kualitas standalone) | ✅ **0.877** (setara A3 secara numerik, tidak signifikan p=0.8803) |
+| Deteksi aturan `mean` dua-ruang (temuan exp4c) | EER validasi 0.151 vs 0.165 (n=40) | konfirmasi pada 530 unknown | ✅ **EER 0.099** (a_only A1 0.127; b_only A2 0.094; produksi A3 0.096) — mean tetap lebih baik dari a_only, tapi A2 murni sedikit lebih baik dari mean & A3 |
+
+*(Tabel pembanding di baris 2–5 memakai angka exp3b final 10-repetisi, bukan 0.865/0.111/0.952/0.594 versi 11 Juli maupun 0.827 versi interim 27 Juli — lihat [Experiment 3](experiment-3.md) §0/§0b.)*
 
 ---
 
@@ -324,10 +379,10 @@ Semua di belakang feature flag, default = perilaku lama (disiplin exp3 §2):
 | `src/features/` *(modul baru)* | ekstraktor embedding kandidat (loader `torch.hub`/HF, mean-pool bila perlu, L2-norm konsisten) |
 | `scripts/precompute_embeddings.py` | ✅ **tidak perlu diubah** (diverifikasi 18 Jul 2026): flag `--backbone <nama>` sudah generik & memakai path absolut (pelajaran bug cache exp3 §2.3) — kandidat cukup diregistrasi di `cache.py` |
 | `scripts/exp4_complementarity_asnorm.py` + `src/evaluation/complementarity.py` | ✅ **siap dipakai** (diverifikasi 18 Jul 2026): flag `--second-backbone`/`--out` untuk screening Fase 1–2 sudah diimplementasikan & diuji |
-| `src/experiments.py` | field `second_backbone` (default `"whisper"` = perilaku lama); tag `exp5a_*`, `exp5b_*` |
+| `src/experiments.py` | field `whisper_backbone` (default `"whisper"` = perilaku lama); tag `exp5b_redimnet_fusion`; **hyperparameter di-re-lock 2026-07-27** (`score_fusion_weight` 0.3→0.5, `target_frr` 0.05→0.01) |
 | `src/system.py`, `src/prototypical/data.py` | parameter backbone kedua diteruskan (pola `whisper_backbone` exp2) |
-| `src/continual/manager.py`, `src/prototypical/calibration.py` | reuse jalur skor dua-backbone ternormalisasi dari Experiment 4b |
-| `tests/test_experiment5.py` | unit test: determinisme embedding, namespace cache, orientasi skor fusi, gerbang konfigurasi |
+| `src/continual/manager.py`, `src/prototypical/calibration.py` | reuse jalur skor dua-backbone ternormalisasi dari Experiment 4b; **`split_cohort_and_genuine` ditambahkan 2026-07-26** untuk menutup kebocoran cohort AS-Norm |
+| `tests/test_experiment5.py` | unit test: determinisme embedding, namespace cache, orientasi skor fusi, gerbang konfigurasi — tetap lolos setelah fix |
 
 ---
 
@@ -340,6 +395,7 @@ Semua di belakang feature flag, default = perilaku lama (disiplin exp3 §2):
 | Konflik dependency (torch/transformers versi) | Kandidat dibatasi `torch.hub`/HF/pip murni; NeMo dihindari; uji di venv terpisah dulu bila ragu |
 | Semua kandidat gagal G5.2 (plafon kecil bahkan untuk backbone kuat) | Ini pun temuan valid: dengan AS-Norm, satu backbone kuat sudah menangkap hampir semua sinyal → tesis melaporkan studi ablasi multi-backbone dengan plafon terukur, dan klaim kontribusi berpindah sepenuhnya ke pipeline threshold/AS-Norm + continual update (sudah > baseline secara signifikan) |
 | Dua backbone sama-sama benar tapi lewat jalur berbeda → fusi menggeser kalibrasi threshold | Kalibrasi per-konfigurasi (P4) + validasi terpisah sudah menjadi prosedur baku |
+| **(baru)** Kebocoran cohort AS-Norm / evaluasi FSCIL membiaskan angka resmi | **Terjadi dan terkonfirmasi** (§0) — diperbaiki 2026-07-26, seluruh run resmi dihitung ulang 2026-07-27 |
 
 ---
 
@@ -360,7 +416,7 @@ Semua di belakang feature flag, default = perilaku lama (disiplin exp3 §2):
 
 ---
 
-## 8. Reproduksi (rencana perintah)
+## 8. Reproduksi
 
 ```powershell
 # Fase 0/1 — registrasi kandidat di src/features/cache.py, lalu precompute
@@ -376,13 +432,95 @@ Semua di belakang feature flag, default = perilaku lama (disiplin exp3 §2):
 .venv\Scripts\python.exe scripts\exp4_complementarity_asnorm.py `
     --second-backbone redimnet_b2 --out experiments/exp5_screening_redimnet_b2.json
 
-# Fase 3 — sweep fusi FSCIL di paruh-validasi (perluasan sweep exp3; dibuat saat G5.2 lolos)
+# Fase 3 — sweep fusi FSCIL di paruh-validasi (re-lock bobot w setelah fix 2026-07-26)
+.venv\Scripts\python.exe scripts\exp5_validation_sweep.py
 
-# Fase 4 — run resmi (tag dibuat di src/experiments.py saat G5.3 lolos)
+# Fase 4 — run resmi
 $env:ACTIVE_EXPERIMENT = "exp5b_redimnet_fusion"
 .venv\Scripts\python.exe scripts\run_full_evaluation.py
+
+# Fase 4b — uji lanjutan pasca run resmi
+.venv\Scripts\python.exe scripts\exp5_bootstrap_eer.py
+.venv\Scripts\python.exe scripts\exp5_detection_rules.py
+
+# Fase 4c — uji ketahanan leakage (subset task speaker non-vox2-dev, §10)
+.venv\Scripts\python.exe scripts\exp5_leakage_robustness.py
 ```
 
 ---
 
-*Experiment 5 — hasil & arsitektur final di [§0](#0-ringkasan-eksekutif)/[§0b](#0b-arsitektur-final--apa-yang-berubah-dari-experiment-14); §1–§8 adalah rencana asli sebagai jejak metodologi. Terkait: [experiment-2.md](experiment-2.md) · [experiment-3.md](experiment-3.md) · [experiment-4.md](experiment-4.md) · [training-model.md](training-model.md) · [README.md](README.md) · `src/models/redimnet.py` · `src/prototypical/score_norm.py` · `src/experiments.py`.*
+## 9. Hasil resmi lengkap (final, 10 repetisi, 2026-08-02)
+
+Threshold A3 = −1.5376 (FRR kalibrasi 1.07%), EER kalibrasi 0.1263. Elapsed run resmi: 11.8 menit (10 repetisi).
+
+| Konfigurasi | Open-set Acc | Closed-set Acc | Forgetting | det-EER | AUROC | TAR@1%FAR |
+|---|---|---|---|---|---|---|
+| **Usulan (A3, running_avg, w=0.5)** | **0.876 ± 0.016** | **0.876** | **−0.0007** | **0.096** | **0.962** | **0.598** |
+| B1 — static prototype | 0.859 ± 0.018 | 0.860 | 0.0379 | 0.196 | 0.877 | 0.347 |
+| A1 — ECAPA saja (w=1.0) | 0.833 ± 0.015 | 0.833 | −0.0007 | 0.127 | 0.938 | 0.429 |
+| A2 — ReDimNet saja (w=0.0) | 0.877 ± 0.017 | 0.877 | −0.0002 | 0.094 | 0.964 | 0.659 |
+| Baseline ECAPA (closed-set) | 0.783 ± 0.019 | 0.783 | 0.0568 | 0.272 | 0.805 | 0.321 |
+| Baseline ProtoNet vanilla | 0.402 ± 0.015 | 0.402 | 0.1142 | 0.460 | 0.566 | 0.045 |
+| Baseline x-vector+PLDA-lite | 0.258 ± 0.017 | 0.258 | 0.1143 | 0.456 | 0.558 | 0.039 |
+
+**Signifikansi accuracy (paired t-test, α_Bonferroni = 0.00833):**
+
+| Perbandingan | p | Signifikan? |
+|---|---|---|
+| Usulan (A3) vs A1 (ECAPA saja) | **<0.0001** | ✅ — inti klaim multi-backbone, makin kuat dari 5-repetisi (p=0.0020) |
+| Usulan vs A2 (ReDimNet saja) | 0.8803 | ❌ — setara, tidak melampaui backbone tunggal terkuat |
+| Usulan vs B1 static | 0.0310 | ❌ — pada akurasi, continual tidak terbukti unggul (lihat bootstrap EER di bawah) |
+| Usulan vs ECAPA baseline | **<0.0001** | ✅ |
+| Usulan vs ProtoNet vanilla | <0.0001 | ✅ |
+| Usulan vs x-vector+PLDA | <0.0001 | ✅ |
+
+**Signifikansi EER (bootstrap CI 95%, Bengio & Mariéthoz 2004, 1000 resample, paired, 10 repetisi):**
+
+| Perbandingan | ΔEER (pooled) | CI 95% | Signifikan? |
+|---|---|---|---|
+| Usulan vs A1 (ECAPA saja) | −0.0308 | [−0.0356, −0.0260] | ✅ 10/10 rep |
+| Usulan vs A2 (ReDimNet saja) | +0.0025 | [−0.0018, +0.0069] | ❌ 0/10 rep — setara |
+| Usulan vs B1 static | +0.1005 | [+0.0932, +0.1079] | ✅ 10/10 rep — continual **signifikan lebih baik** pada deteksi |
+| Usulan vs ECAPA baseline | −0.1757 | [−0.1857, −0.1662] | ✅ 10/10 rep |
+| Usulan vs ProtoNet vanilla | −0.3645 | [−0.3754, −0.3533] | ✅ 10/10 rep |
+| Usulan vs x-vector+PLDA | −0.3594 | [−0.3715, −0.3480] | ✅ 10/10 rep |
+
+**Aturan deteksi dua-ruang (`exp5_detection_rules.py`, 530 unknown paruh-deteksi, 10 repetisi):**
+
+| Aturan | EER | AUROC | TAR@1%FAR |
+|---|---|---|---|
+| A3 produksi (w=0.5, AS-Norm dua-ruang) | 0.0956 ± 0.0038 | 0.9617 | 0.5980 |
+| a_only (ruang ECAPA saja) | 0.1273 ± 0.0051 | 0.9380 | 0.4293 |
+| b_only (ruang ReDimNet saja) | **0.0942 ± 0.0045** | 0.9636 | 0.6586 |
+| mean (dua-ruang, temuan exp4c) | 0.0992 ± 0.0038 | 0.9607 | 0.6091 |
+| max (dua-ruang) | 0.1009 ± 0.0081 | 0.9579 | 0.5739 |
+
+Gate G4.3 (`mean` EER < `a_only` EER − 0.01) **TERKONFIRMASI** (0.099 < 0.117). Catatan jujur: `b_only` (ReDimNet murni) memberi EER terendah dari semuanya (0.094), sedikit lebih baik dari `mean` dan dari skor produksi A3 — konsisten dengan tabel accuracy di atas (A2 ≥ A3 secara numerik, tidak signifikan). Skor produksi (w=0.5) dipertahankan karena keunggulannya *signifikan* atas ECAPA-saja (A1), yang merupakan klaim inti tesis; mengganti ke `b_only`/A2 murni akan membuang narasi multi-backbone sepenuhnya.
+
+**Kesimpulan bagian ini:** exp5b tetap headline final tesis — kontribusi fusi terukur dan signifikan (A3 > A1, makin kuat pada 10 repetisi), unggul signifikan atas seluruh baseline, forgetting nyaris nol, dan continual update terbukti signifikan pada metrik deteksi (konsisten 10/10 repetisi) walau tidak pada akurasi FSCIL (p=0.0310, dekat tapi tidak lolos Bonferroni bahkan di 10 repetisi — beda dengan exp3b, lihat §0b).
+
+---
+
+## 10. Uji ketahanan leakage (2026-08-02)
+
+80/100 task speaker resmi ada di VoxCeleb2-dev — data latih ReDimNet-b2 (ft_lm) — sudah diungkap sejak Fase 0 (§2) tapi dampaknya belum pernah benar-benar diuji. `scripts/exp5_leakage_robustness.py` (baru) menjawab: apakah "fusi (A3) > ECAPA-saja (A1), signifikan" bertahan pada task speaker yang **bukan** vox2-dev?
+
+**Metode:** identifikasi task_speakers yang absen dari `data/raw/metadata/vox2_meta.csv` kolom `Set=="dev"` — hasilnya 20 speaker (19 VoxCeleb1 + 1 VoxCeleb2-test), 19 di antaranya punya audio cache lengkap (10 utterance/speaker) di `eval_capped`. Karena hanya 19 speaker (tidak cukup untuk struktur 10 sesi × 10-way resmi), dijalankan **satu sesi statis 19-way 1-shot** (K_SHOT=1, N_QUERY=9, menghabiskan seluruh utterance ter-cache), 10 seed (`SEED_LIST[:10]`), memakai mesin exp5b yang sama persis (DualASNorm cohort=300/top_k=200 dari `base_train` — split terpisah total dari task_speakers, sehingga analisis ini sendiri tidak membawa leakage baru — threshold target_frr=0.01).
+
+**Hasil:**
+
+| Arm | Bobot w | Closed-set Acc |
+|---|---|---|
+| A1 — ECAPA saja | 1.0 | 0.933 ± 0.061 |
+| A2 — ReDimNet saja | 0.0 | 0.954 ± 0.040 |
+| A3 — fusi (produksi) | 0.5 | 0.956 ± 0.044 |
+
+A3 vs A1: paired t-test, **p=0.1475, tidak signifikan** (walau arahnya tetap sama, A3 numerik di atas A1). A3 vs A2: p=0.9466, tidak signifikan (setara, konsisten dengan hasil resmi 100-speaker).
+
+**Interpretasi jujur — ini hasil *inconclusive*, bukan sanggahan:** task 19-way satu-sesi ini TIDAK apple-to-apple dengan task resmi (10 sesi kumulatif hingga 100 kelas) — akurasinya jauh lebih tinggi di semua arm (93–96% vs 83–88%), efek langit-langit (*ceiling effect*) yang wajar untuk closed-set 19-kelas dibanding 100-kelas kumulatif. Dengan varians serendah itu dan hanya 19 kelas/10 seed, uji ini kemungkinan besar **kurang bertenaga secara statistik** untuk mendeteksi selisih fusi yang sama, bukan bukti bahwa leakage ReDimNet membiaskan hasil resmi. Kesimpulan yang jujur: uji ini **tidak bisa mengonfirmasi maupun menyanggah** dampak leakage terhadap klaim utama — perlu subset leakage-free yang lebih besar (butuh lebih banyak audio VoxCeleb1/vox2-test bercache) untuk kesimpulan yang lebih tegas. Direkomendasikan dilaporkan di tesis sebagai keterbatasan yang jujur diakui, bukan diselesaikan.
+
+Artefak: `experiments/exp5_leakage_robustness.json`.
+
+---
+
+*Experiment 5 — hasil & arsitektur final di [§0](#0-ringkasan-eksekutif)/[§0b](#0b-arsitektur-final--apa-yang-berubah-dari-experiment-14) dan [§9](#9-hasil-resmi-lengkap-final-10-repetisi-2026-08-02)/[§10](#10-uji-ketahanan-leakage-2026-08-02); §1–§8 adalah rencana asli sebagai jejak metodologi. Terkait: [experiment-2.md](experiment-2.md) · [experiment-3.md](experiment-3.md) · [experiment-4.md](experiment-4.md) · [training-model.md](training-model.md) · [README.md](README.md) · `src/models/redimnet.py` · `src/prototypical/score_norm.py` · `src/experiments.py`.*

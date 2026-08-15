@@ -15,11 +15,13 @@ Dokumentasi training & evaluasi sistem **Incremental Open-Set Speaker Recognitio
 | 0 | `baseline_v0` | Fusi random-init, 500 episode training | 0.235 | *(regresi acuan)* |
 | 1 | `exp1_frozen_residual` | Fusi **residual-init + beku (0 episode)** | 0.731 | [MD](experiment-1.md) · [HTML](experiment-1.html) |
 | 2a | `exp2a_scorefusion_L4` ✅ | Whisper L4 + score-level fusion — Whisper tak menambah nilai; threshold jadi tersangka utama | 0.733 (≈ exp1) | [MD](experiment-2.md) · [HTML](experiment-2.html) |
-| 3a | `exp3a_lowfrr` ✅ | Titik operasi low-FRR saja — tidak cukup sendirian; mengungkap drift update (P5) & memperbaiki bug threshold ablasi (P4) | 0.732 (≈ exp1) | [MD](experiment-3.md) · [HTML](experiment-3.html) |
-| 3b | `exp3b_asnorm` ✅ | **AS-Norm + low-FRR** — melampaui baseline ECAPA closed-set 0.788 (p=0.0015); deteksi unknown EER 0.111, AUROC 0.952; forgetting ~0 | 0.865 ± 0.008 | [MD](experiment-3.md) · [HTML](experiment-3.html) |
-| 3c | `exp3c_dualmetric` ✅ | View pelaporan dua-metrik dari run exp3b (closed-set & deteksi berdampingan) | = 3b | [MD](experiment-3.md) · [HTML](experiment-3.html) |
-| 4 | *(analisis, tanpa tag)* ✅ | **Gerbang keputusan fusi** — plafon oracle di ruang AS-Norm +0.022; score-fusion ternormalisasi < ECAPA-saja pada semua w → **fusi Whisper ditutup definitif** | — (tidak mengubah 3b) | [MD](experiment-4.md) · [HTML](experiment-4.html) |
-| 5b | `exp5b_redimnet_fusion` ✅ **(aktif — hasil utama)** | **ECAPA + ReDimNet, fusi z-score dua-ruang (DualASNorm, w=0.3)** — **A3 > A1 signifikan untuk pertama kalinya (p=0.0041)**; deteksi EER 0.075, AUROC 0.972, TAR@1%FAR 0.748; WavLM gagal gerbang (0.29, negative result terdokumentasi); leakage vox2-dev diaudit & diungkap | **0.908 ± 0.019** | [MD](experiment-5.md) · [HTML](experiment-5.html) |
+| 3a | `exp3a_lowfrr` ✅ | Titik operasi low-FRR saja (re-locked target_frr=0.15), 10 repetisi — tidak cukup sendirian, signifikan **di bawah** baseline | 0.695 ± 0.018 | [MD](experiment-3.md) · [HTML](experiment-3.html)⚠ |
+| 3b | `exp3b_asnorm` ✅ | **AS-Norm + low-FRR** (re-locked target_frr=0.01), 10 repetisi — **melampaui baseline ECAPA closed-set 0.783 signifikan** (p<0.0001); continual update signifikan (p=0.0007); deteksi unknown EER 0.127, AUROC 0.938; forgetting ~0 | 0.833 ± 0.015 | [MD](experiment-3.md) · [HTML](experiment-3.html)⚠ |
+| 3c | `exp3c_dualmetric` ✅ | View pelaporan dua-metrik dari run exp3b (closed-set & deteksi berdampingan) | = 3b | [MD](experiment-3.md) · [HTML](experiment-3.html)⚠ |
+| 4 | *(analisis, tanpa tag)* ✅ | **Gerbang keputusan fusi** — plafon oracle di ruang AS-Norm +0.022; score-fusion ternormalisasi < ECAPA-saja pada semua w → **fusi Whisper ditutup definitif** *(belum dihitung ulang, tidak terdampak bug secara langsung — diverifikasi struktural bebas leakage 2026-08-02)* | — (tidak mengubah 3b) | [MD](experiment-4.md) · [HTML](experiment-4.html) |
+| 5b | `exp5b_redimnet_fusion` ✅ **(aktif — hasil utama)** | **ECAPA + ReDimNet, fusi z-score dua-ruang (DualASNorm, w re-locked 0.3→0.5)**, 10 repetisi — **A3 > A1 signifikan (p<0.0001)**, melampaui baseline ECAPA signifikan (p<0.0001); deteksi EER 0.096, AUROC 0.962, TAR@1%FAR 0.598; WavLM gagal gerbang (0.29, negative result terdokumentasi); leakage vox2-dev diaudit & diungkap, uji ketahanan subset bebas-leakage *inconclusive* (p=0.1475, lihat experiment-5.md §10) | **0.876 ± 0.016** | [MD](experiment-5.md) · [HTML](experiment-5.html)⚠ |
+
+⚠ = versi HTML belum diregenerasi, masih menampilkan angka sebelum hitung-ulang 2026-07-27/2026-08-02 — lihat `experiment-3.md`/`experiment-5.md` §0/§0b untuk angka final dan penjelasan perubahan.
 
 ## Cara mengaktifkan sebuah eksperimen
 
@@ -46,7 +48,7 @@ audio → preprocessing (16kHz, denoise, VAD, loudness, durasi)
         · exp5b (aktif): ReDimNet-b2 192-d → concat [ê_ecapa; ê_redimnet] (384-d)
       → normalisasi skor (feature flag):
         · exp3b: AS-Norm 1-ruang terhadap cohort base_train
-        · exp5b: DualASNorm per-ruang, skor = 0.3·z_ecapa + 0.7·z_redimnet
+        · exp5b: DualASNorm per-ruang, skor = 0.5·z_ecapa + 0.5·z_redimnet
       → keputusan jarak-prototype + threshold (EER, atau target-FRR sejak exp3a)
       → continual update / registrasi speaker baru
 ```
