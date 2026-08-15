@@ -13,9 +13,10 @@
 > **Uji signifikansi (kepatuhan proposal Bab 4.11):** Accuracy — Shapiro-Wilk → paired t-test + Bonferroni ✅; **EER — bootstrap CI 95% (Bengio & Mariéthoz 2004) dijalankan pertama kali di exp5** ✅: usulan vs A1 ΔEER −0.036 [−0.047, −0.025] SIGNIFIKAN; **continual vs static ΔEER +0.101 [+0.088, +0.114] SIGNIFIKAN 5/5 rep** (melengkapi p=0.0128 Accuracy); vs 3 baseline semua signifikan; vs A2 setara. Deviasi tersisa vs proposal: 5 repetisi (bukan 10; deviasi functional-scale seragam sejak exp0) dan baseline ke-4 (reimplementasi SOTA) via jalur fallback kualitatif hal. 53 proposal.
 > Artefak: `full_evaluation_summary_exp5b_redimnet_fusion.json` · `exp5_screening_redimnet_b2.json` · `exp5_validation_sweep.json` · `exp5_wavlm_layer_sweep.json` · `exp5_leakage_audit.json` · `exp5_detection_rules_exp5b_redimnet_fusion.json` · `exp5_bootstrap_eer_exp5b_redimnet_fusion.json`.
 
-*Bagian di bawah ini adalah dokumen rencana asli (dipertahankan sebagai jejak metodologi); hasil aktual dan arsitektur final ada di [`experiment-5.html`](experiment-5.html).*
-**Tag rencana:** `exp5a_<backbone>_standalone` *(eksplorasi)* · `exp5b_<backbone>_fusion` *(run resmi)*
 **Batasan tetap:** strict 1-shot (K_SHOT = 1), bebas-pelatihan (0 episode, backbone beku, tanpa fine-tuning), protokol evaluasi = [Experiment 3](experiment-3.md) penuh.
+
+> **Arsitektur final ada di [§0b](#0b-arsitektur-final--apa-yang-berubah-dari-experiment-14) di bawah** (flow diagram + kontras terhadap Experiment 1–4). Mulai §1 adalah dokumen rencana asli, dipertahankan sebagai jejak metodologi. Versi HTML: [`experiment-5.html`](experiment-5.html).
+> **Tag rencana:** `exp5a_<backbone>_standalone` *(eksplorasi)* · `exp5b_<backbone>_fusion` *(run resmi)*
 
 ---
 
@@ -39,6 +40,192 @@ Experiment 5 mengganti backbone kedua dengan model yang memenuhi dua syarat komp
 | Deteksi: ECAPA-saja / aturan `mean` dua-ruang | EER 0.1654 / **0.1508** (AUROC 0.909 / 0.924; n unknown = 40) |
 
 Kandidat pengganti dinyatakan menjanjikan bila ia **mengungguli Whisper di semua baris** — terutama standalone ≫ 0.24 dan Δ plafon ≫ +0.0225.
+
+---
+
+## 0b. Arsitektur final — apa yang berubah dari Experiment 1–4
+
+> **Jawaban singkat: BERBEDA, dan bukan hanya soal tukar backbone.** Empat komponen arsitektur berubah sekaligus. Modul `GatedAttentionFusion` — inti arsitektur Experiment 1, 3a, 3b, 3c — **tidak dipakai lagi** di jalur produksi exp5b.
+
+### 0b.1 Empat perubahan arsitektural
+
+| # | Aspek | Experiment 1 / 3a–3c | Experiment 2a | **Experiment 5b** |
+|---|---|---|---|---|
+| 1 | Backbone kedua | Whisper encoder L3, **512-d** | Whisper encoder L4, **512-d** | **ReDimNet-b2 `ft_lm` (vox2), 192-d** |
+| 2 | Lapisan proyeksi | 3 × `nn.Linear` (**312.064 param**) | tidak ada | **tidak ada** |
+| 3 | Bentuk embedding | **256-d** hasil gated mixing | **704-d** concat berbobot | **384-d** concat (192+192) |
+| 4 | **Titik fusi** | level **embedding** | level **jarak mentah** | level **z-score (skor ternormalisasi)** |
+| — | Modul embedder | `GatedAttentionFusion` | `ScoreFusionEmbed(w=0.4)` | `ScoreFusionEmbed(w=0.5)` + **`DualASNorm(w=0.3)`** |
+| — | Normalisasi skor | none (exp1) / `ASNorm` 1-ruang (exp3b) | none | **`DualASNorm` 2-ruang** |
+| — | Mode durasi backbone-2 | `whisper_inference` (window 30 s wajib) | `whisper_inference` | **`ecapa_inference`** (panjang variabel) |
+| — | Lokasi ablasi A1/A2/A3 | flag `mode` di embedder | bobot `w` di embedder | **bobot `weight` di normalizer** |
+| — | Param trainable | 312.064 (dibekukan) | 0 | **0** |
+
+Yang **tidak** berubah: ECAPA-TDNN 192-d sebagai backbone utama, prototypical nearest-prototype, `K_SHOT=1`, 0 episode training, threshold target-FRR 5% dengan kalibrasi per-konfigurasi, continual update running-average (Pers. 4.4–4.6), registrasi speaker baru via silhouette, dan seluruh protokol evaluasi Experiment 3.
+
+### 0b.2 Flow arsitektur lengkap (run resmi `exp5b_redimnet_fusion`)
+
+```mermaid
+flowchart TD
+    A["Audio mentah<br/>.wav / .m4a"] --> P["Preprocessing<br/>16 kHz mono · denoise · VAD<br/>· agregasi speech · −20 LUFS"]
+
+    P --> D1["Standardisasi durasi<br/>mode: ecapa_inference"]
+    P --> D2["Standardisasi durasi<br/>mode: ecapa_inference<br/>(BERUBAH — dulu whisper_inference 30 s)"]
+
+    D1 --> B1["ECAPA-TDNN (BEKU)<br/>speechbrain/spkrec-ecapa-voxceleb<br/>Mel 80 · TDNN-1D · ASP"]
+    D2 --> B2["ReDimNet-b2 ft_lm vox2 (BEKU)<br/>torch.hub IDRnD/ReDimNet<br/>Mel frontend INTERNAL · reshape 1D↔2D"]
+
+    B1 --> E1["ê_ecapa · 192-d · L2-norm"]
+    B2 --> E2["ê_redimnet · 192-d · L2-norm"]
+
+    E1 --> CAT
+    E2 --> CAT["ScoreFusionEmbed('fusion', w=0.5)<br/>out = [√0.5·ê_ecapa ; √0.5·ê_redimnet]<br/>384-d · BEBAS PARAMETER<br/>(skala √0.5 batal di z-score)"]
+
+    CAT --> DUAL{"DualASNorm<br/>split_dim = 192<br/>top_k = 200 · cohort = 300"}
+
+    DUAL --> H1["paruh 1: dim 0–191<br/>ASNorm di ruang ECAPA<br/>→ z_ecapa"]
+    DUAL --> H2["paruh 2: dim 192–383<br/>ASNorm di ruang ReDimNet<br/>→ z_redimnet"]
+
+    H1 --> MIX["z = w·z_ecapa + (1−w)·z_redimnet<br/>w = 0.3 (terkunci di sweep validasi)<br/>← INILAH TITIK FUSI"]
+    H2 --> MIX
+
+    MIX --> ARG["argmin z → prototype terdekat<br/>manager._nearest_known"]
+    ARG --> THR{"z_min &lt; threshold?<br/>θ = −1.5766<br/>(target-FRR 5%, per-konfigurasi)"}
+
+    THR -->|"Ya: KNOWN"| UP["Update prototype<br/>running-average Pers. 4.4–4.6<br/>(di ruang embedding MENTAH 384-d)"]
+    THR -->|"Tidak: UNKNOWN"| BUF["Buffer novel →<br/>silhouette ≥ 0.5 & buffer ≥ 2<br/>→ registrasi speaker baru"]
+```
+
+Tiga detail yang mudah terlewat pada diagram ini:
+
+- **Embedder tidak lagi menghasilkan "embedding fusi".** `ScoreFusionEmbed` hanya menempelkan dua vektor unit-norm berdampingan. Tidak ada pencampuran di level embedding — 192 dimensi pertama tetap murni ECAPA, 192 dimensi terakhir tetap murni ReDimNet. Fusi baru terjadi tiga kotak kemudian, di kotak `MIX`.
+- **Faktor `√0.5` tidak berpengaruh apa pun.** Skala konstan per-paruh batal sendiri di dalam z-score (diverifikasi `tests/test_experiment5.py`). Angka 0.5 dipilih semata karena `ScoreFusionEmbed` menuntut sebuah bobot; bobot fusi yang sesungguhnya hidup di `DualASNorm`.
+- **Update prototype tetap di ruang embedding mentah 384-d,** bukan di ruang z-score. Yang ternormalisasi hanya *keputusan* (jarak → threshold → argmin); representasinya sendiri tidak. Ini konsisten sejak exp3b — lihat komentar `manager.py`: *"Prototype updates and novelty registration still operate on raw embeddings."*
+
+### 0b.3 Pergeseran titik fusi lintas eksperimen
+
+Ini inti kontras arsitekturalnya. Ketiga skema di bawah memakai backbone beku yang sama-sama tak dilatih; yang berbeda **di mana** kedua sumber informasi disatukan.
+
+```mermaid
+flowchart LR
+    subgraph X1["Exp 1 / 3a–3c — fusi di EMBEDDING"]
+        direction TB
+        A1["ECAPA 192"] --> PA["proj_ecapa<br/>Linear 192→256"]
+        A2["Whisper 512"] --> PW["proj_whisper<br/>Linear 512→256"]
+        PA --> G["gate: Linear 512→256<br/>+ sigmoid → g ≈ 0.982"]
+        PW --> G
+        G --> M1["e = g⊙e'₁ + (1−g)⊙e'₂<br/>256-d, L2-norm"]
+        M1 --> R1["jarak Euclidean → threshold"]
+    end
+
+    subgraph X2["Exp 2a — fusi di JARAK MENTAH"]
+        direction TB
+        B1["ECAPA 192<br/>L2-norm"] --> C2["concat berbobot<br/>[√0.4·ê ; √0.6·ê_w]<br/>704-d"]
+        B2["Whisper_l4 512<br/>L2-norm"] --> C2
+        C2 --> R2["d² ≡ 2(0.4·cos_e + 0.6·cos_w)<br/>→ threshold"]
+    end
+
+    subgraph X5["Exp 5b — fusi di Z-SCORE"]
+        direction TB
+        D1["ECAPA 192<br/>L2-norm"] --> C5["concat<br/>384-d"]
+        D2["ReDimNet 192<br/>L2-norm"] --> C5
+        C5 --> Z1["ASNorm ruang ECAPA<br/>→ z_ecapa"]
+        C5 --> Z2["ASNorm ruang ReDimNet<br/>→ z_redimnet"]
+        Z1 --> M5["z = 0.3·z_ecapa + 0.7·z_redimnet"]
+        Z2 --> M5
+        M5 --> R5["→ threshold"]
+    end
+```
+
+| Skema | Kelemahan yang membunuhnya | Bukti |
+|---|---|---|
+| Exp 1 — embedding | gate condong ke ECAPA (~0.98) dan beku → **A3 ≡ A1**, p=1.0 | exp1 §10.4, exp3 §6.4 |
+| Exp 2a — jarak mentah | dua jarak berada di **skala berbeda**, penjumlahan berbobotnya tak terdefinisi dengan baik; gain closed-set +1.4% tidak bertahan di open-set | exp2 §4, §5.2 |
+| Exp 5b — z-score | — (berhasil: A3 > A1, p=0.0041) | exp5 §0 |
+
+**Kenapa harus z-score, bukan mengulang trik konkatenasi exp2a?** Karena kedua term z sudah dalam **satuan sigma cohort yang sama**, sehingga `w·z₁ + (1−w)·z₂` well-posed — jumlahan dua kuantitas sebanding. Fusi jarak-mentah exp2a tidak punya jaminan itu.
+
+Dan trik ekuivalensi exp2a **tidak bisa dipakai lagi**: di exp2a, jarak-Euclidean-kuadrat antar dua konkatenasi berbobot secara eksak sama dengan fusi skor berbobot, sehingga fusi bisa disembunyikan di dalam bentuk embedding. Statistik AS-Norm bergantung pada **baris query dan baris prototype** (μ dan σ dihitung per-baris terhadap cohort), jadi tidak ada bentuk embedding statis yang bisa mengekspresikannya. Ini temuan Experiment 4, dan itulah yang memaksa `DualASNorm` menjadi modul terpisah dari embedder-nya.
+
+### 0b.4 Mekanisme ablasi baru — satu embedder, tiga bobot normalizer
+
+Perubahan arsitektural yang paling halus tapi penting untuk validitas ablasi. Sebelum exp5b, tiga arm A1/A2/A3 adalah **tiga objek model berbeda**. Di exp5b mereka **satu objek embedder yang sama**, dan ablasinya berpindah ke bobot normalizer.
+
+```mermaid
+flowchart TD
+    EMB["SATU embedder untuk semua arm:<br/>ScoreFusionEmbed('fusion', weight=0.5)<br/>→ [√0.5·ê_ecapa ; √0.5·ê_redimnet] 384-d"]
+
+    EMB --> A3["A3 — usulan<br/>DualASNorm(weight = 0.3)<br/>z = 0.3·z_ecapa + 0.7·z_redimnet"]
+    EMB --> A1["A1 — ECAPA saja<br/>DualASNorm(weight = 1.0)<br/>z = z_ecapa (paruh kedua diabaikan)"]
+    EMB --> A2["A2 — ReDimNet saja<br/>DualASNorm(weight = 0.0)<br/>z = z_redimnet (paruh pertama diabaikan)"]
+
+    A3 --> C3["kalibrasi threshold sendiri<br/>+ cohort sendiri"]
+    A1 --> C1["kalibrasi threshold sendiri<br/>+ cohort sendiri"]
+    A2 --> C2["kalibrasi threshold sendiri<br/>+ cohort sendiri"]
+
+    C3 --> RES["A3 = 0.908 ± 0.019"]
+    C1 --> RES1["A1 = 0.866"]
+    C2 --> RES2["A2 = 0.902"]
+```
+
+Implementasinya di `scripts/run_full_evaluation.py`:
+
+```python
+if EXP.fusion_strategy == "score_norm":
+    dual_weights = {"A3_fusion": EXP.score_fusion_weight,   # 0.3
+                    "A1_ecapa_only": 1.0,
+                    "A2_whisper_only": 0.0}
+```
+
+**Kenapa ini lebih kuat sebagai desain ablasi:** ketiga arm melihat embedding yang **bit-identik**. Satu-satunya variabel adalah satu bilangan float di normalizer. Tidak ada peluang perbedaan hasil datang dari inisialisasi berbeda, ruang embedding berbeda, atau skala jarak berbeda — masalah yang justru menjatuhkan ablasi Experiment 2 (bug P4: A1 tercatat 0.069 karena memakai threshold milik A3). Di sini setiap arm tetap mendapat cohort + threshold sendiri (`per_config_calibration=True`), tapi bahkan bila tidak, embedding-nya sudah sama.
+
+Konsekuensi pelaporan: nama field `A2_whisper_only` di kode dan JSON **menyesatkan** di exp5b — arm itu sekarang berarti ReDimNet-only, bukan Whisper-only. Nama dipertahankan supaya struktur summary JSON tetap kompatibel lintas tag; interpretasinya bergantung `whisper_backbone` di config.
+
+### 0b.5 Perubahan jalur preprocessing
+
+Konsekuensi tak langsung dari pergantian backbone, dan patut disebut di bab arsitektur karena mengubah cabang preprocessing:
+
+| | Whisper (exp1–4) | ReDimNet-b2 (exp5b) |
+|---|---|---|
+| Mode durasi | `whisper_inference` | `ecapa_inference` |
+| Bentuk input | **wajib tepat 30 s** — pad silence lalu crop | panjang variabel, pass-through |
+| Window panjang | selalu sliding-window 30 s, hop 30 s | sliding-window hanya bila > 30 s |
+| Frontend Mel | `WhisperFeatureExtractor` (eksternal) | **internal di `forward()`** — model menerima waveform mentah `(B, T)` |
+| Pooling | mean-pool hidden state layer-4, **mengecualikan frame padding sunyi** | pooling internal model (ASP-like), tak perlu masking |
+| Output | 512-d, L2-norm | 192-d, L2-norm |
+
+Efek praktisnya: **kedua backbone sekarang berbagi mode durasi yang sama** (`ecapa_inference`), sehingga cabang preprocessing menyatu. Pada exp1–4, satu audio harus diproses dua kali dengan strategi durasi berbeda — 30 s terpadding untuk Whisper, panjang natif untuk ECAPA. Sumber gangguan yang hilang: utterance VoxCeleb umumnya jauh di bawah 30 s, jadi jalur Whisper selalu memaksa padding sunyi yang harus di-mask saat pooling. ReDimNet tidak punya masalah itu.
+
+Registrasi backbone-nya mengikuti pola `whisper_l4` — namespace cache terpisah, sehingga cache lama utuh dan setiap tag pra-exp5 tetap reproduksibel bit-identik:
+
+```python
+BACKBONE_MODES     = { ..., "redimnet_b2": "ecapa_inference" }
+BACKBONE_EXTRACTORS = { ..., "redimnet_b2": (redimnet.extract_embedding,
+                                            redimnet.extract_embedding_windows) }
+```
+
+### 0b.6 Ringkasan dimensi & parameter
+
+| Tahap | Exp 1 / 3a–3c | Exp 2a | **Exp 5b** |
+|---|---|---|---|
+| Backbone 1 out | 192 | 192 | 192 |
+| Backbone 2 out | 512 | 512 | **192** |
+| Index mentah (cache) | 704 | 704 | **384** |
+| Embedding sistem | **256** | 704 | **384** |
+| `split_dim` normalizer | — | — | **192** |
+| Param trainable | 312.064 (beku) | 0 | **0** |
+| Ruang keputusan | Euclidean mentah / z-score 1-ruang | Euclidean mentah | **z-score 2-ruang** |
+| Threshold | 0.9266 / −1.5270 | 0.5967 | **−1.5766** |
+
+### 0b.7 Kenapa pergantian ini akhirnya berhasil
+
+Bukan karena ReDimNet "lebih bagus" saja, tapi karena **kontras arsitekturalnya**. ECAPA adalah TDNN-1D; ReDimNet memakai topologi reshape 1D↔2D. Dua cara berbeda memandang spektrogram → pola error berbeda → ada sesuatu untuk difusikan. Whisper gagal bukan karena lemah saja (0.216), tapi karena kasus "Whisper benar & ECAPA salah" hanya 11 dari 63 error, tanpa pola — plafon oracle-nya cuma +0.0225.
+
+Angka final: A3 **0.908 ± 0.019** vs A1 0.866 (**p=0.0041, signifikan pertama kali**), det-EER 0.075, AUROC 0.972, TAR@1%FAR 0.748.
+
+**Catatan jujur yang harus menyertainya:** A3 vs A2 (ReDimNet-saja 0.902) **p=0.209** — fusi *setara* backbone tunggal terkuat, tidak melampauinya. Jadi klaim yang bisa dipertahankan adalah "fusi terbukti menambah nilai di atas backbone incumbent (ECAPA)", bukan "fusi mengalahkan backbone terbaik". Ditambah leakage yang diungkap: ReDimNet dilatih VoxCeleb2-dev yang memuat 80/100 task speaker (`exp5_leakage_audit.json`) — ECAPA SpeechBrain juga VoxCeleb-trained sehingga perbandingan internal tetap apel-ke-apel, tapi angka absolutnya optimistis.
+
+> Proses pembelajaran/fitting untuk arsitektur ini dibahas lengkap di [training-model.md](training-model.md) — exp5b tetap **bebas-pelatihan**, `n_train_episodes = 0`, nol parameter trainable.
 
 ---
 
@@ -198,4 +385,4 @@ $env:ACTIVE_EXPERIMENT = "exp5b_redimnet_fusion"
 
 ---
 
-*Rencana Experiment 5. Terkait: [experiment-2.md](experiment-2.md) · [experiment-3.md](experiment-3.md) · [experiment-4.md](experiment-4.md) · [README.md](README.md) · `src/experiments.py`.*
+*Experiment 5 — hasil & arsitektur final di [§0](#0-ringkasan-eksekutif)/[§0b](#0b-arsitektur-final--apa-yang-berubah-dari-experiment-14); §1–§8 adalah rencana asli sebagai jejak metodologi. Terkait: [experiment-2.md](experiment-2.md) · [experiment-3.md](experiment-3.md) · [experiment-4.md](experiment-4.md) · [training-model.md](training-model.md) · [README.md](README.md) · `src/models/redimnet.py` · `src/prototypical/score_norm.py` · `src/experiments.py`.*

@@ -3,7 +3,10 @@
 Dokumentasi training & evaluasi sistem **Incremental Open-Set Speaker Recognition**. Setiap konfigurasi reportable ditandai sebagai satu *Experiment* dengan tag stabil, dikelola lewat skema feature-flag di [`src/experiments.py`](../src/experiments.py).
 
 > 📄 **[Laporan Lengkap Eksperimen 1–5](laporan-lengkap-eksperimen.html)** — draft laporan utuh satu dokumen: data → split → preprocessing → ekstraksi fitur → evolusi arsitektur → protokol evaluasi → hasil & uji signifikansi seluruh eksperimen.
+> 📝 **[Laporan Data Penelitian](laporan-data-penelitian.md)** — versi naratif bergaya bab proposal (bahasa formal, runtut, ber-nomor Bab 1–9): latar belakang rancangan data, prosedur akuisisi, rancangan pembagian beserta justifikasinya, penjaminan validitas, dan pembahasan keterbatasan. Siap dipakai sebagai bahan Bab 4.3 tesis.
+> 📦 **[Data — sumber, akuisisi & skema split](data.md)** — dataset apa yang dipakai, diambil dari link mana (metadata VGG, mirror ungated HuggingFace), bagaimana split speaker-disjoint dilakukan, cakupan audio yang benar-benar diunduh, dan audit leakage VoxCeleb2-dev.
 > 📚 **[ECAPA-TDNN — penjelasan arsitektur lengkap](ecapa-tdnn.md)** — materi landasan teori untuk pembelajar baru: TDNN, Res2Net, SE attention, MFA, ASP, AAM-softmax, dan peran ECAPA di tiap eksperimen.
+> 🎓 **[Proses Training Model — Experiment 1–5](training-model.md)** — arsitektur training gradien yang dirancang (prototypical episodik) dan kenapa dibekukan; empat tahap *parameter fitting* yang menggantikannya (residual-init, cohort AS-Norm, kalibrasi threshold, prototype); flow diagram per tahap + alur satu run resmi; evolusi jalur pembelajaran exp0→exp5b.
 
 ## Daftar Eksperimen
 
