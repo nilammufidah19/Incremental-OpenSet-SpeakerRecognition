@@ -160,6 +160,46 @@ maupun tag produksi. *Biaya: 1 hari* (masuk fase F6-4).
 
 ## 2. Rancangan Experiment 6
 
+### Batasan bebas-pelatihan — dan di mana Experiment 6 berdiri terhadapnya
+
+Tesis ini punya batasan tetap: **strict 1-shot, bebas-pelatihan (0 episode,
+backbone beku, tanpa fine-tuning)** ([`experiment-5.md`](experiment-5.md) §16).
+Terverifikasi di artefak: `n_train_episodes = 0` di semua run resmi.
+`docs/experiment-5.md` §78 bahkan memakai batasan ini untuk menolak jalur
+Whisper-untuk-SV yang berhasil di literatur (WSI 2025, Whisper-SV 2024),
+karena semuanya melatih ulang/fine-tune backend.
+
+Ini **membatasi Experiment 6 secara langsung** dan harus eksplisit:
+
+| Komponen exp6 | Melatih sesuatu? | Status |
+|---|---|---|
+| F6-1 readout multi-layer + mean/std pooling | tidak — murni aritmatika di atas encoder beku | ✅ patuh |
+| F6-1 post-processing (ABTT / whitening / LDA) | tidak ada gradien; hanya statistik yang di-*fit* di `base_train` | ✅ patuh — sekelas dengan cohort AS-Norm |
+| F6-3 LLR fusion (regresi logistik) | ya — **3–4 koefisien skalar**, di-fit di trial `base_train` | ⚠️ **butuh keputusan** (lihat di bawah) |
+| F6-6 backend terlatih (AAM-softmax + LoRA) | ya — jutaan parameter, gradien pada encoder | ❌ **melanggar batasan** |
+
+**Soal F6-3.** Sistem yang sekarang **sudah** memasang dua komponen yang
+di-fit di `base_train`: statistik cohort AS-Norm (300 utterance) dan ambang
+keputusan (`calibration_strategy="target_frr"`, menghasilkan
+`calibration_threshold = −1.5376` di exp5b). LLR fusion dengan 3 koefisien
+berada di kategori yang **sama persis** — kalibrasi skor di `base_train`,
+bukan pelatihan model — dan memang begitulah literatur speaker verification
+menyebutnya (BOSARIS/FoCal: *calibration and fusion*, bukan *training*).
+Argumen pertahanannya kuat: kalau LLR fusion melanggar batasan, maka ambang
+kalibrasi yang sudah dipakai di semua run resmi juga melanggar.
+
+Tetap saja ini keputusan pembimbing, bukan keputusan implementasi. **Kalau
+F6-3 ditolak**, jalur yang tersisa adalah bobot `w` global tetap seperti
+sekarang — dan §3 sudah menunjukkan itu mentok di +0.0025. Artinya exp6
+kemungkinan besar berakhir sebagai *negative result*, dan itu harus disadari
+sejak awal.
+
+**F6-6 dicoret dari jalur utama.** Sebelumnya ditandai "opsional, risiko
+tinggi"; dengan batasan ini ia bukan sekadar berisiko — ia **melanggar premis
+tesis**. Jangan dikerjakan kecuali pembimbing secara eksplisit melonggarkan
+batasan bebas-pelatihan. Konsekuensinya: kalau G6.1 gagal, tidak ada rencana
+cadangan teknis — yang tersisa adalah menulis exp6 sebagai temuan negatif.
+
 ### Hipotesis
 
 > Kegagalan fusi ECAPA+Whisper di Experiment 4 disebabkan oleh **readout Whisper**
@@ -256,12 +296,14 @@ Uji ulang temuan G4.3 (`mean`) pada 530 query unknown paruh-deteksi (**C6**,
 `scripts/run_full_evaluation.py` dengan tag `exp6_*`, 10 repetisi, ablasi penuh
 A1/A2/A3/B1 + 3 baseline, paired t-test. Bandingkan langsung dengan exp5b.
 
-#### F6-6 — (opsional, hanya kalau G6.1 gagal) Backend terlatih (~1–2 minggu)
-Head gaya ECAPA/TDNN di atas fitur multi-layer Whisper, dilatih AAM-softmax di
-`base_train`, dengan LoRA pada encoder Whisper. Ini resep Whisper-PMFA penuh.
-**Risiko tinggi:** hanya 111 speaker `base_train` — Whisper-PMFA dilatih di
-VoxCeleb2 (5994 speaker). Kemungkinan besar overfit. Jangan mulai tanpa
-menambah data latih.
+#### F6-6 — ❌ DICORET: backend terlatih
+Head gaya ECAPA/TDNN di atas fitur multi-layer Whisper, dilatih AAM-softmax
+dengan LoRA pada encoder — resep Whisper-PMFA penuh. **Melanggar batasan
+bebas-pelatihan** (lihat §2 pembuka); `docs/experiment-5.md` §78 sudah memakai
+batasan itu untuk menolak justru jalur ini. Selain itu `base_train` hanya
+punya 111 speaker ber-cache vs VoxCeleb2 5994 yang dipakai Whisper-PMFA, jadi
+overfit hampir pasti. **Tidak dikerjakan** kecuali pembimbing melonggarkan
+batasan secara eksplisit.
 
 ---
 
@@ -275,9 +317,11 @@ menambah data latih.
 | F6-3 LLR fusion | 1 hari | sedang | tidak — inti kontribusi |
 | F6-4 deteksi | 1 hari | rendah | ya, kalau waktu mepet |
 | F6-5 run resmi | 1 hari | rendah | tidak |
-| F6-6 backend | 1–2 minggu | **tinggi** | ya — hanya kalau G6.1 gagal |
+| ~~F6-6 backend~~ | — | — | **dicoret — melanggar batasan bebas-pelatihan** |
 
-**Total jalur utama: ~5 hari kerja.**
+**Total jalur utama: ~5 hari kerja. Nol training gradien** — seluruh jalur
+utama adalah aritmatika di atas backbone beku plus statistik yang di-fit di
+`base_train`, kecuali 3 koefisien LLR di F6-3 yang menunggu keputusan.
 
 ### Risiko terbesar
 
