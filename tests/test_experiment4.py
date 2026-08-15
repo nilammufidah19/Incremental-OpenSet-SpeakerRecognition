@@ -7,9 +7,12 @@ import numpy as np
 import pytest
 
 from src.evaluation.complementarity import (
+    best_global_weight,
     detection_scores,
     fusion_accuracy,
     l2_normalize,
+    linear_fusion_feasible,
+    linear_fusion_oracle,
     oracle_report,
 )
 from src.prototypical.score_norm import ASNorm
@@ -79,6 +82,105 @@ def test_detection_scores_rules():
     np.testing.assert_allclose(s["max"], [0.3, 0.5])
     # query 0: argmins differ (0 vs 1) -> penalty; query 1: both argmin 0 -> none
     np.testing.assert_allclose(s["a_disagree"], [0.7, 0.5])
+
+
+# --------------------------------------------------------------------------
+# linear_fusion_oracle (C1 fix, 2026-08-15): the ceiling of `w*d_a+(1-w)*d_b`,
+# which is NOT the same as oracle_report's selection ceiling.
+# --------------------------------------------------------------------------
+
+
+def test_linear_fusion_oracle_exceeds_selection_oracle_when_both_argmins_wrong():
+    """The whole point of the correction: a query where NEITHER space's argmin
+    is right, but some w makes the sum right. oracle_report must miss it and
+    linear_fusion_oracle must catch it."""
+    labels = np.array([0])
+    #                     t=0   j=1   j=2
+    d_a = np.array([[0.50, 0.40, 0.90]])   # A picks 1 -> wrong
+    d_b = np.array([[0.50, 0.90, 0.40]])   # B picks 2 -> wrong
+    # w=0.5: [0.50, 0.65, 0.65] -> true class 0 wins
+    assert oracle_report(d_a, d_b, labels)["acc_oracle"] == pytest.approx(0.0)
+    rep = linear_fusion_oracle(d_a, d_b, labels)
+    assert rep["acc_linear_oracle"] == pytest.approx(1.0)
+    assert rep["recovered_both_argmin_wrong"] == pytest.approx(1.0)
+    assert rep["delta_linear_ceiling"] == pytest.approx(1.0)
+
+
+def test_linear_fusion_feasible_interval_matches_brute_force():
+    """The closed-form interval must agree with an exhaustive w sweep."""
+    rng = np.random.default_rng(7)
+    d_a = rng.random((60, 5))
+    d_b = rng.random((60, 5))
+    labels = rng.integers(0, 5, size=60)
+    ok, w_lo, w_hi = linear_fusion_feasible(d_a, d_b, labels)
+
+    grid = np.linspace(0.0, 1.0, 2001)
+    brute = np.zeros(len(labels), dtype=bool)
+    for w in grid:
+        brute |= (w * d_a + (1 - w) * d_b).argmin(axis=1) == labels
+    # a dense sweep can only miss feasible queries whose interval is narrower
+    # than the grid step, never invent one
+    assert np.all(brute <= ok)
+    narrow = (w_hi - w_lo) < (grid[1] - grid[0])
+    assert np.all(ok[~narrow] == brute[~narrow])
+
+
+def test_linear_fusion_oracle_is_upper_bound_of_any_weight():
+    rng = np.random.default_rng(11)
+    d_a = rng.random((80, 4))
+    d_b = rng.random((80, 4))
+    labels = rng.integers(0, 4, size=80)
+    ceiling = linear_fusion_oracle(d_a, d_b, labels)["acc_linear_oracle"]
+    for w in np.linspace(0.0, 1.0, 51):
+        assert fusion_accuracy(d_a, d_b, labels, w) <= ceiling + 1e-12
+
+
+def test_linear_fusion_oracle_single_prototype_is_trivially_feasible():
+    d = np.array([[0.3], [0.9]])
+    rep = linear_fusion_oracle(d, d, np.array([0, 0]))
+    assert rep["acc_linear_oracle"] == pytest.approx(1.0)
+
+
+def test_linear_fusion_oracle_identical_spaces_matches_single_space():
+    """d_a == d_b makes w irrelevant, so the ceiling collapses to plain accuracy."""
+    rng = np.random.default_rng(3)
+    d = rng.random((40, 6))
+    labels = rng.integers(0, 6, size=40)
+    rep = linear_fusion_oracle(d, d, labels)
+    assert rep["acc_linear_oracle"] == pytest.approx(rep["acc_a"])
+    assert rep["delta_linear_ceiling"] == pytest.approx(0.0)
+
+
+def test_linear_fusion_oracle_shape_mismatch_raises():
+    with pytest.raises(ValueError):
+        linear_fusion_oracle(np.zeros((2, 3)), np.zeros((2, 4)), np.zeros(2))
+
+
+def test_best_global_weight_finds_optimum_missed_by_coarse_grid():
+    """C5: exp4's 6-point grid {0.5..0.95} can miss the real optimum."""
+    labels = np.array([0, 0])
+    # true class wins the sum only for w in a narrow band around ~0.88
+    d_a = np.array([[0.10, 0.00], [0.30, 0.40]])
+    d_b = np.array([[0.90, 1.00], [0.60, 0.00]])
+    res = best_global_weight(d_a, d_b, labels)
+    assert set(res) == {"best_w", "best_acc", "acc_a", "grid_accuracies"}
+    assert 0.0 <= res["best_w"] <= 1.0
+    # the fine grid can never do worse than any single point of the coarse one
+    coarse = max(fusion_accuracy(d_a, d_b, labels, w)
+                 for w in (0.5, 0.6, 0.7, 0.8, 0.9, 0.95))
+    assert res["best_acc"] >= coarse
+    assert res["best_acc"] <= linear_fusion_oracle(d_a, d_b, labels)["acc_linear_oracle"]
+
+
+def test_best_global_weight_spans_full_interval():
+    """Must include w<0.5 and both single-space endpoints -- exp4's grid did not."""
+    labels = np.array([0, 1])
+    d_bad = np.array([[0.9, 0.1], [0.1, 0.9]])   # always wrong
+    d_good = np.array([[0.1, 0.9], [0.9, 0.1]])  # always right
+    res = best_global_weight(d_bad, d_good, labels)   # space A useless
+    assert res["best_acc"] == pytest.approx(1.0)
+    assert res["best_w"] < 0.5
+    assert 0.0 in res["grid_accuracies"] and 1.0 in res["grid_accuracies"]
 
 
 def test_asnorm_per_space_scale_invariance():
