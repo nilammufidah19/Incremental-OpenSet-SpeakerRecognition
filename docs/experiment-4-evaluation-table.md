@@ -44,6 +44,12 @@ Experiment 4 harus di-run ulang pada cache yang benar; itu fase F6-0 di
 
 Angka §5 (re-audit) memakai cache pasca-perbaikan dan **valid**.
 
+**➡ Sudah dieksekusi.** Cache `whisper_l4` dipulihkan (14.874 embedding, 0 error)
+dan Experiment 4 dijalankan ulang seutuhnya pada cache yang benar dengan metrik
+terkoreksi → **`experiments/exp4_ceiling_asnorm_v2.json`** (12,1 menit).
+**Tabel yang layak dikutip di tesis ada di [§6](#6-experiment-4-v2--tabel-resmi-cache-terperbaiki--metrik-terkoreksi).**
+§1–§4 dipertahankan hanya sebagai jejak historis.
+
 ---
 
 ## 0. PENTING — posisi Experiment 4 terhadap run resmi
@@ -276,3 +282,91 @@ Transform yang sama diterapkan ke **ECAPA** (efek berdiri sendiri, tanpa fusi):
 | 0.7 | 2.62e-06 | 5.96e-08 |
 
 Konkatenasi benar sampai presisi float32. Tidak ada bug penggabungan.
+
+---
+
+## 6. Experiment 4 v2 — TABEL RESMI (cache terperbaiki + metrik terkoreksi)
+
+**Sumber:** `experiments/exp4_ceiling_asnorm_v2.json` (15 Agustus 2026, 12,1 menit)
+**Cache:** pasca-perbaikan masked pooling — `whisper` dan `whisper_l4` masing-masing 14.874 embedding
+**Protokol:** identik §0 (100 speaker validasi, 1-shot, 4 query, 3 seed, AS-Norm c300/k200)
+
+**Ini tabel yang dikutip di tesis.** §1–§4 di atas adalah jejak historis dari cache yang tidak valid.
+
+### 6.1 Identifikasi closed-set, ruang AS-Norm
+
+| Metrik | `whisper_l4` | `whisper` (L3) |
+|---|---|---|
+| ECAPA saja | 0.8367 ± 0.0031 | 0.8367 ± 0.0031 |
+| Whisper saja | **0.2842 ± 0.0157** | **0.3125 ± 0.0165** |
+| Oracle **seleksi** | 0.8542 ± 0.0031 | 0.8508 ± 0.0051 |
+| Δ ceiling seleksi | +0.0175 ± 0.0054 | +0.0142 ± 0.0047 |
+| **Δ ceiling fusi-linear** | **+0.0367 ± 0.0112** | **+0.0333 ± 0.0105** |
+| — dari query yang kedua argmin-nya salah | 0.0192 | 0.0192 |
+
+### 6.2 Perubahan terhadap exp4 lama (dampak perbaikan pooling)
+
+| | `whisper_l4` lama → baru | `whisper` lama → baru |
+|---|---|---|
+| ECAPA saja | 0.8417 → 0.8367 (−0.0050) | 0.8350 → 0.8367 (+0.0017) |
+| **Whisper saja** | 0.2425 → **0.2842** (**+0.0417, +17 %**) | 0.2317 → **0.3125** (**+0.0808, +35 %**) |
+| Oracle seleksi | 0.8642 → 0.8542 (−0.0100) | 0.8483 → 0.8508 (+0.0025) |
+| Δ ceiling seleksi | +0.0225 → **+0.0175** | +0.0133 → +0.0142 |
+
+> Perbaikan pooling menaikkan Whisper-sendiri secara substansial di kedua
+> varian, tapi ceiling seleksi `whisper_l4` justru **turun** (+0.0225 → +0.0175).
+> Whisper jadi lebih baik namun errornya makin **berkorelasi** dengan ECAPA —
+> tepatnya yang membuat fusi tidak menolong.
+
+### 6.3 Status gerbang v2
+
+| Gerbang | Kriteria | `whisper_l4` | `whisper` |
+|---|---|---|---|
+| G4.1 ceiling **seleksi** | Δ ≥ 0.02 | +0.0175 → **TUTUP** | +0.0142 → **TUTUP** |
+| **G4.1b ceiling fusi-linear** | Δ ≥ 0.02 | **+0.0367 → BUKA** | **+0.0333 → BUKA** |
+| G4.2 fusi (grid kasar 6 titik) | fusi > ECAPA | 0.8375 > 0.8367 → lolos tipis | 0.8342 < 0.8367 → gagal |
+| **G4.2b fusi (grid halus 0.01)** | gain > std antar-seed | +0.0033 @ w=0.990 vs std 0.0031 → **marginal** | +0.0025 @ w=0.953 vs std 0.0031 → **dalam noise** |
+
+**Pembacaan jujur G4.2b untuk `whisper_l4`.** Arahnya berbalik dari exp4 lama
+(dulu 0.8408 < 0.8417; sekarang 0.8400 > 0.8367), tetapi: bobot optimalnya
+**w = 0.990** — artinya 99 % ECAPA, Whisper cuma sentuhan 1 % — dan gain-nya
++0.0033 melawan sebaran antar-seed 0.0031, yaitu rasio 1,06. Flag
+`exceeds_seed_noise` di skrip adalah **heuristik penyaring, bukan uji
+signifikansi**; dengan 3 seed tidak ada daya statistik untuk mengklaim apa pun
+di margin setipis itu. Kesimpulan yang bisa dipertahankan: fusi Whisper tetap
+**tidak terbukti** menolong, kini dengan bukti yang lebih kuat karena diukur
+di atas embedding yang benar.
+
+### 6.4 Deteksi open-set — dua panel
+
+Panel A = 40 query unknown (leftover validasi, seperti exp4).
+Panel B = **592 query unknown** dari speaker `base_train` di luar cohort (bebas bocor).
+ΔEER negatif = aturan lebih baik dari ECAPA-saja. CI 95 % bootstrap berpasangan, 1.000 resample.
+
+**`whisper_l4`**
+
+| Aturan | Panel A EER | ΔEER (CI) | Panel B EER | ΔEER (CI) |
+|---|---|---|---|---|
+| a_only (ECAPA) | 0.1750 | — | 0.1598 | — |
+| b_only (Whisper) | 0.3279 | +0.1497 [+0.0667, +0.2217] **SIG buruk** | 0.3280 | +0.1685 [+0.1333, +0.2057] **SIG buruk** |
+| **mean** | 0.1737 | −0.0056 [−0.0592, +0.0404] **ns** | 0.1619 | +0.0044 [−0.0164, +0.0243] **ns** |
+| max | 0.2950 | +0.1213 [+0.0442, +0.1979] **SIG buruk** | 0.3096 | +0.1500 [+0.1155, +0.1840] **SIG buruk** |
+| a_disagree | 0.1750 | −0.0015 [−0.0317, +0.0187] **ns** | 0.1633 | +0.0042 [−0.0048, +0.0140] **ns** |
+
+**`whisper` (L3)**
+
+| Aturan | Panel A EER | ΔEER (CI) | Panel B EER | ΔEER (CI) |
+|---|---|---|---|---|
+| a_only (ECAPA) | 0.1750 | — | 0.1598 | — |
+| b_only | 0.2996 | +0.1236 [+0.0575, +0.1942] **SIG buruk** | 0.3532 | +0.1934 [+0.1569, +0.2283] **SIG buruk** |
+| **mean** | 0.1575 | −0.0136 [−0.0571, +0.0325] **ns** | 0.1668 | +0.0072 [−0.0097, +0.0248] **ns** |
+| max | 0.2917 | +0.1171 [+0.0500, +0.1829] **SIG buruk** | 0.3186 | +0.1604 [+0.1261, +0.1953] **SIG buruk** |
+| a_disagree | 0.1704 | −0.0004 [−0.0329, +0.0283] **ns** | 0.1629 | +0.0030 [−0.0074, +0.0138] **ns** |
+
+> **Temuan G4.3 exp4 TIDAK BERTAHAN.** Exp4 melaporkan aturan `mean` menurunkan
+> EER (0.1654 → 0.1508 untuk `whisper_l4`) dan menjadikannya kandidat run resmi.
+> Dengan CI bootstrap, `mean` **tidak signifikan di keempat kasus** — bahkan
+> berbalik tanda di panel besar (ΔEER +0.0044 dan +0.0072). Perbaikan yang dulu
+> terlihat berada dalam noise 40-query. Ini **tidak** membatalkan konfirmasi
+> G4.3 di exp5b, yang memakai ReDimNet (backbone kuat) pada 530 unknown resmi
+> dengan 10 repetisi; temuan di sini khusus untuk **Whisper**.
