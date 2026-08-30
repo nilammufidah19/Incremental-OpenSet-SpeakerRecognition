@@ -386,6 +386,49 @@ EXPERIMENTS: dict[str, ExperimentConfig] = {
         dump_detection_scores=True,
         n_reps=10,
     ),
+    # --------------------------------------------------------------------- #
+    # Experiment 6: ECAPA + ReDimNet at the weight a 10-SEED validation sweep #
+    # actually selects. exp5b locked w=0.5 on a 3-seed sweep; re-deriving the #
+    # same grid with 10 seeds                                                 #
+    # (experiments/exp6_validation_sweep_redimnet_b2_10seed.json) moves the   #
+    # optimum to w=0.3 -- 0.8977 vs 0.8918 on the validation half.            #
+    #                                                                         #
+    # So unlike the exp6_whisper_fusion_w* entries, this is NOT a fixed        #
+    # comparison point: it is a properly validation-selected operating point,  #
+    # and on better evidence than exp5b's own.                                 #
+    #                                                                         #
+    # Read the result with the sweep's other finding in view: at 10 seeds the  #
+    # best fused weight does NOT significantly beat ReDimNet alone (0.8977 vs  #
+    # 0.8962, p=0.7532, winning 3/10 seeds). A higher A3 here would still not  #
+    # establish that fusion contributes -- that comparison is A3 vs A2.        #
+    # --------------------------------------------------------------------- #
+    "exp6_redimnet_fusion_w30": ExperimentConfig(
+        id="exp6_redimnet_fusion_w30",
+        title="Experiment 6 -- ECAPA 30% + ReDimNet 70% (10-seed re-derived weight)",
+        description=(
+            "Identical to exp5b_redimnet_fusion except score_fusion_weight=0.30, "
+            "the optimum of the re-derived 10-seed validation sweep (exp5b's "
+            "w=0.50 was chosen on 3 seeds). Same frozen ReDimNet-b2 second "
+            "backbone, per-space AS-Norm c300/k200, target-FRR 1%, per-config "
+            "calibration, running-average continual updates. Training-free, "
+            "strict 1-shot."
+        ),
+        residual_init=True,
+        n_train_episodes=0,
+        continual_mode="running_average",
+        fusion_strategy="score_norm",
+        score_fusion_weight=0.30,
+        whisper_backbone="redimnet_b2",
+        calibration_strategy="target_frr",
+        target_frr=0.01,
+        per_config_calibration=True,
+        score_norm="asnorm",
+        asnorm_cohort_size=300,
+        asnorm_top_k=200,
+        report_open_set_detection=True,
+        dump_detection_scores=True,
+        n_reps=10,
+    ),
 }
 
 # The active experiment tag. Flip this (or set the ACTIVE_EXPERIMENT env var)

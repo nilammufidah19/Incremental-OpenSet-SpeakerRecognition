@@ -519,14 +519,16 @@ pada 30 Agustus 2026, termasuk baris ReDimNet.
 
 | Konfigurasi *(task resmi, 10 repetisi)* | Open-set Acc | Closed-set Acc | Forgetting | det-EER | AUROC | TAR@1%FAR |
 |---|---|---|---|---|---|---|
-| **A3 — ECAPA + ReDimNet (w=50 %)** | **0.876 ± 0.016** | **0.876** | −0.0007 | **0.096** | **0.962** | 0.598 |
+| **A3 — ECAPA + ReDimNet (w=30 %)** | **0.882 ± 0.016** | **0.882** | −0.0011 | **0.091** | **0.964** | 0.630 |
+| A3 — ECAPA + ReDimNet (w=50 %) | 0.876 ± 0.016 | 0.876 | −0.0007 | 0.096 | 0.962 | 0.598 |
 | A3 — ECAPA + Whisper (w=5 %) | 0.823 ± 0.011 | 0.823 | −0.0005 | 0.128 | 0.936 | 0.417 |
 | A3 — ECAPA + Whisper (w=25 %) | 0.775 ± 0.021 | 0.775 | −0.0007 | 0.153 | 0.920 | 0.326 |
 | A3 — ECAPA + Whisper (w=50 %) | 0.646 ± 0.037 | 0.646 | −0.0040 | 0.222 | 0.862 | 0.176 |
 | A1 — ECAPA saja | 0.833 ± 0.015 | 0.833 | −0.0007 | 0.127 | 0.938 | 0.429 |
 | A2 — ReDimNet saja | 0.877 ± 0.017 | 0.877 | −0.0002 | 0.094 | 0.964 | **0.659** |
 | A2 — Whisper saja | 0.223 ± 0.026 | 0.223 | +0.0072 | 0.407 | 0.631 | 0.065 |
-| B1 — static (ECAPA+ReDimNet) | 0.859 ± 0.018 | 0.860 | +0.0379 | 0.196 | 0.877 | 0.347 |
+| B1 — static (ECAPA+ReDimNet, w=30 %) | 0.863 ± 0.018 | 0.863 | +0.0348 | 0.193 | 0.882 | 0.378 |
+| B1 — static (ECAPA+ReDimNet, w=50 %) | 0.859 ± 0.018 | 0.860 | +0.0379 | 0.196 | 0.877 | 0.347 |
 | B1 — static (ECAPA+Whisper) | 0.808 ± 0.018 | 0.808 | +0.0514 | 0.239 | 0.828 | 0.203 |
 | Baseline ECAPA (closed-set) | 0.783 ± 0.019 | 0.783 | +0.0568 | 0.272 | 0.805 | 0.321 |
 | Baseline ProtoNet vanilla | 0.402 ± 0.015 | 0.402 | +0.1142 | 0.460 | 0.566 | 0.045 |
@@ -547,6 +549,40 @@ secara empiris bahwa penambahan `AdaptiveDualASNorm`, parameter `out_matrices`,
 dan tiga namespace cache baru tidak mengubah perilaku eksperimen terdahulu —
 klaim disiplin feature-flag pada §10 karenanya teruji, bukan sekadar
 dinyatakan.
+
+**Konfigurasi terbaik tesis sejauh ini: ECAPA 30 % + ReDimNet 70 %.**
+Bobot ini merupakan optimum sweep validasi 10 seed, sehingga — berbeda dari
+baris dosis Whisper — ia **operating point yang dipilih secara sah**, dan di
+atas bukti yang lebih kuat daripada w = 50 % milik Experiment 5b yang dipilih
+dengan 3 seed. Tag `exp6_redimnet_fusion_w30`, artefak
+`experiments/full_evaluation_summary_exp6_redimnet_fusion_w30.json`,
+11,6 menit.
+
+| Metrik | w = 50 % (exp5b) | **w = 30 %** | Selisih |
+|---|---|---|---|
+| Open-set Acc | 0.8760 | **0.8824** | +0.0065 |
+| det-EER | 0.0956 | **0.0910** | −0.0046 |
+| AUROC | 0.9617 | **0.9640** | +0.0023 |
+| TAR@1%FAR | 0.5980 | **0.6297** | +0.0317 |
+
+Seluruh metrik membaik serentak, dan perbaikan TAR@1%FAR sebesar +0.032
+merupakan yang paling berarti secara praktis. Uji signifikansi pada run ini
+(α Bonferroni = 0.00833) memberi dua hal baru:
+
+- **A3 > A1 signifikan** (Wilcoxon, p = 0.0020) — klaim kontribusi terhadap
+  ECAPA-saja bertahan.
+- **A3 > B1 static signifikan** (p = 0.0071) — pada Experiment 5b perbandingan
+  yang sama menghasilkan p = 0.0310 dan **tidak** signifikan. Keunggulan
+  pembaruan continual atas prototipe statis, yang di Experiment 5b hanya
+  terbukti pada EER deteksi, kini terbukti pula pada akurasi.
+
+**Namun klaim yang menentukan tetap belum terbukti.** A3 (0.8824) berbanding
+A2 ReDimNet-saja (0.8766) menghasilkan **p = 0.1715, tidak signifikan**.
+Dengan kata lain, bobot yang lebih baik menaikkan angka sistem tetapi **tidak**
+mengubah kesimpulan pokok Experiment 5 dan 6: fusi dua-backbone masih belum
+terbukti memberi kontribusi di atas backbone tunggal terkuatnya. Kenaikan
+0.876 → 0.882 harus dilaporkan sebagai perbaikan titik operasi, bukan sebagai
+bukti bahwa fusi bekerja.
 
 **Catatan mengenai bobot ReDimNet.** Nilai w = 50 % adalah konfigurasi resmi
 Experiment 5b, dipilih melalui sweep validasi **3 seed**. Penurunan ulang
