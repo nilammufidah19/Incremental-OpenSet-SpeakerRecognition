@@ -1,0 +1,16 @@
+{
+  "source_backbone": "whisper_pmfa_all",
+  "slice": "full",
+  "pre_transform": "per_layer_whiten_d64",
+  "transform": "wccn",
+  "source_dim": 384,
+  "output_dim": 384,
+  "fit_set": {
+    "n_utterances": 1190,
+    "n_speakers": 111,
+    "pool": "base_train",
+    "seed": 1
+  },
+  "n_written": 14874,
+  "elapsed_minutes": 2.6321425596872965
+}

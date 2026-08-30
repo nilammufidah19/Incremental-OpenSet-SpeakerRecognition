@@ -1,6 +1,6 @@
 # Experiment 6 — Readout Whisper dan Operator Fusi Adaptif pada Rezim 1-Shot Open-Set
 
-**Status:** 🔄 **BERJALAN SEBAGIAN** (30 Agustus 2026) — F6-0 selesai (15 Agustus), **F6-3b selesai**, **F6-1 sedang dihitung**, F6-2/F6-3/F6-4/F6-5 belum.
+**Status:** 🔄 **BERJALAN SEBAGIAN** (30 Agustus 2026) — F6-0 selesai (15 Agustus), **F6-3b selesai**, **F6-1 selesai (G6.1 GAGAL)**, run resmi ECAPA+Whisper sedang disiapkan; F6-2/F6-3/F6-4 belum.
 **Tag:** `exp6_adaptive_fusion` *(F6-3b, analisis validasi)* · `exp6_pmfa_readout` *(F6-1, dalam proses)*
 **Rencana dan gerbang:** [`experiment-6-plan.md`](experiment-6-plan.md) · **Arsitektur desain:** [`experiment-6-architecture.md`](experiment-6-architecture.md)
 **Prasyarat:** [Experiment 4](experiment-4.md) + [re-audit](experiment-4-reaudit.md) · [Experiment 5](experiment-5.md)
@@ -18,9 +18,13 @@
 >
 > **Temuan metodologis.** Sweep validasi Experiment 5 memakai 3 seed. Pada 3 seed, arm fusi bobot-tetap (0.9092) tampak **di atas** ReDimNet-saja (0.9017); pada 10 seed urutannya **terbalik** (0.8918 vs 0.8962). Ini menjelaskan mengapa validasi exp5b terlihat meyakinkan sementara run resminya menghasilkan A2 ≥ A3 (p = 0.88): sweep validasinya kurang daya statistik. Seluruh sweep validasi berikutnya diwajibkan memakai 10 seed.
 >
-> **F6-1 (berjalan).** Readout Whisper-PMFA bebas-pelatihan — agregasi 4 blok encoder × pooling mean **dan** standar deviasi (4096 dimensi) — sedang dihitung untuk 14.874 utterance. Gerbang G6.1 menuntut akurasi Whisper-sendiri ≥ 0.45 (titik awal 0.3475) dan Fisher trace ratio > 1.0 (titik awal 0.51).
+> **F6-1 (selesai — gerbang GAGAL).** Readout Whisper-PMFA bebas-pelatihan diuji atas seluruh enam blok encoder dengan pooling mean dan standar deviasi. Konfigurasi terbaik mencapai **0.3975** dengan Fisher 0.321, terhadap syarat gerbang ≥ 0.45 dan > 1.0 — **gagal pada kedua syarat**, meski memberi kenaikan nyata **+0.0500 (14 % relatif)** atas baseline satu-layer 0.3475.
 >
-> **Artefak:** `experiments/exp6_adaptive_fusion_sweep.json` · `experiments/exp6_f6_3b_sweep_log.txt` · `experiments/exp4_ceiling_asnorm_v2.json` · `experiments/exp4_reaudit_geometry.json`
+> Ablasi menunjukkan informasi pembicara terkonsentrasi pada blok-blok **awal** dan meluruh tajam dengan kedalaman (blok 2 = 0.3658; blok 6 = 0.1883), sehingga agregasi hanya menolong bila jendelanya mencakup blok awal ({1,2,3} = 0.3967). Tiga penjelasan alternatif ditutup dengan pengukuran: bukan jendela layer yang keliru, bukan post-processing yang ill-posed, dan — dari F6-3b — bukan pula operator fusinya. Kesimpulan yang tersisa: **encoder Whisper-base beku tidak memuat cukup informasi pembicara**, dan tidak ada pembacaan bebas-pelatihan yang mengubahnya.
+>
+> **Temuan turunan:** profil per blok membalik klaim [Experiment 2](experiment-2.md) bahwa L4 lebih diskriminatif daripada L3 (terukur: L3 0.3475 vs L4 0.2850). Sweep layer exp2 dijalankan pada cache sebelum perbaikan bug dan tidak pernah divalidasi ulang.
+>
+> **Artefak:** `experiments/exp6_adaptive_fusion_sweep.json` · `experiments/exp6_readout_gate_whisper_pmfa_all.json` · `experiments/materialized_whisper_best.json` · `experiments/exp4_ceiling_asnorm_v2.json` · `experiments/exp4_reaudit_geometry.json`
 
 **Batasan yang mengikat:** strict 1-shot (K_SHOT = 1), **bebas-pelatihan** (0 episode pelatihan, backbone beku, tanpa *fine-tuning*), protokol evaluasi mengikuti Experiment 3 secara penuh.
 
@@ -50,11 +54,11 @@ Experiment 6 memakai **dua konfigurasi pasangan backbone yang berbeda**, masing-
 | Fase | Backbone pertama | Backbone kedua | Dimensi | Pertanyaan yang dijawab |
 |---|---|---|---|---|
 | **F6-3b** | ECAPA-TDNN (192-d) | **ReDimNet-b2** (192-d) | 192 + 192 | Apakah **operator fusi** meninggalkan potensi? |
-| **F6-1** | ECAPA-TDNN (192-d) | **Whisper-PMFA** (4096-d) | 192 + 4096 | Apakah **readout Whisper** dapat diperbaiki? |
+| **F6-1** | ECAPA-TDNN (192-d) | **Whisper-PMFA** (6144-d mentah → 384-d terproses) | 192 + 384 | Apakah **readout Whisper** dapat diperbaiki? |
 
 **Mengapa F6-3b memakai ReDimNet, bukan Whisper.** Pertanyaan yang diuji F6-3b adalah tentang operator fusi. Bila operator diuji di atas pasangan ECAPA+Whisper, hasil negatif tidak dapat ditafsirkan: kegagalan bisa berasal dari operatornya, bisa pula dari kualitas ruang Whisper yang sudah diketahui buruk (Fisher ratio 0.51). Dengan memakai ReDimNet — backbone kedua terbaik yang tersedia, dengan performa mandiri 0.8962 — **kualitas readout dihilangkan sebagai variabel pengganggu**, sehingga sisa perbedaan dapat diatribusikan kepada operator. Konfigurasi ini juga memakai cache yang sudah ada sehingga tidak memerlukan komputasi GPU tambahan.
 
-**Mengapa F6-1 memakai Whisper.** Pertanyaan F6-1 justru tentang readout Whisper, sehingga backbone keduanya harus Whisper. Yang berubah bukan backbone-nya melainkan cara membaca keluarannya, dari satu layer dengan mean pooling menjadi empat blok encoder dengan mean dan standar deviasi.
+**Mengapa F6-1 memakai Whisper.** Pertanyaan F6-1 justru tentang readout Whisper, sehingga backbone keduanya harus Whisper. Yang berubah bukan backbone-nya melainkan cara membaca keluarannya, dari satu layer dengan mean pooling menjadi enam blok encoder dengan mean dan standar deviasi, diikuti whitening per blok dan WCCN yang di-*fit* pada `base_train` (namespace cache `whisper_best`, 384 dimensi).
 
 **Perlu dicatat:** ECAPA-TDNN selalu menjadi backbone pertama di seluruh eksperimen, dan bobotnya tidak pernah diubah satu bit pun. Ia dimuat sebagai ekstraktor beku. Yang berevolusi antar eksperimen adalah perlakuan terhadap embedding keluarannya.
 
@@ -291,9 +295,105 @@ Gerbang **G6.1** menuntut dua hal secara bersamaan: akurasi Whisper-sendiri pada
 
 Selain gerbang tersebut, ditambahkan **ablasi irisan** yang tidak diminta rencana awal namun diperlukan agar hasilnya dapat ditafsirkan. Karena tata letak vektor bersifat teriris, varian `mean_only`, `std_only`, dan setiap blok layer secara terpisah dapat dievaluasi tanpa biaya tambahan. Tanpa ablasi ini, gerbang yang lolos tidak akan memberi tahu bagian mana yang bekerja — agregasi multi-layer, *statistics pooling*, atau keduanya.
 
-Hasil dan vonis G6.1 akan dilaporkan pada revisi dokumen ini.
+### 7.1 Hasil — gerbang G6.1 **GAGAL**
 
-> **Catatan ekspektasi, dicatat sebelum hasil terlihat.** G6.1 menuntut lompatan besar pada dua metrik sekaligus. Terlepas dari hasilnya, F6-3b telah menurunkan probabilitas bahwa perbaikan readout akan membuat fusi menang, karena operator yang diperbaiki pun tidak cukup pada pasangan backbone yang jauh lebih kuat.
+Artefak: `experiments/exp6_readout_gate_whisper_pmfa_all.json` ·
+`experiments/exp6_g61_all_log.txt`.
+
+**Konfigurasi terbaik: 0.3975** (per-layer whitening d=64 atas enam blok, lalu
+WCCN; 384 dimensi), dengan Fisher trace ratio 0.321. Gerbang menuntut ≥ 0.45
+**dan** Fisher > 1.0, sehingga **gagal pada kedua syarat**. Terhadap baseline
+satu-layer (0.3475), readout baru memberi **+0.0500** — kenaikan 14 % relatif
+yang nyata, tetapi tidak cukup.
+
+**Profil per blok encoder** (masing-masing mean+std, 1024-d):
+
+| Blok | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|
+| Akurasi | 0.3567 | **0.3658** | 0.3550 | 0.2783 | 0.2358 | 0.1883 |
+| Fisher | 0.505 | 0.440 | 0.447 | 0.356 | 0.311 | 0.219 |
+
+Informasi pembicara terkonsentrasi pada blok-blok **awal** dan meluruh tajam
+dengan kedalaman — blok terakhir hanya separuh kualitas blok kedua. Ini
+konsisten dengan sifat Whisper sebagai model ASR: lapisan akhir terspesialisasi
+untuk konten fonetik, bukan identitas penutur.
+
+**Jendela agregasi** (dimulai dari blok 1):
+
+| Jendela | {1,2} | {1,2,3} | {1..4} | {1..5} | {1..6} |
+|---|---|---|---|---|---|
+| Akurasi | 0.3858 | **0.3967** | 0.3683 | 0.3300 | 0.3242 |
+
+**Agregasi multi-layer terbukti menolong**, tetapi hanya bila jendelanya
+mencakup blok-blok awal: {1,2,3} mengungguli blok tunggal terbaik sebesar
++0.0309. Menambahkan blok 4 ke atas justru menurunkan kembali. Premis
+Whisper-PMFA mengenai agregasi parsial dengan demikian **terkonfirmasi**; yang
+tidak berlaku adalah pemilihan blok tengah-ke-akhir, yang merupakan analog
+langsung dari resep aslinya pada encoder 32 blok.
+
+> **Koreksi terhadap laporan antara.** Percobaan pertama memakai jendela
+> {3,4,5,6} dan menghasilkan pembacaan bahwa "agregasi memburuk secara
+> monoton". Pembacaan itu **keliru**: jendela tersebut dimulai setelah puncak
+> kualitas, sehingga setiap penambahan memang hanya memperburuk. Setelah blok
+> 1 dan 2 dimasukkan, arah kesimpulannya berbalik.
+
+**Pooling.** Dengan enam blok, `mean_only` mencapai 0.2850 dan `std_only`
+hanya 0.2050. Standar deviasi memberi kontribusi, tetapi jauh lebih lemah
+daripada rerata.
+
+**Pengondisian ruang.** Menyempurnakan post-processing memberi pelajaran
+tersendiri. Whitening global atas konkatenasi 6144-d menghasilkan effective
+rank **7,0** — hampir seluruh ruang runtuh. Penyebabnya bukan semata
+anisotropi Whisper, melainkan **estimasi yang ill-posed**: fit set `base_train`
+hanya berisi 1.190 utterance, sehingga kovarians berdimensi 6144 memiliki rank
+paling banyak 1.189. Whitening tiap blok 1024-d secara terpisah memperbaiki
+pengondisian tersebut secara dramatis, dari rank efektif 7,0 menjadi **101,7**,
+dan memang menghasilkan varian terbaik.
+
+Namun hubungan antara pengondisian dan akurasi tidak monoton: menaikkan
+dimensi per blok terus menaikkan rank efektif (d=128 → 194,7; d=192 → 275,3)
+sementara akurasinya **turun** (0.3600; 0.3733 berbanding 0.3975 pada d=64).
+Arah-arah tambahan yang berhasil dipulihkan berisi derau, bukan sinyal
+pembicara.
+
+### 7.2 Interpretasi
+
+Gerbang G6.1 gagal, dan kriterianya tidak digeser. Namun kegagalan ini
+disertai diagnosis yang jauh lebih tajam daripada vonis Experiment 4 yang
+digantikannya. Tiga penjelasan alternatif telah ditutup dengan pengukuran,
+bukan dengan argumen:
+
+1. **Bukan karena jendela layer yang keliru.** Seluruh 63 kombinasi jendela
+   dan blok tunggal diukur; yang terbaik tetap 0.3967.
+2. **Bukan karena post-processing yang buruk.** Pengondisian diperbaiki 12×
+   lipat, dan akurasi tidak mengikuti.
+3. **Bukan karena operator fusinya.** F6-3b menunjukkan operator adaptif
+   mengungguli bobot konstan secara signifikan, dan fusi tetap kalah.
+
+Kesimpulan yang tersisa adalah yang paling sederhana: **encoder Whisper-base
+yang beku tidak memuat informasi pembicara yang cukup**, dan tidak ada
+pembacaan bebas-pelatihan atas keluarannya yang dapat mengubah hal itu. Resep
+Whisper-PMFA memang mencapai EER 1,42 % di VoxCeleb1, namun capaian tersebut
+bergantung pada backend terlatih dengan LoRA — komponen yang secara eksplisit
+berada di luar batasan tesis ini.
+
+> **Catatan ekspektasi yang dicatat sebelum hasil terlihat, dan terbukti.**
+> F6-3b telah menurunkan probabilitas bahwa perbaikan readout akan membuat
+> fusi menang, karena operator yang diperbaiki pun tidak cukup pada pasangan
+> backbone yang jauh lebih kuat.
+
+### 7.3 Temuan turunan yang berdampak ke Experiment 2
+
+Profil per blok di atas menunjukkan blok 3 (0.3550) lebih baik daripada blok 4
+(0.2783). [`experiment-2.md`](experiment-2.md) §46 menyatakan sebaliknya —
+sweep layer di sana menyimpulkan L4 paling diskriminatif, dan atas dasar itu
+backbone `whisper_l4` dibuat dan dipakai pada Experiment 2 serta sebagian
+Experiment 4. Sweep tersebut dijalankan pada cache **sebelum** perbaikan bug
+masked pooling dan tidak pernah divalidasi ulang sesudahnya. Pengukuran pada
+cache yang benar membalik urutannya: **L3 = 0.3475 berbanding L4 = 0.2850**.
+
+Klaim pada Experiment 2 perlu dikoreksi, dan pemilihan blok di sana perlu
+dinyatakan sebagai keputusan yang diambil di atas embedding yang tidak valid.
 
 ---
 

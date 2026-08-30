@@ -1,0 +1,6 @@
+second backbone: whisper_best
+validation task: 10x10-way k=1 n_query=4; detection half untouched: 111 speakers
+base_train index: 111 speakers, 1190 utterances (cached for ecapa+whisper_best)
+cohort: (300, 576) (concat dim = 192 + 384)
+impostor pool: 295 speakers
+

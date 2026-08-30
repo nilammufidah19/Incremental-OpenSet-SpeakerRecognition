@@ -32,6 +32,18 @@ CACHE_DIR = REPO_ROOT / "data" / "cache" / "embeddings"
 # two variants coexist and never collide (see src/experiments.py, exp2a).
 WHISPER_L4_FRACTION = 4.0 / 6.0
 
+def _materialized_only(*_args, **_kwargs):
+    """whisper_best holds a base_train-fitted transform of another cache, so it
+    cannot be derived from one utterance in isolation. Recomputing it here
+    would silently produce a DIFFERENT space (no transform applied), which is
+    exactly the kind of half-applied-transform bug the materialization script
+    exists to prevent -- so fail loudly instead."""
+    raise RuntimeError(
+        "backbone 'whisper_best' is materialized, not computed on demand. "
+        "Run: .venv/Scripts/python.exe scripts/exp6_materialize_whisper_space.py"
+    )
+
+
 BACKBONE_MODES = {
     "ecapa": "ecapa_inference",
     "whisper": "whisper_inference",
@@ -58,6 +70,11 @@ BACKBONE_MODES = {
     # layer subset is a slice rather than a recompute. Same forward pass cost
     # as whisper_pmfa; also stores RAW statistics.
     "whisper_pmfa_all": "whisper_inference",
+    # Experiment 6: the CHOSEN Whisper readout, written by
+    # scripts/exp6_materialize_whisper_space.py (a slice of whisper_pmfa_all
+    # plus a base_train-fit transform). Never computed on demand -- see the
+    # extractor below.
+    "whisper_best": "whisper_inference",
 }
 BACKBONE_EXTRACTORS = {
     "ecapa": (ecapa.extract_embedding, ecapa.extract_embedding_windows),
@@ -78,6 +95,7 @@ BACKBONE_EXTRACTORS = {
         partial(whisper_encoder.extract_embedding_pmfa_windows,
                 layers=whisper_encoder.PMFA_ALL_LAYERS),
     ),
+    "whisper_best": (_materialized_only, _materialized_only),
 }
 
 
