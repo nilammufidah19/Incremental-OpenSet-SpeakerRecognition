@@ -216,3 +216,112 @@ def split_cohort_and_genuine(
     cohort_pool = {s: embedding_index[s] for s in cohort_speakers}
     genuine_pool = {s: embedding_index[s] for s in genuine_speakers}
     return cohort_pool, genuine_pool
+
+
+class AdaptiveDualASNorm(DualASNorm):
+    """Zero-parameter adaptive two-space score fusion (Experiment 6, F6-3b).
+
+    DualASNorm combines the two per-space z-score matrices with a single
+    weight `w` that is CONSTANT over every query. Experiment 4's re-audit
+    measured the cost of that: the best global w buys +0.0025 over
+    ECAPA-alone, while an oracle that picks w PER QUERY reaches +0.0333 --
+    a 13x gap that no amount of sweeping a constant can reach.
+
+    The obvious way to close it is to FIT a fusion backend (F6-3, logistic
+    regression / BOSARIS-style LLR). This class is the alternative that
+    needs no ruling on the thesis' training-free constraint, because it fits
+    NOTHING: the per-query weight is read off the two z-score matrices that
+    have already been computed.
+
+        margin_i(q) = (second smallest z_i(q, .)) - (smallest z_i(q, .))
+
+    A space with a large margin has one clearly-closest prototype; a space
+    with a small margin is undecided between its top two. So margin is used
+    directly as that space's confidence on that query:
+
+        "margin_weighted"  w(q) = margin_1(q) / (margin_1(q) + margin_2(q))
+        "margin_select"    w(q) = 1 if margin_1(q) >= margin_2(q) else 0
+
+    `margin_select` is the practical form of Experiment 4's SELECTION oracle
+    (which used the true label); `margin_weighted` is its soft version and
+    stays inside the weighted-sum family whose ceiling is +0.0333.
+
+    Using the RATIO rather than an absolute margin matters: the number of
+    prototypes differs between threshold calibration (~55, all base_train
+    genuine speakers) and FSCIL session 1 (10, growing per session), and
+    margins grow with prototype count. A ratio of two margins measured on
+    the same query against the same prototype set is insensitive to that.
+
+    Degenerate cases fall back to `weight` (the constant DualASNorm
+    behaviour): fewer than 2 prototypes, so no margin exists, or both
+    margins ~0, so the ratio is undefined. This keeps the class a strict
+    generalization -- with 1 prototype it IS DualASNorm.
+
+    Orientation is unchanged (lower = more genuine), so the calibration and
+    threshold machinery works untouched. Note the threshold must still be
+    calibrated against THIS normalizer: per-query weighting changes the
+    score distribution, and every arm in the F6-3b sweep re-runs
+    build_genuine_impostor_distances for exactly that reason.
+
+    Training-free status: tier 2 in docs/experiment-6-plan.md section 2 --
+    no gradients, and nothing fit on base_train either. It is admissible
+    under the strictest reading of the constraint, which is the whole point
+    of running it before F6-3.
+    """
+
+    VALID_RULES = ("margin_weighted", "margin_select")
+
+    def __init__(
+        self,
+        cohort_embeddings: np.ndarray,
+        split_dim: int,
+        top_k: int = 100,
+        weight: float = 0.5,
+        rule: str = "margin_weighted",
+    ) -> None:
+        super().__init__(cohort_embeddings, split_dim=split_dim, top_k=top_k, weight=weight)
+        if rule not in self.VALID_RULES:
+            raise ValueError(f"rule must be one of {self.VALID_RULES}, got {rule!r}")
+        self.rule = rule
+
+    @staticmethod
+    def _margins(z: np.ndarray) -> np.ndarray:
+        """Per-row gap between the two smallest entries of `z` (n_q, n_p)."""
+        part = np.partition(z, 1, axis=1)
+        return part[:, 1] - part[:, 0]
+
+    def per_query_weight(self, queries: np.ndarray, prototypes: np.ndarray) -> np.ndarray:
+        """The w(q) this rule would use -- exposed so the sweep can report the
+        weight distribution instead of treating the rule as a black box."""
+        queries = np.atleast_2d(np.asarray(queries, dtype=np.float64))
+        prototypes = np.atleast_2d(np.asarray(prototypes, dtype=np.float64))
+        d = self.split_dim
+        z_first = self._first.normalize(queries[:, :d], prototypes[:, :d])
+        z_second = self._second.normalize(queries[:, d:], prototypes[:, d:])
+        return self._weights_from(z_first, z_second)
+
+    def _weights_from(self, z_first: np.ndarray, z_second: np.ndarray) -> np.ndarray:
+        n_proto = z_first.shape[1]
+        if n_proto < 2:
+            return np.full(z_first.shape[0], self.weight)
+
+        m_first = self._margins(z_first)
+        m_second = self._margins(z_second)
+        total = m_first + m_second
+
+        if self.rule == "margin_select":
+            w = (m_first >= m_second).astype(np.float64)
+        else:
+            with np.errstate(invalid="ignore", divide="ignore"):
+                w = m_first / total
+        # both spaces undecided -> no evidence either way, use the constant
+        return np.where(total > 1e-12, w, self.weight)
+
+    def normalize(self, queries: np.ndarray, prototypes: np.ndarray) -> np.ndarray:
+        queries = np.atleast_2d(np.asarray(queries, dtype=np.float64))
+        prototypes = np.atleast_2d(np.asarray(prototypes, dtype=np.float64))
+        d = self.split_dim
+        z_first = self._first.normalize(queries[:, :d], prototypes[:, :d])
+        z_second = self._second.normalize(queries[:, d:], prototypes[:, d:])
+        w = self._weights_from(z_first, z_second)[:, None]
+        return w * z_first + (1.0 - w) * z_second

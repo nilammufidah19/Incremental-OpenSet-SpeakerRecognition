@@ -1,0 +1,23 @@
+validation task: 10x10-way k=1 n_query=4; detection half untouched: 111 speakers
+base_train index: 111 speakers, 1190 utterances (cached for ecapa+redimnet_b2)
+cohort: (300, 384) (concat dim = 192 + 192)
+impostor pool: 295 speakers
+
+  A1_ecapa_only        thr= -1.4286 calEER=0.2112 val_acc=0.8402+/-0.0176 (3-seed parity 0.8525)
+  A2_redimnet_only     thr= -1.6198 calEER=0.1533 val_acc=0.8962+/-0.0192 (3-seed parity 0.9017)
+  A3_fixed_w           thr= -1.4590 calEER=0.1586 val_acc=0.8918+/-0.0182 (3-seed parity 0.9092)
+  A3_margin_weighted   thr= -1.6351 calEER=0.1643 val_acc=0.8968+/-0.0168 (3-seed parity 0.9125)
+                         w: mean=0.479 std=0.251 p05-p95=[0.07,0.93] at-extremes=0.00
+  A3_margin_select     thr= -1.7500 calEER=0.1661 val_acc=0.8958+/-0.0175 (3-seed parity 0.9075)
+                         w: mean=0.455 std=0.498 p05-p95=[0.00,1.00] at-extremes=1.00
+
+best single-space arm : A2_redimnet_only 0.8962
+A3 fixed w=0.5       : 0.8918
+best adaptive arm     : A3_margin_weighted 0.8968
+
+G6.3b-1  vs max(A1,A2): margin=+0.0005 vs spread 0.0192, wins 6/10 -> GAGAL
+G6.3b-2  A3_margin_weighted   vs fixed w: delta=+0.0050 paired_t_test p=0.0085 wins 8/10
+G6.3b-2  A3_margin_select     vs fixed w: delta=+0.0040 paired_t_test p=0.1247 wins 7/10
+G6.3b-2 (adaptivity buys something a constant cannot): LOLOS
+
+saved exp6_adaptive_fusion_sweep.json (8.2 min)

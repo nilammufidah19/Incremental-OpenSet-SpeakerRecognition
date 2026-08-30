@@ -362,6 +362,14 @@ semua tag lama tidak tersentuh):
 > sebagai jalur utama. Kalau LDA menang di ruang PMFA 4096-d, itu temuan yang
 > berlawanan dengan bukti sekarang dan harus dilaporkan sebagai itu.
 
+> **Koreksi desain 2026-08-30 (dari verifikasi prasyarat).** Post-processing
+> langkah 3 **tidak boleh dibakar ke dalam cache.** Cache menyimpan 4096-d
+> **mentah**; transform terfit diterapkan di titik load
+> ([`system.py::embed`](../src/system.py) baris 61–65). Alasannya dua: (i) kalau
+> dibakar, tiap ablasi `none`/`abtt`/`whiten` menuntut recompute ~45 menit
+> GPU, (ii) aturan feature-flag “default = perilaku lama” jadi tidak bisa
+> ditegakkan karena default-nya terkunci di dalam file cache.
+
 Semuanya **training-free** — tidak ada backend yang dilatih di tahap ini. Ini
 sengaja: kalau readout training-free saja sudah menembus gerbang, kita hemat
 berminggu-minggu; kalau tidak, baru pertimbangkan backend terlatih (F6-6).
@@ -434,7 +442,81 @@ naskah:** literatur SV hampir seluruhnya *men-fit* bobot fusinya (termasuk
 quality-aware calibration Thienpondt dkk., ICASSP 2021), jadi F6-3b dilaporkan
 sebagai **eksplorasi**, bukan sebagai penerapan resep yang sudah mapan.
 
-**Gerbang G6.3b:** sama dengan G6.3.
+**Gerbang G6.3b (direvisi saat implementasi, 30 Agustus 2026 — dipecah dua):**
+
+- **G6.3b-1** (kriteria pra-registrasi): adaptif > max(A1, A2), margin > 1 std
+  antar-seed, menang di semua seed.
+- **G6.3b-2** (yang menentukan): adaptif > A3 dengan `w` **tetap**, uji
+  berpasangan antar-seed, p < 0.05.
+
+Alasan dipecah: pada task validasi, arm `w` **tetap** sudah melewati G6.3b-1
+sendirian. Jadi aturan adaptif yang cuma menyamai `w` tetap pun akan
+“lolos” — gerbang tunggal tidak memisahkan “fusi berguna” dari
+“**adaptivitas** berguna”. Ini jebakan yang sama dengan exp5b (`A3 > A1`
+lolos padahal `A2 ≥ A3`), dan nyaris terulang di sini.
+
+---
+
+### Hasil F6-3b (SELESAI, 30 Agustus 2026)
+
+Artefak: `experiments/exp6_adaptive_fusion_sweep.json`,
+log `experiments/exp6_f6_3b_sweep_log.txt`, skrip
+`scripts/exp6_adaptive_fusion_sweep.py`. **10 seed**, protokol identik dengan
+`exp5_validation_sweep.py` kecuali aturan fusinya. Dijalankan utuh dari cache
+→ cohort → kalibrasi ambang per-arm → FSCIL → uji statistik; tidak ada angka
+yang diambil dari run lama.
+
+| Arm | val_acc (10 seed) | (3 seed, paritas exp5) |
+|---|---|---|
+| A1 ECAPA-saja | 0.8402 ± 0.0176 | 0.8525 |
+| **A2 ReDimNet-saja** | **0.8962 ± 0.0192** | 0.9017 |
+| A3 `w` tetap = 0.5 | 0.8918 ± 0.0182 | 0.9092 |
+| **A3 margin-weighted** (adaptif) | **0.8968 ± 0.0168** | 0.9125 |
+| A3 margin-select (adaptif) | 0.8958 ± 0.0175 | 0.9075 |
+
+**Cek harness:** kolom 3-seed mereproduksi `exp5_validation_sweep.json`
+**bit-for-bit** (0.8525 / 0.9017 / 0.9092, ambang dan nilai per-seed identik).
+Yang berbeda dari exp5 hanya aturan fusi.
+
+**Vonis gerbang:**
+
+- **G6.3b-1 GAGAL.** Adaptif vs max(A1,A2) = **+0.0005**, simpangan antar-seed
+  0.0192, menang 6/10 seed. Tidak terbedakan dari nol.
+- **G6.3b-2 LOLOS.** margin-weighted vs `w` tetap = **+0.0050**, paired
+  t-test **p = 0.0085**, menang 8/10 seed. (margin-select +0.0040, p = 0.1247
+  — tidak signifikan; aturan keras kalah dari aturan lunak.)
+
+**Diagnostik bobot** (pada trial kalibrasi yang persis dipakai menyetel
+ambang): margin-weighted menghasilkan w dengan mean 0.479, std **0.251**,
+p05–p95 **[0.07, 0.93]**, 0 % di titik ekstrem. Jadi aturannya benar-benar
+adaptif — bukan `w` konstan yang menyamar.
+
+**Bacaan yang benar, dan batasnya.** Operator fusi memang meninggalkan
+sesuatu di meja: bobot per-query mengalahkan bobot konstan secara signifikan.
+Tapi besarannya (+0.0050) satu orde terlalu kecil untuk menutup jarak ke
+backbone tunggal terbaik — **fusi tetap tidak mengungguli ReDimNet-saja.**
+Kriteria pra-registrasi `A3 > max(A1, A2)` gagal, dan **tidak boleh digeser
+setelah melihat hasil**.
+
+**Temuan metodologis tambahan (penting untuk sidang).** Dengan 3 seed,
+A3 `w` tetap (0.9092) tampak **di atas** A2 (0.9017); dengan 10 seed urutannya
+**terbalik** (0.8918 vs 0.8962). Sweep validasi exp5 memakai 3 seed dan
+menyimpulkan G5.3 lolos — urutan A3 vs A2 di sana ternyata **tidak stabil**.
+Ini menjelaskan kenapa validasi exp5b terlihat bagus tapi run resmi
+menghasilkan A2 ≥ A3 (p = 0.88): sweep validasinya kurang daya, bukan
+task-nya yang berbeda. **Semua sweep validasi berikutnya memakai 10 seed.**
+
+**Konsekuensi untuk F6-1.** Premis F6-1 adalah “yang rusak readout-nya, bukan
+operator fusinya”. F6-3b menguji sisi lain premis itu pada pasangan backbone
+terbaik yang ada: operator diperbaiki, hasilnya tetap tidak mengalahkan
+backbone tunggal. Itu **melemahkan** — bukan meniadakan — harapan bahwa
+memperbaiki readout Whisper akan membuat fusi menang. F6-1 masih layak
+dijalankan untuk pertanyaannya sendiri (apakah readout training-free bisa
+menaikkan Whisper-sendiri ke ≥ 0.45, gerbang G6.1), tapi ekspektasi terhadap
+G6.3 harus diturunkan sekarang, sebelum dijalankan.
+
+**Status batasan bebas-pelatihan:** F6-3b adalah tingkat 2 — nol parameter
+di-fit. Hasil ini sah tanpa menunggu keputusan pembimbing apa pun.
 
 **Pre-registrasi pelaporan (berlaku untuk F6-3 dan F6-3b):** laporkan **tiga
 arm fusi** — `w` tetap / adaptif nol-parameter / LLR — pada protokol yang
@@ -474,6 +556,14 @@ batasan secara eksplisit.
 | F6-4 deteksi | 1 hari | rendah | ya, kalau waktu mepet |
 | F6-5 run resmi | 1 hari | rendah | tidak |
 | ~~F6-6 backend~~ | — | — | **dicoret — melanggar batasan bebas-pelatihan** |
+
+**Runtime terukur (verifikasi 2026-08-30, RTX 3050)** — estimasi “hari” di
+tabel ini adalah waktu *engineering*, bukan waktu komputasi. Dari artefak run
+yang ada: run resmi 10 repetisi **11,8 mnt**, validation sweep **4,8 mnt**,
+analisis exp4 **12,1 mnt**, recompute cache Whisper 14.874 utt **42,4 mnt**.
+**Satu siklus exp6 utuh (cache → sweep → run resmi → statistik) ≈ 1,5–2 jam
+GPU**, jadi menjalankan ulang seluruh pipeline dari awal untuk tiap perubahan
+adalah wajar dan harus jadi default — jangan pernah menambal angka.
 
 **Total jalur utama: ~5.5 hari kerja. Nol training gradien** — seluruh jalur
 utama adalah aritmatika di atas backbone beku plus statistik yang di-fit di
