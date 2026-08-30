@@ -1,6 +1,6 @@
 # Experiment 6 — Readout Whisper dan Operator Fusi Adaptif pada Rezim 1-Shot Open-Set
 
-**Status:** 🔄 **BERJALAN SEBAGIAN** (30 Agustus 2026) — F6-0 selesai (15 Agustus), **F6-3b selesai**, **F6-1 selesai (G6.1 GAGAL)**, **run resmi ECAPA+Whisper selesai**; F6-2/F6-3/F6-4 belum.
+**Status:** 🔄 **BERJALAN SEBAGIAN** (30 Agustus 2026) — F6-0 selesai (15 Agustus), **F6-3b selesai**, **F6-1 selesai (G6.1 GAGAL)**, **enam run resmi selesai** (ECAPA+Whisper pada 3 bobot, ECAPA+ReDimNet pada 2 bobot, reproduksi exp5b); F6-2/F6-3/F6-4 belum.
 **Tag:** `exp6_whisper_fusion` *(run resmi, ablasi terdokumentasi)* · analisis: F6-3b dan gerbang G6.1
 **Rencana dan gerbang:** [`experiment-6-plan.md`](experiment-6-plan.md) · **Arsitektur desain:** [`experiment-6-architecture.md`](experiment-6-architecture.md)
 **Prasyarat:** [Experiment 4](experiment-4.md) + [re-audit](experiment-4-reaudit.md) · [Experiment 5](experiment-5.md)
@@ -23,6 +23,8 @@
 > Ablasi menunjukkan informasi pembicara terkonsentrasi pada blok-blok **awal** dan meluruh tajam dengan kedalaman (blok 2 = 0.3658; blok 6 = 0.1883), sehingga agregasi hanya menolong bila jendelanya mencakup blok awal ({1,2,3} = 0.3967). Tiga penjelasan alternatif ditutup dengan pengukuran: bukan jendela layer yang keliru, bukan post-processing yang ill-posed, dan — dari F6-3b — bukan pula operator fusinya. Kesimpulan yang tersisa: **encoder Whisper-base beku tidak memuat cukup informasi pembicara**, dan tidak ada pembacaan bebas-pelatihan yang mengubahnya.
 >
 > **Temuan turunan:** profil per blok membalik klaim [Experiment 2](experiment-2.md) bahwa L4 lebih diskriminatif daripada L3 (terukur: L3 0.3475 vs L4 0.2850). Sweep layer exp2 dijalankan pada cache sebelum perbaikan bug dan tidak pernah divalidasi ulang.
+>
+> **Titik operasi terbaik tesis sejauh ini: ECAPA 30 % + ReDimNet 70 % → 0.882 ± 0.016.** Sweep validasi 10 seed menempatkan optimum pada w = 30 %, bukan w = 50 % yang dipilih Experiment 5b dengan 3 seed. Run resmi pada bobot tersebut memperbaiki seluruh metrik serentak (akurasi 0.876 → 0.882; det-EER 0.096 → 0.091; TAR@1%FAR 0.598 → 0.630), dan untuk **pertama kalinya membuat keunggulan pembaruan continual atas prototipe statis signifikan pada akurasi** (A3 > B1, p = 0.0071 < α = 0.00833; di Experiment 5b p = 0.0310, tidak signifikan). **Namun A3 vs A2 ReDimNet-saja tetap p = 0.1715, tidak signifikan** — kontribusi fusi masih belum terbukti. Lihat §7.6.
 >
 > **Run resmi ECAPA + Whisper (baru).** Baris yang selama ini hilang dari tesis kini ada, di bawah protokol yang identik dengan Experiment 5b: **A3 = 0.823 ± 0.011**, det-EER 0.128, AUROC 0.936. Fusi ECAPA+Whisper **signifikan lebih buruk daripada ECAPA sendirian** (0.823 vs 0.833, p = 0.0037) — arah yang berlawanan dengan Experiment 5b, di mana perbandingan yang sama menunjukkan fusi unggul (p < 0.0001). Whisper sendirian hanya mencapai **0.223** berbanding ReDimNet 0.877. Kontrol A1 dan ketiga baseline identik di kedua run, memastikan satu-satunya variabel yang berbeda adalah backbone kedua. Lihat §7.3–7.4.
 >
@@ -454,12 +456,12 @@ sama; **satu-satunya perbedaan adalah backbone keduanya**. Kesamaan tersebut
 terverifikasi oleh baris-baris yang tidak melibatkan backbone kedua: A1 dan
 ketiga baseline identik sampai tiga desimal di kedua run.
 
-| Metrik | ECAPA + **ReDimNet** (exp5b) | ECAPA + **Whisper** (exp6) | Selisih |
-|---|---|---|---|
-| A3 Open-set Acc | **0.876 ± 0.016** | 0.823 ± 0.011 | **−0.053** |
-| A3 det-EER | **0.096** | 0.128 | +0.032 |
-| A3 AUROC | **0.962** | 0.936 | −0.026 |
-| A3 TAR@1%FAR | **0.598** | 0.417 | −0.181 |
+| Metrik | ECAPA + **ReDimNet** (w=50 %, exp5b) | ECAPA + **ReDimNet** (w=30 %, terbaik) | ECAPA + **Whisper** (w=5 %, terbaik) | Selisih terbaik-vs-terbaik |
+|---|---|---|---|---|
+| A3 Open-set Acc | 0.876 ± 0.016 | **0.882 ± 0.016** | 0.823 ± 0.011 | **−0.059** |
+| A3 det-EER | 0.096 | **0.091** | 0.128 | +0.037 |
+| A3 AUROC | 0.962 | **0.964** | 0.936 | −0.028 |
+| A3 TAR@1%FAR | 0.598 | **0.630** | 0.417 | −0.213 |
 | **A2 backbone kedua sendirian** | **0.877 ± 0.017** | **0.223 ± 0.026** | **−0.654** |
 | A3 vs A1 | +0.043, p<0.0001 **unggul** | **−0.010, p=0.0037 kalah** | arah berlawanan |
 | A1 (kontrol, identik) | 0.833 ± 0.015 | 0.833 ± 0.015 | 0.000 |
@@ -624,27 +626,32 @@ Sebagai tindak lanjut, seluruh sweep validasi berikutnya diwajibkan memakai 10 s
 
 ## 9. Kesimpulan sementara dan langkah berikutnya
 
-Sampai titik ini, Experiment 6 menghasilkan tiga kesimpulan yang dapat dipertahankan:
+Sampai titik ini, Experiment 6 menghasilkan lima kesimpulan yang dapat dipertahankan:
 
 1. **Operator fusi berbobot konstan memang suboptimal.** Bobot per-query nol-parameter mengungguli bobot konstan secara signifikan (p = 0.0085) tanpa melanggar batasan bebas-pelatihan pada pembacaan yang paling ketat sekalipun.
 2. **Perbaikan tersebut tidak cukup.** Fusi tetap tidak mengungguli backbone tunggal terbaik, sehingga kriteria pra-registrasi gagal. Ini menjadi bukti independen ketiga bahwa fusi dua-backbone tidak menambah nilai pada rezim yang diteliti.
 3. **Sweep validasi 3 seed tidak memadai** untuk memutuskan pengurutan antar-arm, dan hal ini menjelaskan ketidakcocokan validasi-versus-resmi pada Experiment 5b.
+4. **Readout Whisper dapat diperbaiki, tetapi tidak sampai memadai.** Gerbang G6.1 gagal pada 0.3975 (syarat 0.45) meski readout baru memberi +0.0500 atas baseline. Tiga penjelasan alternatif ditutup dengan pengukuran, sehingga kesimpulan yang tersisa adalah keterbatasan encoder Whisper-base itu sendiri. Fusi ECAPA+Whisper terbukti **merugikan** pada seluruh bobot yang diuji.
+5. **Titik operasi sistem dapat diperbaiki tanpa mengubah arsitektur.** Menurunkan bobot ECAPA dari 50 % ke 30 % — bobot yang dipilih sweep validasi 10 seed — menaikkan akurasi resmi 0.876 → 0.882 dan membuat keunggulan continual atas static signifikan pada akurasi untuk pertama kalinya. Perbaikan ini bersifat kalibrasi titik operasi, **bukan** bukti bahwa fusi berkontribusi.
 
 Langkah berikutnya, berurutan:
 
 | Langkah | Status |
 |---|---|
-| F6-1 — komputasi cache dan vonis gerbang G6.1 | berjalan |
-| F6-2 — analisis komplementaritas ulang dengan readout baru | menunggu G6.1 |
+| F6-1 — gerbang G6.1 | ✅ selesai — **GAGAL** (0.3975 < 0.45) |
+| Run resmi ECAPA+Whisper (3 bobot) | ✅ selesai — fusi merugikan di semua bobot |
+| Run resmi ECAPA+ReDimNet w=30 % | ✅ selesai — **0.882**, titik operasi terbaik |
+| Reproduksi exp5b pada kode terkini | ✅ selesai — **bit-identik** |
+| F6-2 — analisis komplementaritas ulang | **tidak relevan lagi** — G6.1 gagal, readout Whisper tidak dilanjutkan |
 | F6-3 — fusi LLR | **menunggu keputusan pembimbing** atas taksonomi §3 |
 | F6-4 — aturan deteksi dua ruang | belum |
-| F6-5 — run resmi 10 repetisi | belum; memerlukan pra-registrasi tujuan |
+| Koreksi klaim layer L4>L3 di `experiment-2.md` | **belum** — lihat §7.7 |
 
 ---
 
 ## 10. Artefak, reproduksi, dan disiplin perubahan kode
 
-**Artefak hasil.** `experiments/exp6_adaptive_fusion_sweep.json` (F6-3b, lengkap dengan distribusi bobot dan hasil uji berpasangan) · `experiments/exp6_f6_3b_sweep_log.txt` · `experiments/exp6_pmfa_readout_gate.json` (F6-1, menyusul) · `experiments/recompute_whisper_pmfa_log.txt`.
+**Artefak hasil.** F6-3b: `exp6_adaptive_fusion_sweep.json` · `exp6_f6_3b_sweep_log.txt`. F6-1: `exp6_readout_gate_whisper_pmfa.json` · `exp6_readout_gate_whisper_pmfa_all.json` · `materialized_whisper_best.json` · `recompute_whisper_pmfa_all_log.txt`. Sweep bobot: `exp6_validation_sweep_whisper_best.json` · `exp6_validation_sweep_redimnet_b2_10seed.json`. Run resmi: `full_evaluation_summary_exp6_whisper_fusion.json` (w=5 %) · `..._exp6_whisper_fusion_w75.json` (25 %) · `..._exp6_whisper_fusion_w50.json` (50 %) · `..._exp6_redimnet_fusion_w30.json` (ReDimNet 70 %) · `..._exp5b_redimnet_fusion.json` (reproduksi).
 
 **Reproduksi.** `.venv/Scripts/python.exe scripts/exp6_adaptive_fusion_sweep.py` (8,2 menit) · `.venv/Scripts/python.exe scripts/exp6_pmfa_readout_gate.py` (memerlukan cache `whisper_pmfa`).
 
