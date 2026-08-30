@@ -1,7 +1,7 @@
 # Experiment 6 — Readout Whisper dan Operator Fusi Adaptif pada Rezim 1-Shot Open-Set
 
-**Status:** 🔄 **BERJALAN SEBAGIAN** (30 Agustus 2026) — F6-0 selesai (15 Agustus), **F6-3b selesai**, **F6-1 selesai (G6.1 GAGAL)**, run resmi ECAPA+Whisper sedang disiapkan; F6-2/F6-3/F6-4 belum.
-**Tag:** `exp6_adaptive_fusion` *(F6-3b, analisis validasi)* · `exp6_pmfa_readout` *(F6-1, dalam proses)*
+**Status:** 🔄 **BERJALAN SEBAGIAN** (30 Agustus 2026) — F6-0 selesai (15 Agustus), **F6-3b selesai**, **F6-1 selesai (G6.1 GAGAL)**, **run resmi ECAPA+Whisper selesai**; F6-2/F6-3/F6-4 belum.
+**Tag:** `exp6_whisper_fusion` *(run resmi, ablasi terdokumentasi)* · analisis: F6-3b dan gerbang G6.1
 **Rencana dan gerbang:** [`experiment-6-plan.md`](experiment-6-plan.md) · **Arsitektur desain:** [`experiment-6-architecture.md`](experiment-6-architecture.md)
 **Prasyarat:** [Experiment 4](experiment-4.md) + [re-audit](experiment-4-reaudit.md) · [Experiment 5](experiment-5.md)
 
@@ -24,7 +24,9 @@
 >
 > **Temuan turunan:** profil per blok membalik klaim [Experiment 2](experiment-2.md) bahwa L4 lebih diskriminatif daripada L3 (terukur: L3 0.3475 vs L4 0.2850). Sweep layer exp2 dijalankan pada cache sebelum perbaikan bug dan tidak pernah divalidasi ulang.
 >
-> **Artefak:** `experiments/exp6_adaptive_fusion_sweep.json` · `experiments/exp6_readout_gate_whisper_pmfa_all.json` · `experiments/materialized_whisper_best.json` · `experiments/exp4_ceiling_asnorm_v2.json` · `experiments/exp4_reaudit_geometry.json`
+> **Run resmi ECAPA + Whisper (baru).** Baris yang selama ini hilang dari tesis kini ada, di bawah protokol yang identik dengan Experiment 5b: **A3 = 0.823 ± 0.011**, det-EER 0.128, AUROC 0.936. Fusi ECAPA+Whisper **signifikan lebih buruk daripada ECAPA sendirian** (0.823 vs 0.833, p = 0.0037) — arah yang berlawanan dengan Experiment 5b, di mana perbandingan yang sama menunjukkan fusi unggul (p < 0.0001). Whisper sendirian hanya mencapai **0.223** berbanding ReDimNet 0.877. Kontrol A1 dan ketiga baseline identik di kedua run, memastikan satu-satunya variabel yang berbeda adalah backbone kedua. Lihat §7.3–7.4.
+>
+> **Artefak:** `experiments/full_evaluation_summary_exp6_whisper_fusion.json` · `experiments/exp6_adaptive_fusion_sweep.json` · `experiments/exp6_readout_gate_whisper_pmfa_all.json` · `experiments/materialized_whisper_best.json` · `experiments/exp4_ceiling_asnorm_v2.json` · `experiments/exp4_reaudit_geometry.json`
 
 **Batasan yang mengikat:** strict 1-shot (K_SHOT = 1), **bebas-pelatihan** (0 episode pelatihan, backbone beku, tanpa *fine-tuning*), protokol evaluasi mengikuti Experiment 3 secara penuh.
 
@@ -382,7 +384,96 @@ berada di luar batasan tesis ini.
 > fusi menang, karena operator yang diperbaiki pun tidak cukup pada pasangan
 > backbone yang jauh lebih kuat.
 
-### 7.3 Temuan turunan yang berdampak ke Experiment 2
+### 7.3 Run resmi — tabel ECAPA + Whisper
+
+Vonis Experiment 4 terhadap Whisper diambil dari analisis gerbang atas task
+validasi dan **tidak pernah melewati evaluasi resmi**, sehingga tesis ini tidak
+memiliki baris ECAPA + Whisper yang sebanding dengan baris ECAPA + ReDimNet.
+Run berikut mengisi kekosongan tersebut.
+
+**Pra-registrasi.** Run ini dinyatakan sebagai **ablasi terdokumentasi**, bukan
+usulan sistem, dan pernyataan tersebut dicatat sebelum hasilnya terlihat.
+Dasarnya: gerbang G6.1 gagal, dan sweep validasi 10 seed
+(`experiments/exp6_validation_sweep_whisper_best.json`) tidak menemukan satu
+pun bobot fusi yang mengungguli ECAPA-saja — akurasi menurun secara monoton
+seiring naiknya bobot Whisper (w = 1.0 → 0.8402; w = 0.5 → 0.6240; w = 0.1 →
+0.3015), dan titik fusi terbaik w = 0.95 justru **signifikan lebih buruk**
+daripada A1 (−0.0085, paired t-test p = 0.0111, menang 1/10 seed). Nilai
+w = 0.95 dikunci karena merupakan titik fusi terbaik, bukan karena baik.
+
+Agar perbandingan tidak menjadi *strawman*, backbone kedua memakai konfigurasi
+Whisper **terbaik** yang berhasil ditemukan F6-1 (`whisper_best`, 384-d), bukan
+readout satu-layer yang dinilai Experiment 4.
+
+**Tag:** `exp6_whisper_fusion` · **Artefak:**
+`experiments/full_evaluation_summary_exp6_whisper_fusion.json` ·
+`experiments/detection_scores_exp6_whisper_fusion.json` ·
+`experiments/exp6_official_run_log.txt` · 10 repetisi, 99/100 task speaker,
+10/10 sesi, 530 query unknown, 13,0 menit.
+
+| Konfigurasi | Open-set Acc | Closed-set Acc | Forgetting | det-EER | AUROC | TAR@1%FAR |
+|---|---|---|---|---|---|---|
+| A3 — fusi ECAPA+Whisper (w=0.95) | 0.823 ± 0.011 | 0.823 | −0.0005 | 0.128 | 0.936 | 0.417 |
+| B1 — static prototype | 0.808 ± 0.018 | 0.808 | 0.0514 | 0.239 | 0.828 | 0.203 |
+| **A1 — ECAPA saja (w=1.0)** | **0.833 ± 0.015** | **0.833** | −0.0007 | **0.127** | **0.938** | **0.429** |
+| A2 — Whisper saja (w=0.0) | 0.223 ± 0.026 | 0.223 | 0.0072 | 0.407 | 0.631 | 0.065 |
+| Baseline ECAPA (closed-set) | 0.783 ± 0.019 | 0.783 | 0.0568 | 0.272 | 0.805 | 0.321 |
+| Baseline ProtoNet vanilla | 0.402 ± 0.015 | 0.402 | 0.1142 | 0.460 | 0.566 | 0.045 |
+| Baseline x-vector+PLDA-lite | 0.258 ± 0.017 | 0.258 | 0.1143 | 0.456 | 0.558 | 0.039 |
+
+**Signifikansi** (paired t-test, α Bonferroni = 0.00833):
+
+| Perbandingan | p | Signifikan | Arah |
+|---|---|---|---|
+| A3 vs A1 | **0.0037** | ya | **A3 LEBIH BURUK** (0.823 < 0.833) |
+| A3 vs A2 | <0.0001 | ya | A3 lebih baik |
+| B1 vs A3 | 0.0206 | tidak | — |
+| A3 vs baseline ECAPA | 0.0001 | ya | A3 lebih baik |
+| A3 vs ProtoNet | <0.0001 | ya | A3 lebih baik |
+| A3 vs x-vector+PLDA | <0.0001 | ya | A3 lebih baik |
+
+> **Peringatan pembacaan.** Uji ini dua sisi, sehingga kolom "signifikan"
+> hanya menyatakan bahwa selisihnya nyata, **bukan** arahnya. Pada baris
+> A3 vs A1, arahnya negatif: menambahkan Whisper ke ECAPA **menurunkan**
+> akurasi secara signifikan. Ini kebalikan dari Experiment 5b, di mana
+> perbandingan yang sama menunjukkan fusi lebih unggul.
+
+### 7.4 Perbandingan langsung dua pilihan backbone kedua
+
+Kedua run memakai skrip, protokol, split, ambang, dan jumlah repetisi yang
+sama; **satu-satunya perbedaan adalah backbone keduanya**. Kesamaan tersebut
+terverifikasi oleh baris-baris yang tidak melibatkan backbone kedua: A1 dan
+ketiga baseline identik sampai tiga desimal di kedua run.
+
+| Metrik | ECAPA + **ReDimNet** (exp5b) | ECAPA + **Whisper** (exp6) | Selisih |
+|---|---|---|---|
+| A3 Open-set Acc | **0.876 ± 0.016** | 0.823 ± 0.011 | **−0.053** |
+| A3 det-EER | **0.096** | 0.128 | +0.032 |
+| A3 AUROC | **0.962** | 0.936 | −0.026 |
+| A3 TAR@1%FAR | **0.598** | 0.417 | −0.181 |
+| **A2 backbone kedua sendirian** | **0.877 ± 0.017** | **0.223 ± 0.026** | **−0.654** |
+| A3 vs A1 | +0.043, p<0.0001 **unggul** | **−0.010, p=0.0037 kalah** | arah berlawanan |
+| A1 (kontrol, identik) | 0.833 ± 0.015 | 0.833 ± 0.015 | 0.000 |
+
+Selisih terbesar bukan pada arm fusinya, melainkan pada **backbone keduanya
+sendirian**: 0.877 berbanding 0.223. Whisper yang beku, bahkan dengan readout
+terbaik yang dapat dicapai tanpa pelatihan, hampir tidak membawa informasi
+pembicara pada rezim 1-shot ini — dan ketika skornya dicampurkan, ia menurunkan
+sistem alih-alih melengkapinya.
+
+Perlu dicatat bahwa Whisper-sendiri terbaca 0.3975 pada gerbang G6.1 namun
+0.223 pada run resmi. Keduanya tidak bertentangan: G6.1 mengukur identifikasi
+tertutup (argmin) pada task statis 100 pembicara di paruh validasi, sedangkan
+run resmi mengukur akurasi open-set FSCIL dengan penolakan berambang lintas
+sepuluh sesi. Angka yang sebanding dengan tabel Experiment 5b adalah yang
+kedua.
+
+**Kesimpulan bagi tesis.** Pemilihan backbone kedua bukan detail implementasi
+melainkan penentu utama hasil. Dengan seluruh variabel lain dikunci, mengganti
+ReDimNet dengan Whisper menurunkan akurasi sistem sebesar 0.053 dan membalik
+arah kontribusi fusi dari signifikan-unggul menjadi signifikan-merugikan.
+
+### 7.5 Temuan turunan yang berdampak ke Experiment 2
 
 Profil per blok di atas menunjukkan blok 3 (0.3550) lebih baik daripada blok 4
 (0.2783). [`experiment-2.md`](experiment-2.md) §46 menyatakan sebaliknya —

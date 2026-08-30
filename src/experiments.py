@@ -277,6 +277,59 @@ EXPERIMENTS: dict[str, ExperimentConfig] = {
         n_reps=10,  # bumped from 5 to proposal's target 2026-08-02: several
                     # borderline p-values warranted more statistical power
     ),
+    # --------------------------------------------------------------------- #
+    # Experiment 6 (docs/experiment-6.md): the ECAPA + Whisper row the thesis #
+    # never had. Experiment 4 closed Whisper on a gate analysis over a         #
+    # validation task; it never went through run_full_evaluation.py, so there  #
+    # was no ECAPA+Whisper table to set beside exp5b's ECAPA+ReDimNet one.     #
+    #                                                                          #
+    # Second backbone is "whisper_best": the best training-free readout F6-1   #
+    # could find -- all six frozen whisper-base encoder blocks, mean+std       #
+    # pooled, per-block PCA-whitened to d=64, then WCCN, all fit on base_train #
+    # (experiments/materialized_whisper_best.json). Deliberately the BEST      #
+    # Whisper configuration, not the weakest, so the comparison is not a       #
+    # strawman: it scores 0.3975 standalone on the exp4 validation task vs     #
+    # 0.3475 for the single-layer readout Experiment 4 judged.                 #
+    #                                                                          #
+    # PRE-REGISTERED AS AN ABLATION, not as a proposed system. Gate G6.1       #
+    # failed (0.3975 < 0.45, Fisher 0.321 < 1.0) and the validation sweep      #
+    # (experiments/exp6_validation_sweep_whisper_best.json, 10 seeds) found    #
+    # NO fusion weight that beats ECAPA alone: accuracy falls monotonically as #
+    # Whisper's weight rises (w=1.0 -> 0.8402, w=0.5 -> 0.6240, w=0.1 ->       #
+    # 0.3015), and the best fused w=0.95 is significantly WORSE than A1        #
+    # (-0.0085, paired t p=0.0111, winning 1/10 seeds). w=0.95 is locked here  #
+    # because it is the best fused point, not because it is good. The purpose  #
+    # of this run is to report that result under the official protocol.        #
+    # --------------------------------------------------------------------- #
+    "exp6_whisper_fusion": ExperimentConfig(
+        id="exp6_whisper_fusion",
+        title="Experiment 6 -- ECAPA + Whisper (best training-free PMFA readout), documented ablation",
+        description=(
+            "ECAPA-TDNN + frozen whisper-base read out Whisper-PMFA style "
+            "(6 blocks x mean+std -> per-block whitening d=64 -> WCCN, 384-d, "
+            "all fit on base_train). Score = 0.95*z_ecapa + 0.05*z_whisper with "
+            "per-space AS-Norm (c300/k200), target-FRR 1% threshold, per-config "
+            "calibration, running-average continual updates. Identical protocol "
+            "to exp5b so the two second-backbone choices are directly "
+            "comparable. Training-free, strict 1-shot. Reported as an ablation: "
+            "no fusion weight beat ECAPA alone on validation."
+        ),
+        residual_init=True,
+        n_train_episodes=0,
+        continual_mode="running_average",
+        fusion_strategy="score_norm",
+        score_fusion_weight=0.95,   # LOCKED on the validation half, 10 seeds
+        whisper_backbone="whisper_best",
+        calibration_strategy="target_frr",
+        target_frr=0.01,
+        per_config_calibration=True,
+        score_norm="asnorm",
+        asnorm_cohort_size=300,
+        asnorm_top_k=200,
+        report_open_set_detection=True,
+        dump_detection_scores=True,
+        n_reps=10,
+    ),
 }
 
 # The active experiment tag. Flip this (or set the ACTIVE_EXPERIMENT env var)
