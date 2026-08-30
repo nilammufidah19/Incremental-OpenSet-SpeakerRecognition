@@ -260,7 +260,13 @@ Protokol identik dengan `exp5_validation_sweep.py` kecuali aturan fusinya: task 
 
 ### 6.3 Hasil
 
-| Arm | val_acc (10 seed) | val_acc (3 seed, paritas) |
+**Populasi: paruh VALIDASI** (`reserved_unknown_pool`), 10×10-way, k=1,
+n_query=4. Angka pada tabel ini dipakai untuk **memilih**, bukan untuk
+dilaporkan sebagai hasil sistem — bandingkan §7.3 yang memakai `task_speakers`
+resmi. Kedua populasi tidak beririsan, sehingga nilainya memang berbeda; lihat
+§7.5.
+
+| Arm *(task validasi)* | val_acc (10 seed) | val_acc (3 seed, paritas) |
 |---|---|---|
 | A1 — ECAPA saja | 0.8402 ± 0.0176 | 0.8525 |
 | **A2 — ReDimNet saja** | **0.8962 ± 0.0192** | 0.9017 |
@@ -411,7 +417,10 @@ readout satu-layer yang dinilai Experiment 4.
 `experiments/exp6_official_run_log.txt` · 10 repetisi, 99/100 task speaker,
 10/10 sesi, 530 query unknown, 13,0 menit.
 
-| Konfigurasi | Open-set Acc | Closed-set Acc | Forgetting | det-EER | AUROC | TAR@1%FAR |
+**Populasi: `task_speakers` RESMI** (99/100 pembicara, 10 sesi, 530 query
+unknown nyata). Inilah angka yang dikutip sebagai hasil tesis.
+
+| Konfigurasi *(task resmi)* | Open-set Acc | Closed-set Acc | Forgetting | det-EER | AUROC | TAR@1%FAR |
 |---|---|---|---|---|---|---|
 | A3 — fusi ECAPA+Whisper (w=0.95) | 0.823 ± 0.011 | 0.823 | −0.0005 | 0.128 | 0.936 | 0.417 |
 | B1 — static prototype | 0.808 ± 0.018 | 0.808 | 0.0514 | 0.239 | 0.828 | 0.203 |
@@ -473,7 +482,84 @@ melainkan penentu utama hasil. Dengan seluruh variabel lain dikunci, mengganti
 ReDimNet dengan Whisper menurunkan akurasi sistem sebesar 0.053 dan membalik
 arah kontribusi fusi dari signifikan-unggul menjadi signifikan-merugikan.
 
-### 7.5 Temuan turunan yang berdampak ke Experiment 2
+### 7.5 Mengapa A1 bernilai berbeda di §6.3 dan §7.3
+
+Arm A1 (ECAPA saja) muncul di dua tabel dengan nilai yang tidak sama —
+**0.8402** di §6.3 dan **0.8332** di §7.3. Keduanya benar; keduanya mengukur
+populasi yang berbeda, dan pemisahan itu justru merupakan syarat metodologis.
+
+| | §6.3 dan sweep validasi | §7.3 dan run resmi |
+|---|---|---|
+| Populasi pembicara | paruh **validasi** dari `reserved_unknown_pool` | **`task_speakers`**, 99/100 |
+| Bentuk evaluasi | 10 × 10-way, k=1, n_query=4 | 10 sesi FSCIL, 530 query unknown nyata |
+| Ambang | tunggal per arm (−1.4286 untuk A1) | dikalibrasi per konfigurasi |
+| Pengulangan | 10 seed | 10 repetisi |
+| **Fungsi** | **memilih** bobot, aturan fusi, transform | **melaporkan** hasil sistem |
+
+Kedua populasi **tidak beririsan** by design (lihat §4.1). Paruh validasi ada
+supaya seluruh pemilihan hyperparameter terjadi di luar populasi yang dipakai
+melaporkan; bila keduanya disatukan, pemilihan akan terjadi di atas test set
+dan hasilnya tidak sah.
+
+**Angka yang dikutip sebagai hasil tesis adalah yang dari task resmi (0.8332).**
+Nilai tersebut identik di run Experiment 5b maupun Experiment 6, sehingga
+sekaligus berfungsi sebagai kontrol yang membuktikan kedua run hanya berbeda
+pada backbone keduanya.
+
+Perbedaan serupa berlaku untuk Whisper-sendiri, yang terbaca 0.3975 pada
+gerbang G6.1, 0.2200 pada sweep validasi, dan 0.223 pada run resmi — tiga
+protokol yang berbeda, sebagaimana dijelaskan pada §7.4.
+
+### 7.6 Tabel gabungan — seluruh konfigurasi pada satu protokol
+
+Seluruh baris di bawah berasal dari `scripts/run_full_evaluation.py` dengan
+split, ambang, jumlah repetisi, dan populasi yang sama; **satu-satunya yang
+berbeda adalah backbone kedua dan bobot fusinya.** Seluruh angka dihitung ulang
+pada 30 Agustus 2026, termasuk baris ReDimNet.
+
+| Konfigurasi *(task resmi, 10 repetisi)* | Open-set Acc | Closed-set Acc | Forgetting | det-EER | AUROC | TAR@1%FAR |
+|---|---|---|---|---|---|---|
+| **A3 — ECAPA + ReDimNet (w=50 %)** | **0.876 ± 0.016** | **0.876** | −0.0007 | **0.096** | **0.962** | 0.598 |
+| A3 — ECAPA + Whisper (w=5 %) | 0.823 ± 0.011 | 0.823 | −0.0005 | 0.128 | 0.936 | 0.417 |
+| A3 — ECAPA + Whisper (w=25 %) | 0.775 ± 0.021 | 0.775 | −0.0007 | 0.153 | 0.920 | 0.326 |
+| A3 — ECAPA + Whisper (w=50 %) | 0.646 ± 0.037 | 0.646 | −0.0040 | 0.222 | 0.862 | 0.176 |
+| A1 — ECAPA saja | 0.833 ± 0.015 | 0.833 | −0.0007 | 0.127 | 0.938 | 0.429 |
+| A2 — ReDimNet saja | 0.877 ± 0.017 | 0.877 | −0.0002 | 0.094 | 0.964 | **0.659** |
+| A2 — Whisper saja | 0.223 ± 0.026 | 0.223 | +0.0072 | 0.407 | 0.631 | 0.065 |
+| B1 — static (ECAPA+ReDimNet) | 0.859 ± 0.018 | 0.860 | +0.0379 | 0.196 | 0.877 | 0.347 |
+| B1 — static (ECAPA+Whisper) | 0.808 ± 0.018 | 0.808 | +0.0514 | 0.239 | 0.828 | 0.203 |
+| Baseline ECAPA (closed-set) | 0.783 ± 0.019 | 0.783 | +0.0568 | 0.272 | 0.805 | 0.321 |
+| Baseline ProtoNet vanilla | 0.402 ± 0.015 | 0.402 | +0.1142 | 0.460 | 0.566 | 0.045 |
+| Baseline x-vector+PLDA-lite | 0.258 ± 0.017 | 0.258 | +0.1143 | 0.456 | 0.558 | 0.039 |
+
+**Kurva dosis Whisper.** Empat baris pertama membentuk respons-dosis yang
+monoton: 0 % Whisper → 0.833; 5 % → 0.823; 25 % → 0.775; 50 % → 0.646; 100 % →
+0.223. Seluruh metrik bergerak searah — akurasi turun, det-EER naik, AUROC
+turun, TAR@1%FAR turun — sehingga tidak ada metrik yang menyembunyikan
+keuntungan tersembunyi. Pada bobot 50 %, bobot yang sama yang dipakai
+ReDimNet, akurasi berada 0.187 di bawah ECAPA murni.
+
+**Verifikasi reproduksi.** Baris ReDimNet dihasilkan dengan menjalankan ulang
+tag `exp5b_redimnet_fusion` pada kode terkini, bukan dikutip dari artefak
+2 Agustus. Hasilnya **bit-identik** dengan artefak tersebut pada ketujuh arm,
+dan ambang kalibrasi sama sampai enam desimal (−1.537589). Ini memverifikasi
+secara empiris bahwa penambahan `AdaptiveDualASNorm`, parameter `out_matrices`,
+dan tiga namespace cache baru tidak mengubah perilaku eksperimen terdahulu —
+klaim disiplin feature-flag pada §10 karenanya teruji, bukan sekadar
+dinyatakan.
+
+**Catatan mengenai bobot ReDimNet.** Nilai w = 50 % adalah konfigurasi resmi
+Experiment 5b, dipilih melalui sweep validasi **3 seed**. Penurunan ulang
+dengan **10 seed** (`experiments/exp6_validation_sweep_redimnet_b2_10seed.json`)
+menempatkan optimum pada w = 30 % (0.8977) alih-alih w = 50 % (0.8918), namun
+seluruh wilayah w ≤ 0.5 berada dalam rentang 0.8918–0.8977 — di dalam simpangan
+antar-seed (±0.017) — sehingga pemilihan di antara ketiganya tidak dapat
+dibedakan secara statistik. Lebih penting lagi, fusi terbaik pada 10 seed
+**tidak mengungguli ReDimNet sendirian**: 0.8977 berbanding 0.8962, p = 0.7532,
+menang 3/10 seed. Ini adalah konfirmasi independen keempat atas temuan yang
+sama, dan menjelaskan asal-usul ketidakcocokan pada Experiment 5b.
+
+### 7.7 Temuan turunan yang berdampak ke Experiment 2
 
 Profil per blok di atas menunjukkan blok 3 (0.3550) lebih baik daripada blok 4
 (0.2783). [`experiment-2.md`](experiment-2.md) §46 menyatakan sebaliknya —

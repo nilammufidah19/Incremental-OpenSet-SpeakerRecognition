@@ -1,0 +1,25 @@
+second backbone: redimnet_b2
+validation task: 10x10-way k=1 n_query=4; detection half untouched: 111 speakers
+base_train index: 111 speakers, 1190 utterances (cached for ecapa+redimnet_b2)
+cohort: (300, 384) (concat dim = 192 + 192)
+impostor pool: 295 speakers
+
+  w=1.00 thr= -1.4286 calEER=0.2112 val_acc=0.8402+/-0.0176
+  w=0.95 thr= -1.4008 calEER=0.2042 val_acc=0.8438+/-0.0163
+  w=0.90 thr= -1.4481 calEER=0.2013 val_acc=0.8495+/-0.0194
+  w=0.80 thr= -1.4799 calEER=0.1827 val_acc=0.8720+/-0.0155
+  w=0.70 thr= -1.4693 calEER=0.1716 val_acc=0.8832+/-0.0147
+  w=0.60 thr= -1.5442 calEER=0.1597 val_acc=0.8928+/-0.0181
+  w=0.50 thr= -1.4590 calEER=0.1586 val_acc=0.8918+/-0.0182
+  w=0.30 thr= -1.4240 calEER=0.1524 val_acc=0.8977+/-0.0154
+  w=0.10 thr= -1.5664 calEER=0.1472 val_acc=0.8943+/-0.0170
+  w=0.00 thr= -1.6198 calEER=0.1533 val_acc=0.8962+/-0.0192
+
+A1 ECAPA-only (w=1.0)      : 0.8402
+A2 redimnet_b2-only (w=0.0)   : 0.8962
+best fused w=0.3          : 0.8977
+fused vs best single (0.0): delta=+0.0015 paired_t_test p=0.7532 wins 3/10
+Fusion beats the best SINGLE space: TIDAK
+
+-> w LOCKED for the official run: 0.3
+saved exp6_validation_sweep_redimnet_b2_10seed.json (18.6 min)

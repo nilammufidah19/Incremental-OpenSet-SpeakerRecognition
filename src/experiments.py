@@ -330,6 +330,62 @@ EXPERIMENTS: dict[str, ExperimentConfig] = {
         dump_detection_scores=True,
         n_reps=10,
     ),
+    # --------------------------------------------------------------------- #
+    # Experiment 6 dose-response: the SAME configuration as                   #
+    # exp6_whisper_fusion at two heavier Whisper weights. These two weights   #
+    # are NOT validation-selected -- the sweep already showed accuracy falls  #
+    # monotonically as Whisper's weight rises, so no grid point beats ECAPA   #
+    # alone. They are fixed comparison points, run so the cost of adding      #
+    # Whisper can be read as a dose-response curve under the official         #
+    # protocol instead of inferred from the validation task.                  #
+    # --------------------------------------------------------------------- #
+    "exp6_whisper_fusion_w50": ExperimentConfig(
+        id="exp6_whisper_fusion_w50",
+        title="Experiment 6 -- ECAPA 50% + Whisper 50% (dose-response point)",
+        description=(
+            "Identical to exp6_whisper_fusion except score_fusion_weight=0.50, "
+            "i.e. the same 50/50 split exp5b uses for ReDimNet. Fixed "
+            "comparison point, not a validation-selected operating point."
+        ),
+        residual_init=True,
+        n_train_episodes=0,
+        continual_mode="running_average",
+        fusion_strategy="score_norm",
+        score_fusion_weight=0.50,
+        whisper_backbone="whisper_best",
+        calibration_strategy="target_frr",
+        target_frr=0.01,
+        per_config_calibration=True,
+        score_norm="asnorm",
+        asnorm_cohort_size=300,
+        asnorm_top_k=200,
+        report_open_set_detection=True,
+        dump_detection_scores=True,
+        n_reps=10,
+    ),
+    "exp6_whisper_fusion_w75": ExperimentConfig(
+        id="exp6_whisper_fusion_w75",
+        title="Experiment 6 -- ECAPA 75% + Whisper 25% (dose-response point)",
+        description=(
+            "Identical to exp6_whisper_fusion except score_fusion_weight=0.75. "
+            "Fixed comparison point, not a validation-selected operating point."
+        ),
+        residual_init=True,
+        n_train_episodes=0,
+        continual_mode="running_average",
+        fusion_strategy="score_norm",
+        score_fusion_weight=0.75,
+        whisper_backbone="whisper_best",
+        calibration_strategy="target_frr",
+        target_frr=0.01,
+        per_config_calibration=True,
+        score_norm="asnorm",
+        asnorm_cohort_size=300,
+        asnorm_top_k=200,
+        report_open_set_detection=True,
+        dump_detection_scores=True,
+        n_reps=10,
+    ),
 }
 
 # The active experiment tag. Flip this (or set the ACTIVE_EXPERIMENT env var)

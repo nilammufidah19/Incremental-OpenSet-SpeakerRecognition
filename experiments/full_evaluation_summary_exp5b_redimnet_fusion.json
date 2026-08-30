@@ -292,5 +292,5 @@
   "asnorm_cohort_size": 300,
   "asnorm_top_k": 200,
   "n_unknown_queries": 530,
-  "elapsed_minutes": 11.819441362222035
+  "elapsed_minutes": 12.837500790754953
 }
