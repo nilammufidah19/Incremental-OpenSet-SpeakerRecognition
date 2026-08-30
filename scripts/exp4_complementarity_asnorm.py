@@ -49,6 +49,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import random
 import sys
 import time
@@ -82,7 +83,11 @@ OUT_PATH = REPO_ROOT / "experiments" / "exp4_ceiling_asnorm.json"
 K_SHOT = 1
 N_QUERY = 4                    # validation-half speakers have exactly 5 utterances
 N_TASK_SPEAKERS = 100          # same size as the exp3 validation task (10 x 10-way)
-SEEDS = SEED_LIST[:3]          # same seeds as the exp3 validation sweep
+# Experiment 6 (2026-08-30) made this configurable via EXP4_N_SEEDS. Default
+# stays 3 so every previously-reported exp4/exp5 number reproduces from this
+# script unchanged; exp6 runs it at 10 after finding that 3 seeds cannot
+# order the arms reliably (docs/experiment-6.md section 8).
+SEEDS = SEED_LIST[:int(os.environ.get("EXP4_N_SEEDS", "3"))]
 WHISPER_VARIANTS = ["whisper_l4", "whisper"]   # exp2's best first, exp1/exp3's for reference
 COHORT_SIZE = 300              # exp3b locked AS-Norm params
 TOP_K = 200

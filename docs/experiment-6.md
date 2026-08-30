@@ -612,6 +612,145 @@ dinyatakan sebagai keputusan yang diambil di atas embedding yang tidak valid.
 
 ---
 
+## 7b. Apakah klaim kontribusi fusi dapat dibuktikan?
+
+Perbandingan yang menentukan bagi tesis bukan A3 lawan A1, melainkan **A3
+lawan A2** — apakah menggabungkan dua backbone mengungguli backbone tunggal
+terkuatnya. Pada run resmi w = 30 % perbandingan itu menghasilkan +0.0059
+dengan p = 0.1715, yaitu belum terbukti. Tiga analisis berikut dijalankan
+untuk menentukan apakah klaim tersebut **belum** terbukti atau **tidak dapat**
+dibuktikan.
+
+### 7b.1 Daya statistik yang dibutuhkan
+
+Dari sepuluh repetisi run resmi: selisih rata-rata +0.00587, simpangan selisih
+0.01249, **Cohen's d = 0.47**, menang pada 6/10 repetisi. Efeknya bukan nol,
+hanya kecil relatif derau. Untuk daya 80 %:
+
+| Ambang | Repetisi dibutuhkan |
+|---|---|
+| α Bonferroni 0.00833 | **55** |
+| α 0.05 tanpa koreksi | 36 |
+
+Satu run sepuluh repetisi memakan 11,6 menit, sehingga 55 repetisi ≈ 64 menit.
+**Peringatan metodologis:** menaikkan n *sampai* signifikan adalah p-hacking.
+Yang sah adalah mempra-registrasi n = 55 lebih dulu, menjalankannya sekali, dan
+melaporkan apa pun hasilnya. Perlu dicatat pula bahwa repetisi bukan data baru
+melainkan penyusunan ulang episode atas 99 pembicara yang sama, sehingga
+menambah repetisi mempersempit derau sampling tanpa memperluas populasi;
+klaim yang diperoleh terbatas pada task ini.
+
+### 7b.2 Plafon komplementaritas ECAPA + ReDimNet
+
+Artefak: `experiments/exp6_ceiling_redimnet_10seed.json` (10 seed; versi 3 seed
+pada `exp6_ceiling_redimnet.json`).
+
+| Besaran (relatif terhadap **A2 ReDimNet-saja**) | 3 seed | **10 seed** |
+|---|---|---|
+| Plafon **fusi-linear** | +0.0367 ± 0.0038 | **+0.0413 ± 0.0098** |
+| Plafon seleksi | +0.0275 | +0.0330 |
+| Dicapai bobot tetap grid-halus | +0.0158 (43 %) | +0.0170 (**41 %**) |
+| Dicapai F6-3b margin adaptif | — | +0.0050 |
+| `w` terbaik grid-halus | 0.510 | 0.376 |
+
+**Ruangnya nyata dan belum terpanen.** Batas atas keluarga fungsi yang
+benar-benar dipakai sistem — jumlah berbobot dua skor-z — berada +0.0413 di
+atas ReDimNet-saja, dan bobot tetap hanya memanen 41 % darinya. Sebagai
+pembanding, plafon yang sama terhadap A1 adalah +0.0783, lebih dari dua kali
+lipat plafon ECAPA+Whisper pada Experiment 4 (+0.0333).
+
+Nilai `w` terbaik grid-halus 10 seed (0.376) mendekati w = 0.30 yang dipilih
+sweep validasi secara independen — konfirmasi silang bahwa kedua prosedur
+menunjuk wilayah yang sama.
+
+### 7b.3 Uji pada det-EER dengan bootstrap berpasangan
+
+Metode Bengio & Mariéthoz, 1000 resample, me-resample *trial* alih-alih
+repetisi sehingga dayanya lebih besar daripada uji-t berpasangan atas sepuluh
+repetisi.
+
+| A3 vs A2 | ΔEER | CI 95 % | Arah |
+|---|---|---|---|
+| w = 50 % (exp5b) | +0.00253 | [−0.00181, +0.00694] | **merugikan** A3 |
+| **w = 30 %** | **−0.00335** | [−0.00675, **+0.00008**] | **menguntungkan** A3 |
+
+Perpindahan bobot dari 50 % ke 30 % **membalik arah** perbandingan pada
+deteksi, dan membawa selang kepercayaannya nyaris menyentuh nol: batas atas
++0.00008, dengan 98,8 % selang berada di sisi yang menguntungkan.
+
+**Tetap dilaporkan sebagai tidak signifikan**, karena dua alasan. Pertama,
+selangnya masih memotong nol, sekecil apa pun, dan kriteria yang dipakai
+Experiment 5 adalah selang yang tidak memotong nol. Kedua, dengan 1000
+resample, derau Monte Carlo pada kuantil 97,5 % berada pada orde 10⁻⁴ — sebesar
+jarak ke nol itu sendiri — sehingga jumlah resample ini **tidak dapat
+memutuskan** sisi mana yang benar. Diperlukan sekitar 5000 resample (≈100
+menit) untuk menjawabnya.
+
+### 7b.4 Dapatkah aturan nol-parameter memanen sisanya?
+
+Plafon menunjukkan ada +0.0413 dan bobot tetap memanen 41 %, sedangkan aturan
+margin adaptif F6-3b hanya memanen +0.0050. Dua penjelasan bersaing: informasi
+yang dibutuhkan tidak terjangkau tanpa *fitting* (sehingga F6-3/LLR menjadi
+satu-satunya jalur), atau margin sekadar proksi yang lemah.
+
+`scripts/exp6_oracle_predictability.py` memutuskannya tanpa membangun aturan
+baru. Untuk setiap query yang **decidable** — tepat satu ruang benar, yakni
+satu-satunya query yang dapat diubah nasibnya oleh bobot per-query — diukur
+seberapa baik tiap sinyal bebas-parameter memisahkan "percayai ECAPA" dari
+"percayai ReDimNet", dinyatakan sebagai AUROC.
+
+Dari 1.200 query: 971 benar di kedua ruang, 113 salah di keduanya, dan hanya
+**116 decidable** (9,7 %). Di antara yang decidable, ReDimNet benar 83 dan
+ECAPA benar 33.
+
+| Sinyal (nol parameter) | AUROC |
+|---|---|
+| **selisih margin** | **0.8583** |
+| rasio margin *(dipakai F6-3b)* | 0.8383 |
+| selisih best-z | 0.8145 |
+| selisih entropi softmax | 0.7996 |
+
+**Sinyalnya kuat.** Informasi mengenai ruang mana yang benar pada suatu query
+tersedia tanpa perlu men-*fit* apa pun, dan aturan yang ada belum
+memanfaatkannya.
+
+**Verifikasi silang aritmetika.** Hitungan query di atas cocok persis dengan
+plafon yang diukur secara terpisah: 33 query ECAPA-benar dari 1.200 = +0.0275,
+sama dengan plafon seleksi 3-seed terukur. Selisih antara plafon fusi-linear
+dan plafon seleksi (+0.0092 ≈ 11 query) berasal dari query yang kedua ruangnya
+salah namun jumlah berbobotnya benar. Dua analisis independen menghasilkan
+angka yang saling menutup.
+
+**Mengapa F6-3b hanya memanen +0.0050.** Bukan karena sinyalnya lemah,
+melainkan karena rancangan aturannya: (i) aturannya **simetris** sementara
+populasinya tidak — di antara query decidable ReDimNet benar 2,5× lebih sering,
+sehingga aturan simetris menyelamatkan sedikit query ECAPA tetapi merusak lebih
+banyak query ReDimNet; dan (ii) ia memakai **rasio** margin, yang AUROC-nya
+lebih rendah daripada **selisih** margin (0.8383 berbanding 0.8583).
+
+### 7b.5 Kesimpulan mengenai keterbuktian klaim
+
+Bukti menggeser pembacaan dari "fusi tidak berkontribusi" menjadi **"fusi
+memiliki kontribusi nyata yang belum berhasil dipanen"** — dua pernyataan yang
+sangat berbeda bagi tesis. Penguatnya: perpindahan `w` dari 0.5 ke 0.3 saja,
+tanpa mengubah operator sama sekali, sudah membalik arah perbandingan pada
+deteksi dari merugikan menjadi menguntungkan-nyaris-signifikan.
+
+Namun batas atasnya harus disebut dengan jujur: hanya 9,7 % query yang
+decidable dan plafon seleksi +0.0330, sehingga perolehan realistis dari
+operator yang lebih baik berada pada kisaran +0.01 sampai +0.02 — cukup untuk
+mencapai signifikansi, belum cukup untuk mengubah cerita tesis secara
+mendasar.
+
+Urutan langkah yang disarankan: **(1)** bangun aturan tier-2 berbasis selisih
+margin dengan titik operasi yang menghormati prior 83 : 33 — tidak memerlukan
+keputusan pembimbing; **(2)** jika berhasil, jalankan bootstrap 5000 resample
+untuk memutuskan sisi perbatasan det-EER; **(3)** pra-registrasi 55 repetisi
+hanya bila diperlukan. Menjalankan (2) sebelum (1) adalah pemborosan, karena
+angkanya besar kemungkinan bergeser.
+
+---
+
 ## 8. Temuan metodologis — kecukupan jumlah seed pada sweep validasi
 
 Temuan ini muncul sebagai produk sampingan F6-3b dan berdampak melampaui Experiment 6.
