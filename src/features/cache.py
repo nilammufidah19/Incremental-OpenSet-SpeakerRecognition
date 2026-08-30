@@ -42,6 +42,18 @@ BACKBONE_MODES = {
     # waveform input, so it shares ECAPA's duration handling. Own namespace,
     # so all existing caches/tags are untouched.
     "redimnet_b2": "ecapa_inference",
+    # Experiment 6 F6-1 (docs/experiment-6-plan.md): training-free
+    # Whisper-PMFA-style readout -- same frozen whisper-base encoder and the
+    # same 30s-window duration handling as "whisper", only the READOUT
+    # differs (4 layers x mean+std instead of 1 layer x mean). Own namespace,
+    # so "whisper" and "whisper_l4" are untouched and every pre-exp6 result
+    # stays reproducible.
+    #
+    # NOTE: unlike every other backbone here, this cache stores RAW,
+    # UN-NORMALIZED statistics -- see whisper_encoder.extract_embedding_pmfa
+    # for why (normalization and anti-anisotropy post-processing are exactly
+    # what F6-1 measures, and both are recoverable from the raw vector).
+    "whisper_pmfa": "whisper_inference",
 }
 BACKBONE_EXTRACTORS = {
     "ecapa": (ecapa.extract_embedding, ecapa.extract_embedding_windows),
@@ -52,6 +64,10 @@ BACKBONE_EXTRACTORS = {
     ),
     "xvector": (xvector.extract_embedding, xvector.extract_embedding_windows),
     "redimnet_b2": (redimnet.extract_embedding, redimnet.extract_embedding_windows),
+    "whisper_pmfa": (
+        whisper_encoder.extract_embedding_pmfa,
+        whisper_encoder.extract_embedding_pmfa_windows,
+    ),
 }
 
 

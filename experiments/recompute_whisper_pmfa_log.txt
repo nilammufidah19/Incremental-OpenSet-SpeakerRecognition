@@ -1,0 +1,1194 @@
+14874 utterances to process across ['whisper_pmfa']
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\transformers\models\whisper\modeling_whisper.py:599: UserWarning: 1Torch was not compiled with flash attention. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:555.)
+  attn_output = torch.nn.functional.scaled_dot_product_attention(
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+  [whisper_pmfa] 100/14874 (100 computed, 0 cached, 0 failed) in 1.0 min
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+  [whisper_pmfa] 200/14874 (200 computed, 0 cached, 0 failed) in 1.4 min
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+  [whisper_pmfa] 300/14874 (300 computed, 0 cached, 0 failed) in 1.7 min
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+  [whisper_pmfa] 400/14874 (400 computed, 0 cached, 0 failed) in 2.0 min
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+  [whisper_pmfa] 500/14874 (500 computed, 0 cached, 0 failed) in 2.3 min
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\src\preprocessing\aggregate.py:26: UserWarning: aggregate_speech_segments: no speech segments detected; falling back to the original waveform unchanged.
+  warnings.warn(
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+  [whisper_pmfa] 600/14874 (600 computed, 0 cached, 0 failed) in 2.7 min
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+  [whisper_pmfa] 700/14874 (700 computed, 0 cached, 0 failed) in 3.0 min
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+  [whisper_pmfa] 800/14874 (800 computed, 0 cached, 0 failed) in 3.3 min
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+  [whisper_pmfa] 900/14874 (900 computed, 0 cached, 0 failed) in 3.6 min
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")
+C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\.venv\Lib\site-packages\pyloudnorm\normalize.py:62: UserWarning: Possible clipped samples in output.
+  warnings.warn("Possible clipped samples in output.")

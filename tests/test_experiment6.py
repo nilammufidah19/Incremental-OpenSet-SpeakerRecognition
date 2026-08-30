@@ -126,3 +126,77 @@ def test_invariant_to_per_half_constant_scaling():
         plain.normalize(queries, protos),
         atol=1e-9,
     )
+
+
+# --------------------------------------------------------------------------- #
+# F6-1: training-free Whisper-PMFA readout                                     #
+# --------------------------------------------------------------------------- #
+from pathlib import Path  # noqa: E402
+
+import pytest as _pytest  # noqa: E402
+
+from src.models import whisper_encoder  # noqa: E402
+from src.preprocessing.pipeline import preprocess_audio  # noqa: E402
+from tests.conftest import requires_sample_audio  # noqa: E402
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_pmfa_rejects_wrong_sample_rate():
+    with _pytest.raises(ValueError, match="sr=16000"):
+        whisper_encoder.extract_embedding_pmfa(np.zeros(16000, dtype=np.float32), sr=8000)
+
+
+@requires_sample_audio
+def test_pmfa_rejects_out_of_range_layers(sample_audio_manifest):
+    path = REPO_ROOT / sample_audio_manifest.iloc[0]["path"]
+    window = preprocess_audio(path, mode="whisper_inference")[0]
+    with _pytest.raises(ValueError, match="out of range"):
+        whisper_encoder.extract_embedding_pmfa(window, layers=(3, 99))
+
+
+@requires_sample_audio
+def test_pmfa_shape_layout_and_finiteness(sample_audio_manifest):
+    path = REPO_ROOT / sample_audio_manifest.iloc[0]["path"]
+    window = preprocess_audio(path, mode="whisper_inference")[0]
+    emb = whisper_encoder.extract_embedding_pmfa(window)
+
+    d = whisper_encoder.embedding_dim()
+    assert emb.shape == (len(whisper_encoder.PMFA_LAYERS) * 2 * d,)
+    assert emb.dtype == np.float32
+    assert np.isfinite(emb).all()
+    # deliberately NOT unit-norm: the cache stores raw statistics (see the
+    # extractor docstring). If this ever starts passing, someone baked a
+    # normalization choice into the cache.
+    assert abs(np.linalg.norm(emb) - 1.0) > 1e-3
+
+
+@requires_sample_audio
+def test_pmfa_layer3_mean_slice_matches_the_validated_single_layer_readout(
+    sample_audio_manifest,
+):
+    """The default "whisper" backbone is layer_fraction 0.5 -> hidden state 3,
+    masked mean, then L2. PMFA's first mean block is the same quantity before
+    normalization, so their directions must agree. This pins the masking and
+    pooling of the new readout against the path that produced every existing
+    Whisper result -- if they ever diverge, the new cache is not comparable
+    to the old one."""
+    path = REPO_ROOT / sample_audio_manifest.iloc[0]["path"]
+    window = preprocess_audio(path, mode="whisper_inference")[0]
+
+    d = whisper_encoder.embedding_dim()
+    pmfa_layer3_mean = whisper_encoder.extract_embedding_pmfa(window)[:d]
+    single = whisper_encoder.extract_embedding(window, layer_fraction=0.5)
+
+    cosine = float(single @ (pmfa_layer3_mean / np.linalg.norm(pmfa_layer3_mean)))
+    assert cosine > 1 - 1e-5
+
+
+@requires_sample_audio
+def test_pmfa_windows_averages_without_normalizing(sample_audio_manifest):
+    path = REPO_ROOT / sample_audio_manifest.iloc[0]["path"]
+    window = preprocess_audio(path, mode="whisper_inference")[0]
+    single = whisper_encoder.extract_embedding_pmfa(window)
+
+    averaged = whisper_encoder.extract_embedding_pmfa_windows([window, window])
+    np.testing.assert_allclose(averaged, single, rtol=1e-5)
