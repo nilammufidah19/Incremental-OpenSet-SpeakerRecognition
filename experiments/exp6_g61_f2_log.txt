@@ -1,0 +1,31 @@
+backbone: whisper_pmfa  layers=(3, 4, 5, 6)
+loading manifests / fit set / cohort ...
+fit set: 1190 utts / 111 speakers; cohort 300
+
+=== A. REFERENCE single-layer readouts ===
+  whisper                            dim=  512  best=abtt_k1          acc=0.3475  fisher=0.515  eff_rank=25.9
+  whisper_l4                         dim=  512  best=abtt_k1          acc=0.2850  fisher=0.520  eff_rank=31.0
+
+=== B. PMFA readout (4 layers x mean+std, raw cache) ===
+  pmfa/global_l2/full                dim= 4096  best=lda_d128         acc=0.2750  fisher=0.272  eff_rank=7.0
+  pmfa/global_l2/mean_only           dim= 2048  best=pca_whiten_full  acc=0.2625  fisher=0.298  eff_rank=10.3
+  pmfa/global_l2/std_only            dim= 2048  best=pca_whiten_full  acc=0.1567  fisher=0.242  eff_rank=3.5
+  pmfa/global_l2/layer3              dim= 1024  best=pca_whiten_full  acc=0.3550  fisher=0.447  eff_rank=16.5
+  pmfa/global_l2/layer4              dim= 1024  best=pca_whiten_full  acc=0.2783  fisher=0.356  eff_rank=3.3
+  pmfa/global_l2/layer5              dim= 1024  best=abtt_k5          acc=0.2358  fisher=0.311  eff_rank=6.1
+  pmfa/global_l2/layer6              dim= 1024  best=pca_whiten_full  acc=0.1883  fisher=0.219  eff_rank=5.5
+  pmfa/global_l2/layer34             dim= 2048  best=pca_whiten_full  acc=0.3133  fisher=0.365  eff_rank=3.8
+  pmfa/global_l2/layer345            dim= 3072  best=lda_d128         acc=0.2933  fisher=0.333  eff_rank=5.0
+  pmfa/global_l2/layer3456           dim= 4096  best=lda_d128         acc=0.2750  fisher=0.272  eff_rank=7.0
+  pmfa/per_layer_l2/full             dim= 4096  best=lda_d128         acc=0.3158  fisher=0.307  eff_rank=7.2
+  pmfa/per_layer_whiten_d64/full     dim=  256  best=wccn             acc=0.3450  fisher=0.289  eff_rank=86.2
+  pmfa/per_layer_whiten_d128/full    dim=  512  best=wccn             acc=0.3183  fisher=0.238  eff_rank=167.2
+  pmfa/per_layer_whiten_d192/full    dim=  768  best=abtt_k1          acc=0.3008  fisher=0.212  eff_rank=239.8
+
+best PMFA variant : pmfa/global_l2/layer3 + pca_whiten_full -> acc=0.3550, fisher=0.447
+reference whisper : abtt_k1 -> acc=0.3475, fisher=0.515
+delta vs single-layer reference: +0.0075
+
+Gate G6.1 (acc >= 0.45 AND fisher > 1.0): GAGAL
+  reason: acc 0.3550 < 0.45; fisher 0.447 <= 1.0
+saved exp6_readout_gate_whisper_pmfa.json

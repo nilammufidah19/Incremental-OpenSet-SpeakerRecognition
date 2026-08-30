@@ -54,6 +54,10 @@ BACKBONE_MODES = {
     # for why (normalization and anti-anisotropy post-processing are exactly
     # what F6-1 measures, and both are recoverable from the raw vector).
     "whisper_pmfa": "whisper_inference",
+    # F6-1 follow-up: ALL six encoder blocks (6 x 2 x 512 = 6144-d), so any
+    # layer subset is a slice rather than a recompute. Same forward pass cost
+    # as whisper_pmfa; also stores RAW statistics.
+    "whisper_pmfa_all": "whisper_inference",
 }
 BACKBONE_EXTRACTORS = {
     "ecapa": (ecapa.extract_embedding, ecapa.extract_embedding_windows),
@@ -67,6 +71,12 @@ BACKBONE_EXTRACTORS = {
     "whisper_pmfa": (
         whisper_encoder.extract_embedding_pmfa,
         whisper_encoder.extract_embedding_pmfa_windows,
+    ),
+    "whisper_pmfa_all": (
+        partial(whisper_encoder.extract_embedding_pmfa,
+                layers=whisper_encoder.PMFA_ALL_LAYERS),
+        partial(whisper_encoder.extract_embedding_pmfa_windows,
+                layers=whisper_encoder.PMFA_ALL_LAYERS),
     ),
 }
 

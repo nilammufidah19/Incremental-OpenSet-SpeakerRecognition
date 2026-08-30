@@ -157,6 +157,17 @@ def extract_embedding_windows(
 # utterance variation that a mean discards).
 PMFA_LAYERS = (3, 4, 5, 6)  # hidden_states indices; whisper-base has 6 blocks
 
+# F6-1 follow-up (30 Aug 2026). The {3,4,5,6} choice mirrored Whisper-PMFA's
+# "middle-to-later blocks", but that paper selects from a 32-block encoder;
+# on whisper-base's 6 blocks the same set spans 50-100% of the depth, which is
+# deeper than the paper's analogue. The G6.1 sweep then found quality falling
+# MONOTONICALLY with depth (layer 3 > 4 > 5 > 6), so the informative region is
+# shallower than anything cached -- and layers 1-2 had never been measured at
+# all. Caching ALL blocks costs the same single forward pass as caching four,
+# so this namespace ends the question permanently: every layer subset becomes
+# a slice, and no future layer study needs GPU time again.
+PMFA_ALL_LAYERS = (1, 2, 3, 4, 5, 6)
+
 
 def extract_embedding_pmfa(
     waveform: np.ndarray,

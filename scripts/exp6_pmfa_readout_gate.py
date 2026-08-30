@@ -40,6 +40,7 @@ Usage:
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -52,10 +53,15 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 import exp4_reaudit_geometry as geo  # noqa: E402
 from src.evaluation.complementarity import l2_normalize  # noqa: E402
-from src.models.whisper_encoder import PMFA_LAYERS  # noqa: E402
+from src.models.whisper_encoder import PMFA_ALL_LAYERS, PMFA_LAYERS  # noqa: E402
 from src.prototypical.score_norm import ASNorm  # noqa: E402
 
-OUT_PATH = REPO_ROOT / "experiments" / "exp6_pmfa_readout_gate.json"
+# Which layers each cached namespace actually holds, in stored order.
+BACKBONE_LAYERS = {
+    "whisper_pmfa": PMFA_LAYERS,
+    "whisper_pmfa_all": PMFA_ALL_LAYERS,
+}
+LAYERS = PMFA_LAYERS      # rebound in main() from --backbone
 
 D_MODEL = 512                      # whisper-base
 BLOCK = 2 * D_MODEL                # [mean; std] per layer
@@ -83,15 +89,65 @@ def slice_variant(x: np.ndarray, name: str) -> np.ndarray:
         return np.concatenate(
             [x[:, i * BLOCK + D_MODEL:(i + 1) * BLOCK] for i in range(n_blocks)], axis=1
         )
-    if name.startswith("layer"):  # e.g. "layer5" -> that block's mean+std only
-        layer = int(name[len("layer"):])
-        i = PMFA_LAYERS.index(layer)
-        return x[:, i * BLOCK:(i + 1) * BLOCK]
+    if name.startswith("layer"):  # "layer5" -> one block; "layer34" -> blocks 3 and 4
+        wanted = [int(c) for c in name[len("layer"):]]
+        idx = [LAYERS.index(l) for l in wanted]
+        return np.concatenate([x[:, i * BLOCK:(i + 1) * BLOCK] for i in idx], axis=1)
     raise ValueError(f"unknown slice variant {name!r}")
 
 
-SLICES = ["full", "mean_only", "std_only"] + [f"layer{l}" for l in PMFA_LAYERS]
-PRES = {"global_l2": lambda x: np.asarray(x, dtype=np.float64), "per_layer_l2": per_layer_l2}
+def build_slices(layers: tuple[int, ...]) -> list[str]:
+    """Single layers, then progressively wider windows anchored at the
+    shallowest cached block. The windows exist to separate "aggregation helps"
+    from "one good layer carries it"."""
+    singles = [f"layer{l}" for l in layers]
+    windows = ["".join(str(l) for l in layers[:k]) for k in range(2, len(layers) + 1)]
+    return ["full", "mean_only", "std_only"] + singles + [f"layer{w}" for w in windows]
+
+
+SLICES = build_slices(PMFA_LAYERS)
+
+
+def make_per_layer_whitener(fit_x: np.ndarray, d: int):
+    """PCA-whiten each [mean_L; std_L] block INDEPENDENTLY, to `d` dims, then
+    concatenate.
+
+    Motivation (measured, not assumed): the cached base_train fit set holds
+    1190 utterances, so whitening the 4096-d concatenation estimates a
+    covariance of rank <= 1189 in 4096 dimensions -- an ill-posed problem, and
+    a direct explanation for the effective rank collapsing to 7.0 there. The
+    existing per_layer_l2 equalizes each block's SCALE but not its SHAPE, so
+    it cannot fix that.
+
+    Whitening blockwise instead estimates four 1024-d covariances from the
+    same 1190 samples and keeps only the leading `d` directions of each, which
+    is well-posed for d well under 1190. Everything is still fit on
+    base_train only.
+    """
+    fit_x = np.asarray(fit_x, dtype=np.float64)
+    n_blocks = fit_x.shape[1] // BLOCK
+    fitted = []
+    for i in range(n_blocks):
+        block = l2_normalize(fit_x[:, i * BLOCK:(i + 1) * BLOCK])
+        mu = block.mean(axis=0)
+        xc = block - mu
+        cov = (xc.T @ xc) / (len(xc) - 1)
+        evals, evecs = np.linalg.eigh(cov)
+        order = np.argsort(evals)[::-1]
+        evals, evecs = evals[order], evecs[:, order]
+        k = min(d, block.shape[1], len(xc) - 1)
+        eps = 1e-3 * evals[0]
+        fitted.append((mu, evecs[:, :k], 1.0 / np.sqrt(evals[:k] + eps)))
+
+    def apply(x: np.ndarray) -> np.ndarray:
+        x = np.asarray(x, dtype=np.float64)
+        parts = []
+        for i, (mu, V, s) in enumerate(fitted):
+            block = l2_normalize(x[:, i * BLOCK:(i + 1) * BLOCK])
+            parts.append(((block - mu) @ V) * s)
+        return np.concatenate(parts, axis=1)
+
+    return apply
 
 
 def evaluate(fit_x, fit_spk, coh_raw, task_emb, key_q, key_p, tag, results):
@@ -116,6 +172,16 @@ def evaluate(fit_x, fit_spk, coh_raw, task_emb, key_q, key_p, tag, results):
 
 
 def main() -> None:
+    global LAYERS, SLICES, OUT_PATH
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--backbone", default="whisper_pmfa", choices=sorted(BACKBONE_LAYERS))
+    args = ap.parse_args()
+    backbone = args.backbone
+    LAYERS = BACKBONE_LAYERS[backbone]
+    SLICES = build_slices(LAYERS)
+    OUT_PATH = REPO_ROOT / "experiments" / f"exp6_readout_gate_{backbone}.json"
+    print(f"backbone: {backbone}  layers={LAYERS}")
+
     print("loading manifests / fit set / cohort ...", flush=True)
     bt = geo.load_base_train()
     fit_paths, fit_spk = geo.round_robin(bt, geo.FIT_SIZE, seed=1)
@@ -128,30 +194,42 @@ def main() -> None:
 
     # ---- reference points: the single-layer readouts, same protocol -------
     print("\n=== A. REFERENCE single-layer readouts ===")
-    for backbone in ("whisper", "whisper_l4"):
-        fit_x = geo.embed(fit_paths, backbone)
-        coh = geo.embed(cohort_paths, backbone)
-        task_emb = [{"q": geo.embed(q, backbone), "p": geo.embed(s, backbone), "lab": lab}
+    # NOTE: loop variable is ref_backbone, NOT backbone -- shadowing the
+    # --backbone argument here silently made section B load whisper_l4.
+    for ref_backbone in ("whisper", "whisper_l4"):
+        fit_x = geo.embed(fit_paths, ref_backbone)
+        coh = geo.embed(cohort_paths, ref_backbone)
+        task_emb = [{"q": geo.embed(q, ref_backbone), "p": geo.embed(s, ref_backbone), "lab": lab}
                     for s, q, lab in episodes]
         summaries.append(evaluate(fit_x, fit_spk, coh, task_emb, "q", "p",
-                                  f"{backbone}", results))
+                                  f"{ref_backbone}", results))
 
     # ---- PMFA: 2 pre-transforms x 7 slices --------------------------------
     print("\n=== B. PMFA readout (4 layers x mean+std, raw cache) ===")
-    fit_raw = geo.embed(fit_paths, "whisper_pmfa")
-    coh_raw = geo.embed(cohort_paths, "whisper_pmfa")
-    task_raw = [{"q": geo.embed(q, "whisper_pmfa"), "p": geo.embed(s, "whisper_pmfa"), "lab": lab}
+    fit_raw = geo.embed(fit_paths, backbone)
+    coh_raw = geo.embed(cohort_paths, backbone)
+    task_raw = [{"q": geo.embed(q, backbone), "p": geo.embed(s, backbone), "lab": lab}
                 for s, q, lab in episodes]
 
     # Variants = (pre-transform, slice). per-layer L2 only makes sense on the
     # full concatenation -- once a single block is sliced out there is nothing
     # left to equalize against, so those combinations are skipped rather than
     # silently duplicating the global-L2 rows.
-    variants = [("global_l2", sl) for sl in SLICES] + [("per_layer_l2", "full")]
+    variants = (
+        [("global_l2", sl) for sl in SLICES]
+        + [("per_layer_l2", "full")]
+        + [(f"per_layer_whiten_d{d}", "full") for d in (64, 128, 192)]
+    )
+
+    whiteners = {d: make_per_layer_whitener(fit_raw, d) for d in (64, 128, 192)}
 
     def prepare(x, pre_name, sl):
-        return per_layer_l2(slice_variant(x, sl)) if pre_name == "per_layer_l2" \
-            else slice_variant(x, sl)
+        sliced = slice_variant(x, sl)
+        if pre_name == "per_layer_l2":
+            return per_layer_l2(sliced)
+        if pre_name.startswith("per_layer_whiten_d"):
+            return whiteners[int(pre_name[len("per_layer_whiten_d"):])](sliced)
+        return sliced
 
     for pre_name, sl in variants:
         f = prepare(fit_raw, pre_name, sl)
@@ -187,7 +265,7 @@ def main() -> None:
         "protocol": {
             "task": "exp4 validation task (100 speakers, k=1, n_query=4, seeds [0,1,2])",
             "fit_size": geo.FIT_SIZE, "cohort_size": geo.COHORT_SIZE, "top_k": geo.TOP_K,
-            "pmfa_layers": list(PMFA_LAYERS), "d_model": D_MODEL,
+            "backbone": backbone, "pmfa_layers": list(LAYERS), "d_model": D_MODEL,
             "note": "task/fit/cohort/transforms imported from exp4_reaudit_geometry.py",
         },
         "gate": {"acc_threshold": GATE_ACC, "fisher_threshold": GATE_FISHER,
