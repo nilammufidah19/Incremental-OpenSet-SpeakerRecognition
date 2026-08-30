@@ -217,9 +217,15 @@ persis yang dibutuhkan untuk memanen +0.033 di §3.
 - Brümmer & de Villiers, *The BOSARIS Toolkit: Theory, Algorithms and Code for
   Surviving the New DCF* (2013) — fusi & kalibrasi LLR via linear logistic
   regression, plus optimizer cepat. Pendahulunya: FoCal.
-- Brümmer, *[Tutorial on logistic-regression calibration and fusion](https://arxiv.org/pdf/2104.08846)*
-  (2021) — turunan lengkap `LLR_fused = a0 + Σ a_i · s_i`, dilatih dengan
-  cross-entropy berbobot prior.
+- Morrison, *[Tutorial on logistic-regression calibration and fusion](https://arxiv.org/abs/2104.08846)*
+  (*Australian Journal of Forensic Sciences* 45(2), 2013; pracetak arXiv 2021)
+  — turunan lengkap `LLR_fused = a0 + Σ a_i · s_i`, dilatih dengan
+  cross-entropy berbobot prior. **Koreksi 2026-08-30: penulisnya Geoffrey
+  Stewart Morrison, bukan Brümmer.**
+- Brümmer et al., *[Fusion of Heterogeneous Speaker Recognition Systems in the
+  STBU Submission for NIST SRE 2006](https://ieeexplore.ieee.org/document/4291590/)*,
+  *IEEE TASLP* 15(7), 2007 — jangkar peer-review untuk fusi regresi logistik
+  (BOSARIS sendiri hanya technical report).
 - Ferrer et al., *[A comparison of linear and non-linear calibrations for speaker
   recognition](https://arxiv.org/pdf/1402.2447)* — kapan kalibrasi non-linear
   layak.
