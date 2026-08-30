@@ -13,6 +13,14 @@
 > **Uji signifikansi (kepatuhan proposal Bab 4.11):** Accuracy — Shapiro-Wilk → paired t-test + Bonferroni ✅; **EER — bootstrap CI 95% (Bengio & Mariéthoz 2004)**, 10 repetisi: usulan vs A1 ΔEER −0.0308 [−0.0356, −0.0260] SIGNIFIKAN 10/10; **continual vs static ΔEER +0.1005 [+0.0932, +0.1079] SIGNIFIKAN 10/10 rep**; vs 3 baseline semua signifikan; vs A2 setara (ΔEER +0.0025 [−0.0018, +0.0069], tidak signifikan).
 > Artefak: `full_evaluation_summary_exp5b_redimnet_fusion.json` · `exp5_validation_sweep.json` · `exp5_bootstrap_eer_exp5b_redimnet_fusion.json` · `exp5_detection_rules_exp5b_redimnet_fusion.json` · `exp5_leakage_robustness.json` (baru) · `exp5_screening_redimnet_b2.json` / `exp5_wavlm_layer_sweep.json` / `exp5_leakage_audit.json` *(gate/screening, tidak terdampak bug — lihat §0)*.
 
+> ### 🔄 PEMBARUAN (30 Agustus 2026) — dua hal dari [Experiment 6](experiment-6.md)
+>
+> **1. Bobot fusi w=0.5 dipilih dengan 3 seed, dan bukan optimum.** Penurunan ulang grid yang sama dengan **10 seed** (`experiments/exp6_validation_sweep_redimnet_b2_10seed.json`) menempatkan optimum pada **w=0.3**. Run resmi pada bobot itu (tag `exp6_redimnet_fusion_w30`) memperbaiki seluruh metrik: akurasi **0.876 → 0.882**, det-EER 0.096 → 0.091, TAR@1%FAR 0.598 → 0.630, dan membuat **A3 > B1 static signifikan pada akurasi** (p=0.0071) — yang di dokumen ini tidak signifikan (p=0.0310). Titik operasi terbaik tesis kini w=0.3, bukan w=0.5.
+>
+> **2. Gerbang G5.3 diputuskan di atas pengurutan yang tidak stabil.** Sweep validasi 3 seed di dokumen ini melihat A3 (0.9092) > A2 (0.9017); pada 10 seed urutannya **terbalik** (0.8918 vs 0.8962). Inilah sebab validasi terlihat meyakinkan sementara run resmi memberi A2 ≥ A3 (p=0.88) — bukan perbedaan populasi, melainkan kurangnya daya statistik. Seluruh sweep validasi berikutnya wajib 10 seed.
+>
+> Angka-angka di bawah tetap valid dan telah **direproduksi bit-identik** pada kode 30 Agustus 2026.
+
 **Batasan tetap:** strict 1-shot (K_SHOT = 1), bebas-pelatihan (0 episode, backbone beku, tanpa fine-tuning), protokol evaluasi = [Experiment 3](experiment-3.md) penuh.
 
 > **Arsitektur final ada di [§0b](#0b-arsitektur-final--apa-yang-berubah-dari-experiment-14) di bawah** (flow diagram + kontras terhadap Experiment 1–4). Mulai §1 adalah dokumen rencana asli, dipertahankan sebagai jejak metodologi. Versi HTML: [`experiment-5.html`](experiment-5.html).

@@ -30,6 +30,12 @@ CACHE_DIR = REPO_ROOT / "data" / "cache" / "embeddings"
 # discriminative than the middle layer (fraction 0.5 -> layer 3) used by the
 # default "whisper" backbone. "whisper_l4" caches into its own namespace so the
 # two variants coexist and never collide (see src/experiments.py, exp2a).
+#
+# CORRECTION (2026-08-30, docs/experiment-6.md sec 7.7): that sweep ran on the
+# pre-masked-pooling cache and was never redone. On the corrected cache the
+# order REVERSES -- L3 0.3475 vs L4 0.2850 -- and quality falls monotonically
+# with depth across all six blocks (L2 is the best at 0.3658). whisper_l4 is
+# kept so exp2/exp4 stay reproducible, but it is NOT the better layer.
 WHISPER_L4_FRACTION = 4.0 / 6.0
 
 def _materialized_only(*_args, **_kwargs):
