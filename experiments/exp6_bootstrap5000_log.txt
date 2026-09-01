@@ -4,3 +4,15 @@ proposed_A3_running_average vs A1_ecapa_only:
   per-rep signifikan: 10/10  mean dEER=-0.0362
   pooled dEER=-0.0367 CI95=[-0.0420, -0.0314] -> SIGNIFIKAN
 
+proposed_A3_running_average vs A2_whisper_only:
+  per-rep signifikan: 0/10  mean dEER=-0.0027
+  pooled dEER=-0.0033 CI95=[-0.0067, +0.0002] -> tidak signifikan
+
+B1_static vs proposed_A3_running_average:
+  per-rep signifikan: 10/10  mean dEER=+0.1026
+  pooled dEER=+0.1033 CI95=[+0.0963, +0.1104] -> SIGNIFIKAN
+
+proposed_A3_running_average vs ECAPA_standard_baseline:
+  per-rep signifikan: 10/10  mean dEER=-0.1801
+  pooled dEER=-0.1814 CI95=[-0.1911, -0.1721] -> SIGNIFIKAN
+

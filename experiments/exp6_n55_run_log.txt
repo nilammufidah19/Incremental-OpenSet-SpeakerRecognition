@@ -16,3 +16,23 @@ done fitting whitener.
 
 open-set detection: 106 unknown speakers, 530 unknown queries
 
+proposed_A3_running_average    acc=0.880±0.019  closed=0.880  forgetting=-0.00028282828282828287  detEER=0.095 AUROC=0.962 TAR@1%FAR=0.637
+B1_static                      acc=0.865±0.014  closed=0.866  forgetting=0.03208529741863074  detEER=0.194 AUROC=0.883 TAR@1%FAR=0.387
+A1_ecapa_only                  acc=0.833±0.021  closed=0.833  forgetting=0.0007003367003366998  detEER=0.129 AUROC=0.936 TAR@1%FAR=0.450
+A2_whisper_only                acc=0.877±0.022  closed=0.877  forgetting=0.0004130190796857466  detEER=0.095 AUROC=0.962 TAR@1%FAR=0.661
+ECAPA_standard_baseline        acc=0.783±0.020  closed=0.783  forgetting=0.05975757575757576  detEER=0.267 AUROC=0.807 TAR@1%FAR=0.315
+ProtoNet_vanilla_baseline      acc=0.391±0.025  closed=0.391  forgetting=0.11885970819304155  detEER=0.460 AUROC=0.564 TAR@1%FAR=0.046
+xvector_PLDA_baseline          acc=0.250±0.016  closed=0.250  forgetting=0.1145679012345679  detEER=0.459 AUROC=0.558 TAR@1%FAR=0.040
+
+Bonferroni-corrected alpha (6 comparisons): 0.00833
+
+proposed_A3_running_average vs A1_ecapa_only: paired_t_test, p=0.0000, significant=True
+proposed_A3_running_average vs A2_whisper_only: paired_t_test, p=0.1427, significant=False
+B1_static vs proposed_A3_running_average: paired_t_test, p=0.0000, significant=True
+proposed_A3_running_average vs ECAPA_standard_baseline: paired_t_test, p=0.0000, significant=True
+proposed_A3_running_average vs ProtoNet_vanilla_baseline: paired_t_test, p=0.0000, significant=True
+proposed_A3_running_average vs xvector_PLDA_baseline: paired_t_test, p=0.0000, significant=True
+Saved per-rep detection scores to detection_scores_exp6_redimnet_fusion_w30_n55.json
+
+Saved summary to C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\experiments\full_evaluation_summary.json (+ full_evaluation_summary_exp6_redimnet_fusion_w30_n55.json)
+Total elapsed: 62.0 min

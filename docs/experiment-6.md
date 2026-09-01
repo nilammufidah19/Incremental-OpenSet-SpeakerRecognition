@@ -1,6 +1,6 @@
 # Experiment 6 — Readout Whisper dan Operator Fusi Adaptif pada Rezim 1-Shot Open-Set
 
-**Status:** 🔄 **BERJALAN SEBAGIAN** (30 Agustus 2026) — F6-0 selesai (15 Agustus), **F6-3b selesai**, **F6-1 selesai (G6.1 GAGAL)**, **enam run resmi selesai** (ECAPA+Whisper pada 3 bobot, ECAPA+ReDimNet pada 2 bobot, reproduksi exp5b); F6-2/F6-3/F6-4 belum.
+**Status:** ✅ **SELESAI** (30 Agustus 2026) — seluruh fase dijalankan atau ditutup beralasan: F6-0 · F6-3b · F6-1 (G6.1 gagal) · F6-4 · 8 run resmi (termasuk run daya n=55 pra-registrasi) · sweep operator (margin-shift + LLR eksploratori) · plafon 10-seed · bootstrap 5000 · uji leakage. Satu-satunya yang menunggu pihak luar: keputusan pembimbing atas [memo F6-3](memo-keputusan-f63.md) — hanya memengaruhi status LLR di naskah, bukan hasil.
 **Tag:** `exp6_whisper_fusion` *(run resmi, ablasi terdokumentasi)* · analisis: F6-3b dan gerbang G6.1
 **Rencana dan gerbang:** [`experiment-6-plan.md`](experiment-6-plan.md) · **Arsitektur desain:** [`experiment-6-architecture.md`](experiment-6-architecture.md)
 **Prasyarat:** [Experiment 4](experiment-4.md) + [re-audit](experiment-4-reaudit.md) · [Experiment 5](experiment-5.md)
@@ -804,6 +804,55 @@ decidable dan plafon seleksi +0.0330, sehingga perolehan realistis dari
 operator yang lebih baik berada pada kisaran +0.01 sampai +0.02 — cukup untuk
 mencapai signifikansi, belum cukup untuk mengubah cerita tesis secara
 mendasar.
+
+### 7b.6 Vonis akhir — run daya n = 55 dan bootstrap 5000
+
+Kedua penutup statistik yang dipra-registrasi telah dijalankan.
+
+**Run daya n = 55** (tag `exp6_redimnet_fusion_w30_n55`, artefak
+`full_evaluation_summary_exp6_redimnet_fusion_w30_n55.json`, 62 menit; seed
+repetisi > 10 melanjutkan barisan identitas — bit-identik untuk sepuluh
+pertama). Hipotesis pra-registrasi: A3 (w = 0.3) > A2, α = 0.00833.
+
+| Besaran | n = 10 | **n = 55** |
+|---|---|---|
+| Selisih A3 − A2 | +0.00587 | **+0.00267** |
+| Cohen's d | 0.470 | **0.201** |
+| Menang | 6/10 | 32/55 |
+| p (paired t) | 0.1715 | **0.1427** |
+| CI95 selisih | — | **[−0.0009, +0.0063]** |
+
+**Hipotesis GAGAL — dan gagal secara informatif.** Menaikkan repetisi 5,5×
+nyaris tidak menggerakkan p, karena estimasi efek dari n = 10 ternyata
+terinflasi oleh keberuntungan sampling: d menyusut dari 0.47 ke 0.20. Selang
+kepercayaan membatasi efek sesungguhnya di bawah +0.006 — di bawah ambang
+kebermaknaan praktis mana pun. Sesuai pra-registrasi, ini **temuan negatif
+yang sesungguhnya**, bukan kekurangan daya, dan tidak akan diuji ulang.
+
+**Bootstrap 5000 resample** (`exp5_bootstrap_eer_exp6_redimnet_fusion_w30.json`):
+A3 vs A2 pada det-EER = −0.0033, CI95 **[−0.0067, +0.0002]** — masih memotong
+nol. Derau Monte-Carlo pada 5000 resample sudah cukup kecil; perbatasan pada
+1000 resample bukan menyembunyikan hasil positif. Pada deteksi pun fusi tidak
+signifikan mengungguli ReDimNet-saja. (Kontrol: A3 vs A1 = −0.0367
+[−0.0420, −0.0314], signifikan 10/10 — mesin ujinya bekerja.)
+
+**Dengan ini pertanyaan sentral Experiment 4–6 ditutup.** Lima garis bukti
+independen — exp4 (Whisper), exp5b (ReDimNet 3-seed), sweep 10-seed, run
+n = 55 pra-registrasi, dan bootstrap 5000 — semuanya menunjuk kesimpulan yang
+sama: **fusi dua-backbone tidak mengungguli backbone tunggal terbaiknya pada
+rezim 1-shot open-set bebas-pelatihan ini.** Plafonnya ada (+0.0413) tetapi
+tidak terjangkau operator level-skor (§7b.5), efek yang tersisa terbatasi
+< +0.006, dan tidak ada sisi statistik yang masih menggantung.
+
+Yang **bertahan kokoh** — dan menguat pada n = 55 — adalah klaim-klaim
+tesis yang lain: A3 > A1 (p < 0.0001), **A3 > B1 static (p < 0.0001; pada
+Experiment 5b perbandingan ini bahkan tidak signifikan)**, seluruh baseline
+terlampaui telak, forgetting ≈ 0, dan ketahanan leakage terverifikasi
+(§7c.2). Sistem finalnya: **ECAPA 30 % + ReDimNet 70 %, 0.880 ± 0.019 pada
+55 repetisi** — dengan pengakuan eksplisit bahwa kontribusinya datang dari
+pemilihan backbone dan pembaruan continual, bukan dari mekanisme fusi.
+
+---
 
 **Pembaruan setelah sweep operator (§7b.5): langkah (1) sudah dijalankan dan
 gagal.** Dengan plafon terukur (+0.0413), sinyal terukur (AUROC 0.8583), dan
