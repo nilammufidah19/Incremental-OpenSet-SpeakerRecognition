@@ -165,11 +165,15 @@ EXPERIMENTS: dict[str, ExperimentConfig] = {
         continual_mode="running_average",
         calibration_strategy="target_frr",
         # LOCKED on the validation task (scripts/exp3_validation_sweep.py,
-        # experiments/exp3_validation_sweep.json): among no-normalization
-        # candidates, target_frr=0.01 gave val acc 0.7550 vs 0.7492 @EER.
-        target_frr=0.01,
+        # experiments/exp3_validation_sweep.json), re-run 2026-07-26 after the
+        # code-review AS-Norm-cohort-leakage and whisper-pooling fixes: among
+        # no-normalization candidates, target_frr=0.15 gave val acc 0.7158 vs
+        # 0.7125 @EER (0.01/0.05/0.1 all scored lower: 0.6950/0.7000/0.6967).
+        target_frr=0.15,
         per_config_calibration=True,
         report_open_set_detection=True,
+        n_reps=10,  # bumped from 5 to proposal's target 2026-08-02: several
+                    # borderline p-values warranted more statistical power
     ),
     "exp3b_asnorm": ExperimentConfig(
         id="exp3b_asnorm",
@@ -185,15 +189,19 @@ EXPERIMENTS: dict[str, ExperimentConfig] = {
         n_train_episodes=0,
         continual_mode="running_average",
         calibration_strategy="target_frr",
-        # LOCKED on the validation task (experiments/exp3_validation_sweep.json):
-        # asnorm cohort=300/top_k=200 + target_frr=0.05 was the overall best
-        # (val acc 0.8867; top_k 50/100 gave 0.8767/0.8758; EER point 0.8842).
-        target_frr=0.05,
+        # LOCKED on the validation task (experiments/exp3_validation_sweep.json),
+        # re-run 2026-07-26 after the code-review AS-Norm-cohort-leakage and
+        # whisper-pooling fixes: asnorm cohort=300/top_k=200 + target_frr=0.01
+        # was the overall best (val acc 0.8475; frr=0.05 close behind at
+        # 0.8467; top_k 50/100 gave 0.8342/0.8433 @EER).
+        target_frr=0.01,
         per_config_calibration=True,
         score_norm="asnorm",
         asnorm_cohort_size=300,
         asnorm_top_k=200,
         report_open_set_detection=True,
+        n_reps=10,  # bumped from 5 to proposal's target 2026-08-02: several
+                    # borderline p-values warranted more statistical power
     ),
     "exp3c_dualmetric": ExperimentConfig(
         id="exp3c_dualmetric",
@@ -211,12 +219,14 @@ EXPERIMENTS: dict[str, ExperimentConfig] = {
         n_train_episodes=0,
         continual_mode="running_average",
         calibration_strategy="target_frr",
-        target_frr=0.05,  # = exp3b (validation-best)
+        target_frr=0.01,  # = exp3b (validation-best, re-locked 2026-07-26)
         per_config_calibration=True,
-        score_norm="asnorm",  # validation: asnorm (0.8867) > none (0.7550)
+        score_norm="asnorm",  # validation: asnorm (0.8475) > none (0.7158)
         asnorm_cohort_size=300,
         asnorm_top_k=200,
         report_open_set_detection=True,
+        n_reps=10,  # bumped from 5 to proposal's target 2026-08-02: several
+                    # borderline p-values warranted more statistical power
     ),
     # --------------------------------------------------------------------- #
     # Experiment 5 (docs/experiment-5.md): replace Whisper with a strong,    #
@@ -232,36 +242,230 @@ EXPERIMENTS: dict[str, ExperimentConfig] = {
     # Fusion: dual-space concat embedder + DualASNorm z-score fusion         #
     # (w*z_ecapa + (1-w)*z_redimnet); per-arm normalizer weight makes        #
     # A1 (w=1) / A2 (w=0) / A3 (w) share one embedder. score_fusion_weight  #
-    # LOCKED on the validation FSCIL sweep (exp5_validation_sweep.json):    #
-    # w=0.3 = best genuine-fusion weight (val 0.9183 vs ECAPA-only 0.8875,  #
-    # 3/3 seeds; statistically tied with ReDimNet-only 0.9200 -- the A2 arm #
-    # of the official run keeps that comparison transparent).               #
+    # LOCKED on the validation FSCIL sweep (exp5_validation_sweep.json),    #
+    # re-run 2026-07-26 after the code-review AS-Norm-cohort-leakage fix    #
+    # (and exp3b's target_frr re-lock 0.05->0.01, which this sweep now      #
+    # calibrates against): w=0.5 = best genuine-fusion weight (val 0.9092   #
+    # vs ECAPA-only 0.8525, 3/3 seeds; w=0.3 was second-best at 0.9058).    #
+    # Gate G5.3 (fusion > ECAPA-only consistently) still PASSES.            #
     # --------------------------------------------------------------------- #
     "exp5b_redimnet_fusion": ExperimentConfig(
         id="exp5b_redimnet_fusion",
         title="Experiment 5b -- ECAPA + ReDimNet dual-space AS-Norm score fusion",
         description=(
             "Whisper replaced by frozen ReDimNet-b2 (ft_lm, vox2; Interspeech "
-            "2024) as the second backbone. Score = 0.3*z_ecapa + 0.7*z_redimnet "
+            "2024) as the second backbone. Score = 0.5*z_ecapa + 0.5*z_redimnet "
             "with per-space AS-Norm (c300/k200) over a shared base_train cohort, "
-            "target-FRR 5% threshold, per-config calibration, running-average "
-            "continual updates. Training-free, strict 1-shot, all exp3 "
-            "protocol discipline retained."
+            "target-FRR 1% threshold (exp3b's re-locked operating point), "
+            "per-config calibration, running-average continual updates. "
+            "Training-free, strict 1-shot, all exp3 protocol discipline retained."
         ),
         residual_init=True,
         n_train_episodes=0,
         continual_mode="running_average",
         fusion_strategy="score_norm",
-        score_fusion_weight=0.3,
+        score_fusion_weight=0.5,
         whisper_backbone="redimnet_b2",
         calibration_strategy="target_frr",
-        target_frr=0.05,
+        target_frr=0.01,
         per_config_calibration=True,
         score_norm="asnorm",
         asnorm_cohort_size=300,
         asnorm_top_k=200,
         report_open_set_detection=True,
         dump_detection_scores=True,
+        n_reps=10,  # bumped from 5 to proposal's target 2026-08-02: several
+                    # borderline p-values warranted more statistical power
+    ),
+    # --------------------------------------------------------------------- #
+    # Experiment 6 (docs/experiment-6.md): the ECAPA + Whisper row the thesis #
+    # never had. Experiment 4 closed Whisper on a gate analysis over a         #
+    # validation task; it never went through run_full_evaluation.py, so there  #
+    # was no ECAPA+Whisper table to set beside exp5b's ECAPA+ReDimNet one.     #
+    #                                                                          #
+    # Second backbone is "whisper_best": the best training-free readout F6-1   #
+    # could find -- all six frozen whisper-base encoder blocks, mean+std       #
+    # pooled, per-block PCA-whitened to d=64, then WCCN, all fit on base_train #
+    # (experiments/materialized_whisper_best.json). Deliberately the BEST      #
+    # Whisper configuration, not the weakest, so the comparison is not a       #
+    # strawman: it scores 0.3975 standalone on the exp4 validation task vs     #
+    # 0.3475 for the single-layer readout Experiment 4 judged.                 #
+    #                                                                          #
+    # PRE-REGISTERED AS AN ABLATION, not as a proposed system. Gate G6.1       #
+    # failed (0.3975 < 0.45, Fisher 0.321 < 1.0) and the validation sweep      #
+    # (experiments/exp6_validation_sweep_whisper_best.json, 10 seeds) found    #
+    # NO fusion weight that beats ECAPA alone: accuracy falls monotonically as #
+    # Whisper's weight rises (w=1.0 -> 0.8402, w=0.5 -> 0.6240, w=0.1 ->       #
+    # 0.3015), and the best fused w=0.95 is significantly WORSE than A1        #
+    # (-0.0085, paired t p=0.0111, winning 1/10 seeds). w=0.95 is locked here  #
+    # because it is the best fused point, not because it is good. The purpose  #
+    # of this run is to report that result under the official protocol.        #
+    # --------------------------------------------------------------------- #
+    "exp6_whisper_fusion": ExperimentConfig(
+        id="exp6_whisper_fusion",
+        title="Experiment 6 -- ECAPA + Whisper (best training-free PMFA readout), documented ablation",
+        description=(
+            "ECAPA-TDNN + frozen whisper-base read out Whisper-PMFA style "
+            "(6 blocks x mean+std -> per-block whitening d=64 -> WCCN, 384-d, "
+            "all fit on base_train). Score = 0.95*z_ecapa + 0.05*z_whisper with "
+            "per-space AS-Norm (c300/k200), target-FRR 1% threshold, per-config "
+            "calibration, running-average continual updates. Identical protocol "
+            "to exp5b so the two second-backbone choices are directly "
+            "comparable. Training-free, strict 1-shot. Reported as an ablation: "
+            "no fusion weight beat ECAPA alone on validation."
+        ),
+        residual_init=True,
+        n_train_episodes=0,
+        continual_mode="running_average",
+        fusion_strategy="score_norm",
+        score_fusion_weight=0.95,   # LOCKED on the validation half, 10 seeds
+        whisper_backbone="whisper_best",
+        calibration_strategy="target_frr",
+        target_frr=0.01,
+        per_config_calibration=True,
+        score_norm="asnorm",
+        asnorm_cohort_size=300,
+        asnorm_top_k=200,
+        report_open_set_detection=True,
+        dump_detection_scores=True,
+        n_reps=10,
+    ),
+    # --------------------------------------------------------------------- #
+    # Experiment 6 dose-response: the SAME configuration as                   #
+    # exp6_whisper_fusion at two heavier Whisper weights. These two weights   #
+    # are NOT validation-selected -- the sweep already showed accuracy falls  #
+    # monotonically as Whisper's weight rises, so no grid point beats ECAPA   #
+    # alone. They are fixed comparison points, run so the cost of adding      #
+    # Whisper can be read as a dose-response curve under the official         #
+    # protocol instead of inferred from the validation task.                  #
+    # --------------------------------------------------------------------- #
+    "exp6_whisper_fusion_w50": ExperimentConfig(
+        id="exp6_whisper_fusion_w50",
+        title="Experiment 6 -- ECAPA 50% + Whisper 50% (dose-response point)",
+        description=(
+            "Identical to exp6_whisper_fusion except score_fusion_weight=0.50, "
+            "i.e. the same 50/50 split exp5b uses for ReDimNet. Fixed "
+            "comparison point, not a validation-selected operating point."
+        ),
+        residual_init=True,
+        n_train_episodes=0,
+        continual_mode="running_average",
+        fusion_strategy="score_norm",
+        score_fusion_weight=0.50,
+        whisper_backbone="whisper_best",
+        calibration_strategy="target_frr",
+        target_frr=0.01,
+        per_config_calibration=True,
+        score_norm="asnorm",
+        asnorm_cohort_size=300,
+        asnorm_top_k=200,
+        report_open_set_detection=True,
+        dump_detection_scores=True,
+        n_reps=10,
+    ),
+    "exp6_whisper_fusion_w75": ExperimentConfig(
+        id="exp6_whisper_fusion_w75",
+        title="Experiment 6 -- ECAPA 75% + Whisper 25% (dose-response point)",
+        description=(
+            "Identical to exp6_whisper_fusion except score_fusion_weight=0.75. "
+            "Fixed comparison point, not a validation-selected operating point."
+        ),
+        residual_init=True,
+        n_train_episodes=0,
+        continual_mode="running_average",
+        fusion_strategy="score_norm",
+        score_fusion_weight=0.75,
+        whisper_backbone="whisper_best",
+        calibration_strategy="target_frr",
+        target_frr=0.01,
+        per_config_calibration=True,
+        score_norm="asnorm",
+        asnorm_cohort_size=300,
+        asnorm_top_k=200,
+        report_open_set_detection=True,
+        dump_detection_scores=True,
+        n_reps=10,
+    ),
+    # --------------------------------------------------------------------- #
+    # Experiment 6: ECAPA + ReDimNet at the weight a 10-SEED validation sweep #
+    # actually selects. exp5b locked w=0.5 on a 3-seed sweep; re-deriving the #
+    # same grid with 10 seeds                                                 #
+    # (experiments/exp6_validation_sweep_redimnet_b2_10seed.json) moves the   #
+    # optimum to w=0.3 -- 0.8977 vs 0.8918 on the validation half.            #
+    #                                                                         #
+    # So unlike the exp6_whisper_fusion_w* entries, this is NOT a fixed        #
+    # comparison point: it is a properly validation-selected operating point,  #
+    # and on better evidence than exp5b's own.                                 #
+    #                                                                         #
+    # Read the result with the sweep's other finding in view: at 10 seeds the  #
+    # best fused weight does NOT significantly beat ReDimNet alone (0.8977 vs  #
+    # 0.8962, p=0.7532, winning 3/10 seeds). A higher A3 here would still not  #
+    # establish that fusion contributes -- that comparison is A3 vs A2.        #
+    # --------------------------------------------------------------------- #
+    "exp6_redimnet_fusion_w30": ExperimentConfig(
+        id="exp6_redimnet_fusion_w30",
+        title="Experiment 6 -- ECAPA 30% + ReDimNet 70% (10-seed re-derived weight)",
+        description=(
+            "Identical to exp5b_redimnet_fusion except score_fusion_weight=0.30, "
+            "the optimum of the re-derived 10-seed validation sweep (exp5b's "
+            "w=0.50 was chosen on 3 seeds). Same frozen ReDimNet-b2 second "
+            "backbone, per-space AS-Norm c300/k200, target-FRR 1%, per-config "
+            "calibration, running-average continual updates. Training-free, "
+            "strict 1-shot."
+        ),
+        residual_init=True,
+        n_train_episodes=0,
+        continual_mode="running_average",
+        fusion_strategy="score_norm",
+        score_fusion_weight=0.30,
+        whisper_backbone="redimnet_b2",
+        calibration_strategy="target_frr",
+        target_frr=0.01,
+        per_config_calibration=True,
+        score_norm="asnorm",
+        asnorm_cohort_size=300,
+        asnorm_top_k=200,
+        report_open_set_detection=True,
+        dump_detection_scores=True,
+        n_reps=10,
+    ),
+    # --------------------------------------------------------------------- #
+    # Experiment 6 PRE-REGISTERED POWER RUN (docs/experiment-6.md sec 7b.1).  #
+    # Identical to exp6_redimnet_fusion_w30 except n_reps=55, the count the   #
+    # power analysis says gives 80% power at alpha_Bonferroni=0.00833 for the #
+    # observed effect (A3 vs A2: d=0.47).                                     #
+    #                                                                         #
+    # Pre-registration, stated before the run: the hypothesis is             #
+    # "A3 (w=0.3) > A2 (ReDimNet-alone) on open-set accuracy, paired test,   #
+    # alpha=0.00833". This entry is run ONCE and the result reported          #
+    # whatever it is. n was chosen from the power analysis, not tuned; a     #
+    # failure here is a REAL negative, not an underpowered one. Repetitions  #
+    # re-draw episodes over the same 99 speakers, so the claim's scope is    #
+    # this task, not the population.                                         #
+    # --------------------------------------------------------------------- #
+    "exp6_redimnet_fusion_w30_n55": ExperimentConfig(
+        id="exp6_redimnet_fusion_w30_n55",
+        title="Experiment 6 -- ECAPA 30% + ReDimNet 70%, pre-registered 55-rep power run",
+        description=(
+            "exp6_redimnet_fusion_w30 at n_reps=55, the pre-registered count "
+            "for 80% power on A3-vs-A2 at the Bonferroni alpha. Run once; "
+            "the outcome is reported as-is."
+        ),
+        residual_init=True,
+        n_train_episodes=0,
+        continual_mode="running_average",
+        fusion_strategy="score_norm",
+        score_fusion_weight=0.30,
+        whisper_backbone="redimnet_b2",
+        calibration_strategy="target_frr",
+        target_frr=0.01,
+        per_config_calibration=True,
+        score_norm="asnorm",
+        asnorm_cohort_size=300,
+        asnorm_top_k=200,
+        report_open_set_detection=True,
+        dump_detection_scores=True,
+        n_reps=55,
     ),
 }
 

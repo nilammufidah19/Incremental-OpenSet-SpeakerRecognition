@@ -1,0 +1,7 @@
+second backbone: whisper_pmfa
+validation task: 10x10-way k=1 n_query=4; detection half untouched: 111 speakers
+base_train index: 111 speakers, 1190 utterances (cached for ecapa+whisper_pmfa)
+cohort: (300, 4288) (concat dim = 192 + 4096)
+impostor pool: 295 speakers
+
+  w=1.00 thr= -1.4286 calEER=0.2112 val_acc=0.8402+/-0.0176

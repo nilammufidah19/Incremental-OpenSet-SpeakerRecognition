@@ -49,6 +49,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import random
 import sys
 import time
 from pathlib import Path
@@ -61,12 +63,15 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from src.data.splits import split_reserved_pool_halves  # noqa: E402
 from src.evaluation.complementarity import (  # noqa: E402
+    best_global_weight,
     detection_scores,
     fusion_accuracy,
     l2_normalize,
+    linear_fusion_oracle,
     oracle_report,
 )
 from src.evaluation.metrics import auroc, tar_at_far  # noqa: E402
+from src.evaluation.statistics import bootstrap_eer_difference  # noqa: E402
 from src.features.cache import get_or_compute_embedding, is_cached  # noqa: E402
 from src.prototypical.calibration import find_operating_point  # noqa: E402
 from src.prototypical.score_norm import ASNorm  # noqa: E402
@@ -78,27 +83,69 @@ OUT_PATH = REPO_ROOT / "experiments" / "exp4_ceiling_asnorm.json"
 K_SHOT = 1
 N_QUERY = 4                    # validation-half speakers have exactly 5 utterances
 N_TASK_SPEAKERS = 100          # same size as the exp3 validation task (10 x 10-way)
-SEEDS = SEED_LIST[:3]          # same seeds as the exp3 validation sweep
+# Experiment 6 (2026-08-30) made this configurable via EXP4_N_SEEDS. Default
+# stays 3 so every previously-reported exp4/exp5 number reproduces from this
+# script unchanged; exp6 runs it at 10 after finding that 3 seeds cannot
+# order the arms reliably (docs/experiment-6.md section 8).
+SEEDS = SEED_LIST[:int(os.environ.get("EXP4_N_SEEDS", "3"))]
 WHISPER_VARIANTS = ["whisper_l4", "whisper"]   # exp2's best first, exp1/exp3's for reference
 COHORT_SIZE = 300              # exp3b locked AS-Norm params
 TOP_K = 200
-FUSION_W_GRID = [0.5, 0.6, 0.7, 0.8, 0.9, 0.95]
+FUSION_W_GRID = [0.5, 0.6, 0.7, 0.8, 0.9, 0.95]   # ORIGINAL coarse grid -- kept
+                               # verbatim so exp5's G5.1/G5.2 screening numbers
+                               # (experiments/exp5_screening_redimnet_b2.json)
+                               # stay reproducible from this script. The fine
+                               # sweep below is reported ADDITIVELY.
 GATE_G41_MIN_CEILING = 0.02    # docs/experiment-4.md section 3
 DISAGREE_PENALTY = 0.5
 
+# --- additions of the 2026-08-15 re-audit (docs/experiment-4-reaudit.md) ------
+# C5: exp4's 6-point grid never looked below w=0.5 and missed the true optimum
+# (w=0.883). The fine grid spans the full interval at 0.01 resolution.
+FINE_W_GRID = np.round(np.arange(0.0, 1.0 + 1e-9, 0.01), 2)
+# C7: 3 seeds with no CI decided gates on differences smaller than the seed
+# spread. Every detection rule now gets a paired bootstrap CI vs the ECAPA-only
+# baseline.
+N_BOOTSTRAP = 1000
+# C6: the primary unknown set is only 40 utterances (1 query = 2.5% EER). The
+# detection HALF of reserved_unknown_pool would be the obvious enlargement, but
+# that is exactly the population the OFFICIAL runs score their unknowns on --
+# selecting a detection rule there would be test-set leakage. Instead we add a
+# second, leak-free panel: base_train speakers held OUT of the AS-Norm cohort.
+HOLDOUT_COHORT_SIZE = 300
+HOLDOUT_MAX_UNKNOWN = 600
+GATE_G41B_MIN_CEILING = 0.02   # same threshold, applied to the *linear* ceiling
 
-def build_cohort_paths(cohort_size: int, whisper_backbone: str, seed: int = 0) -> list[Path]:
-    """Round-robin-across-speakers cohort utterance selection from base_train
-    (same sampling discipline as score_norm.build_cohort, but at the PATH
-    level so both backbone spaces get the *same* cohort utterances)."""
-    frames = [
+
+def load_base_train_manifest(whisper_backbone: str) -> pd.DataFrame:
+    """Cached-in-both-backbones base_train utterances."""
+    manifest = pd.concat([
         pd.read_csv(REPO_ROOT / "data/raw/audio/vox1_sample/manifest.csv"),
         pd.read_csv(REPO_ROOT / "data/raw/audio/base_train_capped/manifest.csv"),
-    ]
-    manifest = pd.concat(frames, ignore_index=True)
-    manifest = manifest[manifest["path"].apply(
+    ], ignore_index=True)
+    return manifest[manifest["path"].apply(
         lambda p: is_cached(REPO_ROOT / p, "ecapa") and is_cached(REPO_ROOT / p, whisper_backbone)
     )]
+
+
+def build_cohort_paths(
+    cohort_size: int,
+    whisper_backbone: str,
+    seed: int = 0,
+    speakers_allowed: set[str] | None = None,
+) -> list[Path]:
+    """Round-robin-across-speakers cohort utterance selection from base_train
+    (same sampling discipline as score_norm.build_cohort, but at the PATH
+    level so both backbone spaces get the *same* cohort utterances).
+
+    `speakers_allowed` restricts the draw to a speaker subset -- used by the
+    leak-free holdout panel so the cohort and the unknown queries can never
+    share a speaker. Left as None (the default) the behaviour is byte-identical
+    to the original, which is what keeps exp5's screening numbers reproducible.
+    """
+    manifest = load_base_train_manifest(whisper_backbone)
+    if speakers_allowed is not None:
+        manifest = manifest[manifest["speaker_id"].isin(speakers_allowed)]
     rng = np.random.default_rng(seed)
     per_speaker: dict[str, list[str]] = {}
     for _, row in manifest.iterrows():
@@ -123,6 +170,66 @@ def build_cohort_paths(cohort_size: int, whisper_backbone: str, seed: int = 0) -
     if len(picked) < 2:
         raise ValueError("not enough cached base_train utterances for a cohort")
     return picked
+
+
+def base_train_speaker_halves(
+    whisper_backbone: str, seed: int = 0
+) -> tuple[set[str], set[str]]:
+    """Speaker-disjoint halves of the cached base_train speakers: (cohort side,
+    unknown-query side). Same discipline as
+    score_norm.split_cohort_and_genuine -- an unknown query must never find its
+    own speaker inside the cohort its score is normalized against.
+    """
+    manifest = load_base_train_manifest(whisper_backbone)
+    speakers = sorted(set(manifest["speaker_id"]))
+    rng = random.Random(seed + 11)   # distinct stream from splits.py / score_norm
+    rng.shuffle(speakers)
+    mid = len(speakers) // 2
+    return set(speakers[:mid]), set(speakers[mid:])
+
+
+def holdout_unknown_paths(
+    whisper_backbone: str, speakers: set[str], limit: int, seed: int = 0
+) -> list[Path]:
+    manifest = load_base_train_manifest(whisper_backbone)
+    manifest = manifest[manifest["speaker_id"].isin(speakers)]
+    paths = sorted(manifest["path"].tolist())
+    rng = random.Random(seed + 13)
+    rng.shuffle(paths)
+    return [REPO_ROOT / p for p in paths[:limit]]
+
+
+def detection_panel(
+    z_e: np.ndarray,
+    z_w: np.ndarray,
+    zu_e: np.ndarray,
+    zu_w: np.ndarray,
+    seed: int,
+) -> dict:
+    """EER/AUROC/TAR for every two-space rule, plus a PAIRED bootstrap CI on
+    (rule EER - ECAPA-only EER) -- the same genuine/unknown trials scored by
+    two rules, so Bengio & Mariethoz's paired resampling applies (C7)."""
+    gen = detection_scores(z_e, z_w, DISAGREE_PENALTY)
+    unk = detection_scores(zu_e, zu_w, DISAGREE_PENALTY)
+    out = {}
+    for rule in gen:
+        g, u = gen[rule], unk[rule]
+        entry = {
+            "eer": find_operating_point(g, u, "eer").eer,
+            "auroc": auroc(g, u),
+            "tar_at_far1": tar_at_far(g, u, 0.01),
+        }
+        if rule != "a_only":
+            ci = bootstrap_eer_difference(
+                g, u, gen["a_only"], unk["a_only"],
+                n_bootstrap=N_BOOTSTRAP, seed=seed,
+            )
+            entry["delta_eer_vs_a_only"] = ci.mean_diff      # negative = rule better
+            entry["ci_lower"] = ci.ci_lower
+            entry["ci_upper"] = ci.ci_upper
+            entry["significant"] = bool(ci.significant)
+        out[rule] = entry
+    return out
 
 
 def embed_paths(paths: list[Path], backbone: str) -> np.ndarray:
@@ -185,11 +292,25 @@ def main(second_backbones: list[str] | None = None, out_path: Path = OUT_PATH) -
         norm_e = ASNorm(cohort_e, top_k=TOP_K)
         norm_w = ASNorm(cohort_w, top_k=TOP_K)
 
+        # --- leak-free holdout panel (C6): cohort and unknown queries drawn
+        # from DISJOINT base_train speaker halves, so this panel has its own
+        # normalizer. The primary numbers above are untouched.
+        coh_spk, unk_spk = base_train_speaker_halves(whisper_backbone, seed=0)
+        ho_cohort_paths = build_cohort_paths(
+            HOLDOUT_COHORT_SIZE, whisper_backbone, seed=0, speakers_allowed=coh_spk)
+        ho_unknown_paths = holdout_unknown_paths(
+            whisper_backbone, unk_spk, HOLDOUT_MAX_UNKNOWN, seed=0)
+        ho_norm_e = ASNorm(embed_paths(ho_cohort_paths, "ecapa"), top_k=TOP_K)
+        ho_norm_w = ASNorm(embed_paths(ho_cohort_paths, whisper_backbone), top_k=TOP_K)
+        ho_u_e = embed_paths(ho_unknown_paths, "ecapa")
+        ho_u_w = embed_paths(ho_unknown_paths, whisper_backbone)
+        print(f"  holdout panel: cohort {len(ho_cohort_paths)} utt / {len(coh_spk)} spk, "
+              f"unknowns {len(ho_unknown_paths)} utt / {len(unk_spk)} spk (disjoint)")
+
         per_seed: list[dict] = []
         rescue_examples: list[dict] = []
         for seed in SEEDS:
-            import random as _random
-            rng = _random.Random(seed)
+            rng = random.Random(seed)
 
             support_paths, query_paths, labels = [], [], []
             for idx, spk in enumerate(task_speakers):
@@ -212,6 +333,8 @@ def main(second_backbones: list[str] | None = None, out_path: Path = OUT_PATH) -
             z_e = norm_e.normalize(q_e, proto_e)
             z_w = norm_w.normalize(q_w, proto_w)
 
+            fine_asnorm = best_global_weight(z_e, z_w, labels, FINE_W_GRID)
+            fine_raw = best_global_weight(d_e_raw, d_w_raw, labels, FINE_W_GRID)
             entry = {
                 "seed": seed,
                 "raw": oracle_report(d_e_raw, d_w_raw, labels),
@@ -220,6 +343,16 @@ def main(second_backbones: list[str] | None = None, out_path: Path = OUT_PATH) -
                                for w in FUSION_W_GRID},
                 "fusion_asnorm": {str(w): fusion_accuracy(z_e, z_w, labels, w)
                                   for w in FUSION_W_GRID},
+                # --- re-audit additions (all NEW keys; nothing above changed) ---
+                # C1: the ceiling of the score-fusion family actually being swept,
+                # as opposed to oracle_report's per-query SELECTION ceiling.
+                "linear_oracle_asnorm": linear_fusion_oracle(z_e, z_w, labels),
+                "linear_oracle_raw": linear_fusion_oracle(d_e_raw, d_w_raw, labels),
+                # C5: full-interval 0.01 sweep (the coarse grid above missed the optimum)
+                "fine_asnorm": {"best_w": fine_asnorm["best_w"],
+                                "best_acc": fine_asnorm["best_acc"]},
+                "fine_raw": {"best_w": fine_raw["best_w"],
+                             "best_acc": fine_raw["best_acc"]},
             }
 
             # 4c: detection on genuine (task queries) vs unknown (leftover speakers)
@@ -227,17 +360,20 @@ def main(second_backbones: list[str] | None = None, out_path: Path = OUT_PATH) -
             u_w = embed_paths(unknown_paths, whisper_backbone)
             zu_e = norm_e.normalize(u_e, proto_e)
             zu_w = norm_w.normalize(u_w, proto_w)
-            gen_scores = detection_scores(z_e, z_w, DISAGREE_PENALTY)
-            unk_scores = detection_scores(zu_e, zu_w, DISAGREE_PENALTY)
-            det = {}
-            for rule in gen_scores:
-                g, u = gen_scores[rule], unk_scores[rule]
-                det[rule] = {
-                    "eer": find_operating_point(g, u, "eer").eer,
-                    "auroc": auroc(g, u),
-                    "tar_at_far1": tar_at_far(g, u, 0.01),
-                }
-            entry["detection"] = det
+            # C7: same rules as before, now each with a paired bootstrap CI on
+            # (rule EER - a_only EER). The "eer"/"auroc"/"tar_at_far1" keys keep
+            # their original meaning, so exp5 screening comparisons still hold.
+            entry["detection"] = detection_panel(z_e, z_w, zu_e, zu_w, seed)
+
+            # C6: leak-free enlargement -- same task queries as genuine, but
+            # ~600 base_train-holdout unknowns and a speaker-disjoint cohort.
+            entry["detection_holdout"] = detection_panel(
+                ho_norm_e.normalize(q_e, proto_e),
+                ho_norm_w.normalize(q_w, proto_w),
+                ho_norm_e.normalize(ho_u_e, proto_e),
+                ho_norm_w.normalize(ho_u_w, proto_w),
+                seed,
+            )
             per_seed.append(entry)
 
             if seed == SEEDS[0]:   # qualitative sample: Whisper rescues ECAPA
@@ -263,7 +399,24 @@ def main(second_backbones: list[str] | None = None, out_path: Path = OUT_PATH) -
                      + [("fusion_raw", str(w)) for w in FUSION_W_GRID]
                      + [("detection", r, m)
                         for r in ["a_only", "b_only", "mean", "max", "a_disagree"]
-                        for m in ["eer", "auroc", "tar_at_far1"]])
+                        for m in ["eer", "auroc", "tar_at_far1"]]
+                     # --- re-audit additions ---
+                     + [("linear_oracle_asnorm", m)
+                        for m in ["acc_linear_oracle", "delta_linear_ceiling",
+                                  "recovered_both_argmin_wrong"]]
+                     + [("linear_oracle_raw", m)
+                        for m in ["acc_linear_oracle", "delta_linear_ceiling"]]
+                     + [("fine_asnorm", m) for m in ["best_w", "best_acc"]]
+                     + [("fine_raw", m) for m in ["best_w", "best_acc"]]
+                     + [("detection_holdout", r, m)
+                        for r in ["a_only", "b_only", "mean", "max", "a_disagree"]
+                        for m in ["eer", "auroc", "tar_at_far1"]]
+                     + [("detection_holdout", r, m)
+                        for r in ["b_only", "mean", "max", "a_disagree"]
+                        for m in ["delta_eer_vs_a_only", "ci_lower", "ci_upper"]]
+                     + [("detection", r, m)
+                        for r in ["b_only", "mean", "max", "a_disagree"]
+                        for m in ["delta_eer_vs_a_only", "ci_lower", "ci_upper"]])
         summary = summarize(per_seed, key_paths)
 
         delta = summary["asnorm/delta_ceiling"]
@@ -272,21 +425,53 @@ def main(second_backbones: list[str] | None = None, out_path: Path = OUT_PATH) -
             ((w, summary[f"fusion_asnorm/{w}"]["mean"]) for w in map(str, FUSION_W_GRID)),
             key=lambda t: t[1],
         )
+        lin_delta = summary["linear_oracle_asnorm/delta_linear_ceiling"]
+        fine_acc = summary["fine_asnorm/best_acc"]
+        fine_w = summary["fine_asnorm/best_w"]
+        acc_a = summary["asnorm/acc_a"]
         variant_result = {
             "per_seed": per_seed,
             "summary": summary,
             "rescue_examples_seed0": rescue_examples,
+            "holdout_panel": {
+                "n_cohort_utterances": len(ho_cohort_paths),
+                "n_cohort_speakers": len(coh_spk),
+                "n_unknown_queries": len(ho_unknown_paths),
+                "n_unknown_speakers": len(unk_spk),
+            },
             "gates": {
                 "G4.1_ceiling_asnorm": {
                     "delta_ceiling_mean": delta["mean"],
                     "threshold": GATE_G41_MIN_CEILING,
                     "fusion_closed": gate_g41_closed,
+                    "note": "SELECTION ceiling -- not an upper bound on score "
+                            "fusion. See G4.1b.",
+                },
+                # C1: the gate G4.1 should have been decided on
+                "G4.1b_linear_ceiling_asnorm": {
+                    "delta_linear_ceiling_mean": lin_delta["mean"],
+                    "delta_linear_ceiling_std": lin_delta["std"],
+                    "threshold": GATE_G41B_MIN_CEILING,
+                    "fusion_closed": lin_delta["mean"] < GATE_G41B_MIN_CEILING,
+                    "recovered_both_argmin_wrong":
+                        summary["linear_oracle_asnorm/recovered_both_argmin_wrong"]["mean"],
                 },
                 "G4.2_best_fusion": {
                     "best_w": best_w,
                     "best_fusion_acc": best_acc,
-                    "acc_ecapa_alone": summary["asnorm/acc_a"]["mean"],
-                    "fusion_beats_ecapa": best_acc > summary["asnorm/acc_a"]["mean"],
+                    "acc_ecapa_alone": acc_a["mean"],
+                    "fusion_beats_ecapa": best_acc > acc_a["mean"],
+                },
+                # C5: same gate, decided on the full-interval 0.01 sweep
+                "G4.2b_best_fusion_fine_grid": {
+                    "best_w_mean": fine_w["mean"],
+                    "best_w_per_seed": fine_w["per_seed"],
+                    "best_fusion_acc": fine_acc["mean"],
+                    "acc_ecapa_alone": acc_a["mean"],
+                    "gain_over_ecapa": fine_acc["mean"] - acc_a["mean"],
+                    # a gain smaller than the across-seed spread is not a result
+                    "exceeds_seed_noise":
+                        (fine_acc["mean"] - acc_a["mean"]) > acc_a["std"],
                 },
             },
         }
@@ -296,14 +481,30 @@ def main(second_backbones: list[str] | None = None, out_path: Path = OUT_PATH) -
               f"± {summary['raw/delta_ceiling']['std']:.4f}")
         print(f"  [{whisper_backbone}] ceiling asnorm: +{delta['mean']:.4f} ± {delta['std']:.4f} "
               f"-> G4.1 {'CLOSED (fusion not viable)' if gate_g41_closed else 'OPEN (headroom exists)'}")
-        print(f"  [{whisper_backbone}] best asnorm fusion: w={best_w} acc={best_acc:.4f} "
-              f"vs ecapa-alone {summary['asnorm/acc_a']['mean']:.4f}")
-        det_base = summary["detection/a_only/eer"]["mean"]
-        for rule in ["b_only", "mean", "max", "a_disagree"]:
-            print(f"  [{whisper_backbone}] 4c det {rule:10s}: "
-                  f"EER {summary[f'detection/{rule}/eer']['mean']:.4f} "
-                  f"(ecapa-only {det_base:.4f}), "
-                  f"AUROC {summary[f'detection/{rule}/auroc']['mean']:.4f}")
+        print(f"  [{whisper_backbone}] ceiling asnorm LINEAR-FUSION: "
+              f"+{lin_delta['mean']:.4f} ± {lin_delta['std']:.4f} -> G4.1b "
+              f"{'CLOSED' if lin_delta['mean'] < GATE_G41B_MIN_CEILING else 'OPEN'} "
+              f"(of which both-argmin-wrong: "
+              f"{summary['linear_oracle_asnorm/recovered_both_argmin_wrong']['mean']:.4f})")
+        print(f"  [{whisper_backbone}] best asnorm fusion (coarse grid): w={best_w} "
+              f"acc={best_acc:.4f} vs ecapa-alone {acc_a['mean']:.4f}")
+        print(f"  [{whisper_backbone}] best asnorm fusion (fine 0.01 grid) : "
+              f"w={fine_w['mean']:.3f} acc={fine_acc['mean']:.4f} "
+              f"gain={fine_acc['mean'] - acc_a['mean']:+.4f} "
+              f"(seed std {acc_a['std']:.4f}) -> "
+              f"{'EXCEEDS noise' if (fine_acc['mean'] - acc_a['mean']) > acc_a['std'] else 'WITHIN noise'}")
+        for panel, tag in (("detection", "4c val-leftover"),
+                           ("detection_holdout", "4c bt-holdout ")):
+            det_base = summary[f"{panel}/a_only/eer"]["mean"]
+            for rule in ["b_only", "mean", "max", "a_disagree"]:
+                d = summary[f"{panel}/{rule}/delta_eer_vs_a_only"]["mean"]
+                lo = summary[f"{panel}/{rule}/ci_lower"]["mean"]
+                hi = summary[f"{panel}/{rule}/ci_upper"]["mean"]
+                sig = "SIG" if not (lo <= 0.0 <= hi) else "ns "
+                print(f"  [{whisper_backbone}] {tag} {rule:10s}: "
+                      f"EER {summary[f'{panel}/{rule}/eer']['mean']:.4f} "
+                      f"(a_only {det_base:.4f}) dEER {d:+.4f} "
+                      f"CI[{lo:+.4f},{hi:+.4f}] {sig}")
         print()
 
     results["protocol"] = {
@@ -312,8 +513,18 @@ def main(second_backbones: list[str] | None = None, out_path: Path = OUT_PATH) -
         "seeds": SEEDS,
         "asnorm": {"cohort_size": COHORT_SIZE, "top_k": TOP_K},
         "fusion_w_grid": FUSION_W_GRID,
+        "fine_w_grid": {"start": 0.0, "stop": 1.0, "step": 0.01},
+        "n_bootstrap": N_BOOTSTRAP,
         "n_unknown_queries_4c": len(unknown_paths),
         "unknown_source": "leftover validation-half speakers (detection half untouched)",
+        "unknown_source_holdout": (
+            "base_train speakers held OUT of the AS-Norm cohort (speaker-disjoint "
+            "halves); the reserved_unknown_pool DETECTION half is deliberately NOT "
+            "used -- official runs score their unknowns there, so selecting a "
+            "detection rule on it would be test-set leakage"
+        ),
+        # holdout counts depend on which utterances are cached for the 2nd
+        # backbone, so they are reported per-variant, not here
         "gate_g41_min_ceiling": GATE_G41_MIN_CEILING,
         "disagree_penalty": DISAGREE_PENALTY,
     }

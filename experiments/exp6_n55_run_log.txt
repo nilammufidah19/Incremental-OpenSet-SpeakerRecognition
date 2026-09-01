@@ -1,0 +1,38 @@
+ACTIVE EXPERIMENT: exp6_redimnet_fusion_w30_n55 -- Experiment 6 -- ECAPA 30% + ReDimNet 70%, pre-registered 55-rep power run
+device=cuda, N_REPS=55, N_TRAIN_EPISODES=0, RESIDUAL_INIT=True, continual_mode=running_average
+
+base_train index: 71 speakers, 993 utterances (cached-only)
+building dual-space embedder (second backbone=redimnet_b2, norm-fusion w_ecapa=0.3)...
+
+calibration impostor pool available: 295 speakers
+calibrated threshold(A3)=-1.7526 (strategy=target_frr, FAR=0.5435028248587571, FRR=0.010683760683760684), calibration EER=0.1263
+calibrated threshold(A1)=-1.2290 (EER=0.1538), threshold(A2)=-1.8365 (EER=0.1400)
+
+task_speakers with real audio available: 99/100 across 10/10 sessions
+
+training ProtoNet-vanilla baseline (random init, episodic)...
+fitting x-vector + PLDA-lite baseline...
+done fitting whitener.
+
+open-set detection: 106 unknown speakers, 530 unknown queries
+
+proposed_A3_running_average    acc=0.880±0.019  closed=0.880  forgetting=-0.00028282828282828287  detEER=0.095 AUROC=0.962 TAR@1%FAR=0.637
+B1_static                      acc=0.865±0.014  closed=0.866  forgetting=0.03208529741863074  detEER=0.194 AUROC=0.883 TAR@1%FAR=0.387
+A1_ecapa_only                  acc=0.833±0.021  closed=0.833  forgetting=0.0007003367003366998  detEER=0.129 AUROC=0.936 TAR@1%FAR=0.450
+A2_whisper_only                acc=0.877±0.022  closed=0.877  forgetting=0.0004130190796857466  detEER=0.095 AUROC=0.962 TAR@1%FAR=0.661
+ECAPA_standard_baseline        acc=0.783±0.020  closed=0.783  forgetting=0.05975757575757576  detEER=0.267 AUROC=0.807 TAR@1%FAR=0.315
+ProtoNet_vanilla_baseline      acc=0.391±0.025  closed=0.391  forgetting=0.11885970819304155  detEER=0.460 AUROC=0.564 TAR@1%FAR=0.046
+xvector_PLDA_baseline          acc=0.250±0.016  closed=0.250  forgetting=0.1145679012345679  detEER=0.459 AUROC=0.558 TAR@1%FAR=0.040
+
+Bonferroni-corrected alpha (6 comparisons): 0.00833
+
+proposed_A3_running_average vs A1_ecapa_only: paired_t_test, p=0.0000, significant=True
+proposed_A3_running_average vs A2_whisper_only: paired_t_test, p=0.1427, significant=False
+B1_static vs proposed_A3_running_average: paired_t_test, p=0.0000, significant=True
+proposed_A3_running_average vs ECAPA_standard_baseline: paired_t_test, p=0.0000, significant=True
+proposed_A3_running_average vs ProtoNet_vanilla_baseline: paired_t_test, p=0.0000, significant=True
+proposed_A3_running_average vs xvector_PLDA_baseline: paired_t_test, p=0.0000, significant=True
+Saved per-rep detection scores to detection_scores_exp6_redimnet_fusion_w30_n55.json
+
+Saved summary to C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\experiments\full_evaluation_summary.json (+ full_evaluation_summary_exp6_redimnet_fusion_w30_n55.json)
+Total elapsed: 62.0 min

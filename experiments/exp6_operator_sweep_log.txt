@@ -1,0 +1,19 @@
+validation task: 10x10-way; detection half untouched: 111 speakers
+base_train index: 111 speakers
+llr3: coefs=[-4.0322, -0.2361, -0.884] (1997 trials, 556 genuine) implied_w=0.211
+llr4_margin: coefs=[-3.9811, -0.2369, -0.8523, -0.0651] (1997 trials)
+  A2_redimnet_only     thr= -1.6198 calEER=0.1533 val_acc=0.8955+/-0.0187
+  A3_fixed_w30         thr= -1.4240 calEER=0.1524 val_acc=0.8970+/-0.0149
+  margin_shift_a0.25   thr= -1.5502 calEER=0.1556 val_acc=0.8975+/-0.0167
+  margin_shift_a0.5    thr= -1.5022 calEER=0.1612 val_acc=0.8972+/-0.0169
+  margin_shift_a1.0    thr= -1.6473 calEER=0.1608 val_acc=0.8980+/-0.0177
+  margin_shift_a2.0    thr= -1.7442 calEER=0.1655 val_acc=0.8992+/-0.0175
+  llr3                 thr=  2.3715 calEER=0.1472 val_acc=0.8948+/-0.0159
+  llr4_margin          thr=  2.3776 calEER=0.1474 val_acc=0.8955+/-0.0161
+
+best=margin_shift_a2.0 vs_A2: delta=+0.0038 paired_t_test p=0.4026 wins 7/10
+
+best=margin_shift_a2.0 vs_fixed_w30: delta=+0.0023 paired_t_test p=0.3371 wins 4/10
+G-op-A (best > A2, the thesis claim): GAGAL
+G-op-B (best > fixed w=0.3):          GAGAL
+saved exp6_operator_sweep.json (14.0 min)

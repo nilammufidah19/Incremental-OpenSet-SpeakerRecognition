@@ -45,6 +45,42 @@ Tujuan Experiment 2: membuat kontribusi Whisper terukur & positif — tanpa mena
 **a. Fitur Whisper → lapisan encoder 4** (bukan lapisan tengah L3).
 Sweep bebas-pelatihan menemukan L4 paling diskriminatif. Di-cache terpisah sebagai backbone `whisper_l4` (`layer_fraction = 4/6`) sehingga koeksis dengan varian lama.
 
+> ### ⚠️ KOREKSI (30 Agustus 2026) — klaim L4 > L3 ini TERBALIK
+>
+> Sweep layer di atas dijalankan pada cache embedding Whisper yang dibuat
+> **sebelum** perbaikan bug *masked pooling* (26 Juli 2026). Bug tersebut
+> membuat mean-pooling merata-ratakan seluruh jendela 30 detik termasuk
+> padding senyap, sehingga klip pendek didominasi keheningan. Sweep ini
+> **tidak pernah dijalankan ulang** setelah perbaikan.
+>
+> Pengukuran ulang pada cache yang benar
+> ([Experiment 6](experiment-6.md) §7.1, artefak
+> `experiments/exp6_readout_gate_whisper_pmfa_all.json`, protokol dan task
+> identik) membalik urutannya:
+>
+> | Lapisan encoder | Akurasi (cache benar) |
+> |---|---|
+> | **L3** (tengah, `whisper`) | **0.3475** |
+> | L4 (`whisper_l4`) | 0.2850 |
+>
+> Pengukuran seluruh enam blok memperkuat pembalikan tersebut: kualitas
+> menurun **monoton** seiring kedalaman — L1 0.3567, L2 0.3658, L3 0.3550,
+> L4 0.2783, L5 0.2358, L6 0.1883. Blok paling diskriminatif adalah **L2**,
+> bukan L4, dan bukan pula L3.
+>
+> **Konsekuensi untuk dokumen ini:** pemilihan `whisper_l4` sebagai backbone
+> Experiment 2 diambil di atas embedding yang tidak valid. Angka-angka
+> Experiment 2 tetap dilaporkan apa adanya sebagai jejak metodologi, tetapi
+> **klaim "L4 paling diskriminatif" tidak boleh dikutip**. Perlu dicatat pula
+> bahwa vonis Experiment 4 terhadap fusi Whisper sebagian bersandar pada
+> varian `whisper_l4` ini — lihat [`experiment-4-evaluation-table.md`](experiment-4-evaluation-table.md)
+> §6 untuk tabel Experiment 4 yang sudah dihitung ulang pada cache yang benar.
+>
+> Kesimpulan akhir mengenai Whisper **tidak berubah** oleh koreksi ini:
+> Experiment 6 menutup jalur Whisper dengan readout terbaik yang dapat dicapai
+> tanpa pelatihan (0.3975, gerbang G6.1 gagal) dan run resmi menunjukkan fusi
+> ECAPA+Whisper merugikan pada seluruh bobot yang diuji.
+
 **b. Fusi → score-level (late fusion).**
 Alih-alih memadukan embedding, keputusan dibuat di level **jarak**:
 

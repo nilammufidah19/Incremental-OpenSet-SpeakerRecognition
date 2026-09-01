@@ -1,0 +1,18 @@
+{
+  "second_backbone": "redimnet_b2",
+  "counts": {
+    "total": 1200,
+    "both_right": 971,
+    "both_wrong": 113,
+    "decidable": 116
+  },
+  "n_decidable_pooled": 116,
+  "auroc": {
+    "margin_ratio_f63b": 0.8382621394669587,
+    "margin_diff": 0.8583424607520993,
+    "entropy_diff": 0.7995618838992333,
+    "best_z_diff": 0.814530850675429
+  },
+  "best_signal": "margin_diff",
+  "note": "AUROC of each parameter-free signal for predicting which space is correct, over queries where exactly one space is correct."
+}

@@ -1,0 +1,41 @@
+validation half: 110 speakers, usable 108; task 100, leftover (4c unknowns) 8; detection half untouched: 111
+4c unknown queries: 40 utterances (leftover validation-half speakers only; detection half stays pristine)
+
+=== variant: ecapa + redimnet_b2 ===
+  holdout panel: cohort 300 utt / 55 spk, unknowns 592 utt / 56 spk (disjoint)
+  seed 0: raw  acc_e=0.8125 acc_w=0.8700 oracle=0.9000 (+0.0875)
+          asnorm acc_e=0.8400 acc_w=0.8825 oracle=0.9100 (+0.0700)
+  seed 1: raw  acc_e=0.8100 acc_w=0.8850 oracle=0.9150 (+0.1050)
+          asnorm acc_e=0.8325 acc_w=0.8875 oracle=0.9175 (+0.0850)
+  seed 2: raw  acc_e=0.8125 acc_w=0.8600 oracle=0.8900 (+0.0775)
+          asnorm acc_e=0.8375 acc_w=0.8650 oracle=0.8900 (+0.0525)
+  seed 3: raw  acc_e=0.8275 acc_w=0.9100 oracle=0.9250 (+0.0975)
+          asnorm acc_e=0.8475 acc_w=0.9075 oracle=0.9275 (+0.0800)
+  seed 4: raw  acc_e=0.8125 acc_w=0.8600 oracle=0.9075 (+0.0950)
+          asnorm acc_e=0.8125 acc_w=0.8675 oracle=0.9100 (+0.0975)
+  seed 5: raw  acc_e=0.7925 acc_w=0.8675 oracle=0.9025 (+0.1100)
+          asnorm acc_e=0.8325 acc_w=0.8750 oracle=0.9100 (+0.0775)
+  seed 6: raw  acc_e=0.8100 acc_w=0.8775 oracle=0.9000 (+0.0900)
+          asnorm acc_e=0.8400 acc_w=0.9025 oracle=0.9275 (+0.0875)
+  seed 7: raw  acc_e=0.7925 acc_w=0.8675 oracle=0.8950 (+0.1025)
+          asnorm acc_e=0.8200 acc_w=0.8625 oracle=0.9025 (+0.0825)
+  seed 8: raw  acc_e=0.7975 acc_w=0.8625 oracle=0.9000 (+0.1025)
+          asnorm acc_e=0.8325 acc_w=0.8600 oracle=0.9100 (+0.0775)
+  seed 9: raw  acc_e=0.8125 acc_w=0.8650 oracle=0.8900 (+0.0775)
+          asnorm acc_e=0.8325 acc_w=0.8675 oracle=0.9025 (+0.0700)
+
+  [redimnet_b2] ceiling raw   : +0.0945 ± 0.0107
+  [redimnet_b2] ceiling asnorm: +0.0780 ± 0.0115 -> G4.1 OPEN (headroom exists)
+  [redimnet_b2] ceiling asnorm LINEAR-FUSION: +0.0863 ± 0.0132 -> G4.1b OPEN (of which both-argmin-wrong: 0.0083)
+  [redimnet_b2] best asnorm fusion (coarse grid): w=0.5 acc=0.8880 vs ecapa-alone 0.8327
+  [redimnet_b2] best asnorm fusion (fine 0.01 grid) : w=0.376 acc=0.8947 gain=+0.0620 (seed std 0.0096) -> EXCEEDS noise
+  [redimnet_b2] 4c val-leftover b_only    : EER 0.1263 (a_only 0.1680) dEER -0.0371 CI[-0.0965,+0.0189] ns 
+  [redimnet_b2] 4c val-leftover mean      : EER 0.1409 (a_only 0.1680) dEER -0.0297 CI[-0.0768,+0.0115] ns 
+  [redimnet_b2] 4c val-leftover max       : EER 0.1521 (a_only 0.1680) dEER -0.0166 CI[-0.0655,+0.0251] ns 
+  [redimnet_b2] 4c val-leftover a_disagree: EER 0.1644 (a_only 0.1680) dEER -0.0032 CI[-0.0371,+0.0316] ns 
+  [redimnet_b2] 4c bt-holdout  b_only    : EER 0.1344 (a_only 0.1625) dEER -0.0292 CI[-0.0534,-0.0050] SIG
+  [redimnet_b2] 4c bt-holdout  mean      : EER 0.1298 (a_only 0.1625) dEER -0.0342 CI[-0.0534,-0.0160] SIG
+  [redimnet_b2] 4c bt-holdout  max       : EER 0.1472 (a_only 0.1625) dEER -0.0165 CI[-0.0341,+0.0007] ns 
+  [redimnet_b2] 4c bt-holdout  a_disagree: EER 0.1589 (a_only 0.1625) dEER -0.0043 CI[-0.0178,+0.0084] ns 
+
+saved experiments\exp6_ceiling_redimnet_10seed.json (21.4 min)

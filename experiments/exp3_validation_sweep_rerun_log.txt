@@ -1,0 +1,32 @@
+device=cuda
+validation half: 110 speakers, usable (>= 5 utts with audio): 108; detection half kept untouched: 111
+validation task: 10 sessions x 10-way, k_shot=1, n_query=4
+
+base_train index: 71 speakers, 993 utterances
+[none] calibration EER = 0.2191
+  none               eer        thr=0.9279 val_acc=0.7125±0.0127
+  none               frr=0.01   thr=1.0836 val_acc=0.6950±0.0276
+  none               frr=0.05   thr=1.0126 val_acc=0.7000±0.0389
+  none               frr=0.1    thr=0.9774 val_acc=0.6967±0.0272
+  none               frr=0.15   thr=0.9544 val_acc=0.7158±0.0136
+[asnorm_c300_k100] calibration EER = 0.1565
+  asnorm_c300_k100   eer        thr=-2.8032 val_acc=0.8383±0.0096
+  asnorm_c300_k100   frr=0.01   thr=-0.6349 val_acc=0.8433±0.0164
+  asnorm_c300_k100   frr=0.05   thr=-1.4628 val_acc=0.8425±0.0163
+  asnorm_c300_k100   frr=0.1    thr=-2.2770 val_acc=0.8433±0.0174
+  asnorm_c300_k100   frr=0.15   thr=-2.7114 val_acc=0.8383±0.0077
+[asnorm_c300_k50] calibration EER = 0.1560
+  asnorm_c300_k50    eer        thr=-2.3518 val_acc=0.8342±0.0120
+  asnorm_c300_k50    frr=0.01   thr=0.2048 val_acc=0.8292±0.0139
+  asnorm_c300_k50    frr=0.05   thr=-0.8297 val_acc=0.8283±0.0131
+  asnorm_c300_k50    frr=0.1    thr=-1.7061 val_acc=0.8275±0.0162
+  asnorm_c300_k50    frr=0.15   thr=-2.3263 val_acc=0.8317±0.0112
+[asnorm_c300_k200] calibration EER = 0.1555
+  asnorm_c300_k200   eer        thr=-3.1872 val_acc=0.8433±0.0077
+  asnorm_c300_k200   frr=0.01   thr=-1.2270 val_acc=0.8475±0.0122
+  asnorm_c300_k200   frr=0.05   thr=-2.0516 val_acc=0.8467±0.0112
+  asnorm_c300_k200   frr=0.1    thr=-2.7204 val_acc=0.8458±0.0116
+  asnorm_c300_k200   frr=0.15   thr=-3.1340 val_acc=0.8425±0.0074
+
+BEST on validation: score_norm=asnorm_c300_k200 strategy=target_frr target_frr=0.01 -> val acc 0.8475
+saved C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\experiments\exp3_validation_sweep.json (6.5 min)

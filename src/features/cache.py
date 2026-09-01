@@ -30,7 +30,25 @@ CACHE_DIR = REPO_ROOT / "data" / "cache" / "embeddings"
 # discriminative than the middle layer (fraction 0.5 -> layer 3) used by the
 # default "whisper" backbone. "whisper_l4" caches into its own namespace so the
 # two variants coexist and never collide (see src/experiments.py, exp2a).
+#
+# CORRECTION (2026-08-30, docs/experiment-6.md sec 7.7): that sweep ran on the
+# pre-masked-pooling cache and was never redone. On the corrected cache the
+# order REVERSES -- L3 0.3475 vs L4 0.2850 -- and quality falls monotonically
+# with depth across all six blocks (L2 is the best at 0.3658). whisper_l4 is
+# kept so exp2/exp4 stay reproducible, but it is NOT the better layer.
 WHISPER_L4_FRACTION = 4.0 / 6.0
+
+def _materialized_only(*_args, **_kwargs):
+    """whisper_best holds a base_train-fitted transform of another cache, so it
+    cannot be derived from one utterance in isolation. Recomputing it here
+    would silently produce a DIFFERENT space (no transform applied), which is
+    exactly the kind of half-applied-transform bug the materialization script
+    exists to prevent -- so fail loudly instead."""
+    raise RuntimeError(
+        "backbone 'whisper_best' is materialized, not computed on demand. "
+        "Run: .venv/Scripts/python.exe scripts/exp6_materialize_whisper_space.py"
+    )
+
 
 BACKBONE_MODES = {
     "ecapa": "ecapa_inference",
@@ -42,6 +60,27 @@ BACKBONE_MODES = {
     # waveform input, so it shares ECAPA's duration handling. Own namespace,
     # so all existing caches/tags are untouched.
     "redimnet_b2": "ecapa_inference",
+    # Experiment 6 F6-1 (docs/experiment-6-plan.md): training-free
+    # Whisper-PMFA-style readout -- same frozen whisper-base encoder and the
+    # same 30s-window duration handling as "whisper", only the READOUT
+    # differs (4 layers x mean+std instead of 1 layer x mean). Own namespace,
+    # so "whisper" and "whisper_l4" are untouched and every pre-exp6 result
+    # stays reproducible.
+    #
+    # NOTE: unlike every other backbone here, this cache stores RAW,
+    # UN-NORMALIZED statistics -- see whisper_encoder.extract_embedding_pmfa
+    # for why (normalization and anti-anisotropy post-processing are exactly
+    # what F6-1 measures, and both are recoverable from the raw vector).
+    "whisper_pmfa": "whisper_inference",
+    # F6-1 follow-up: ALL six encoder blocks (6 x 2 x 512 = 6144-d), so any
+    # layer subset is a slice rather than a recompute. Same forward pass cost
+    # as whisper_pmfa; also stores RAW statistics.
+    "whisper_pmfa_all": "whisper_inference",
+    # Experiment 6: the CHOSEN Whisper readout, written by
+    # scripts/exp6_materialize_whisper_space.py (a slice of whisper_pmfa_all
+    # plus a base_train-fit transform). Never computed on demand -- see the
+    # extractor below.
+    "whisper_best": "whisper_inference",
 }
 BACKBONE_EXTRACTORS = {
     "ecapa": (ecapa.extract_embedding, ecapa.extract_embedding_windows),
@@ -52,6 +91,17 @@ BACKBONE_EXTRACTORS = {
     ),
     "xvector": (xvector.extract_embedding, xvector.extract_embedding_windows),
     "redimnet_b2": (redimnet.extract_embedding, redimnet.extract_embedding_windows),
+    "whisper_pmfa": (
+        whisper_encoder.extract_embedding_pmfa,
+        whisper_encoder.extract_embedding_pmfa_windows,
+    ),
+    "whisper_pmfa_all": (
+        partial(whisper_encoder.extract_embedding_pmfa,
+                layers=whisper_encoder.PMFA_ALL_LAYERS),
+        partial(whisper_encoder.extract_embedding_pmfa_windows,
+                layers=whisper_encoder.PMFA_ALL_LAYERS),
+    ),
+    "whisper_best": (_materialized_only, _materialized_only),
 }
 
 

@@ -62,6 +62,7 @@ def build_genuine_impostor_distances(
     seed: int = 0,
     device: str = "cpu",
     score_normalizer=None,
+    out_matrices: dict | None = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Build genuine/impostor min-distance-to-nearest-prototype arrays.
 
@@ -76,6 +77,13 @@ def build_genuine_impostor_distances(
     distance matrix is normalized against the cohort BEFORE the min is taken,
     so the calibrated threshold lives in the same normalized-score space the
     runtime decision (ContinualLearningManager) uses.
+
+    `out_matrices` (Experiment 6, F6-3b; diagnostic only): if a dict is
+    passed, the fused query matrix (genuine rows then impostor rows) and the
+    prototype matrix are written into it under "queries"/"prototypes". Added
+    so a caller can inspect what a score rule DID on exactly the trials the
+    threshold was fit on, without re-deriving the prototype construction and
+    risking drift from this function. Default None keeps behaviour identical.
     """
     fusion_model.eval()
     rng = np.random.default_rng(seed)
@@ -111,10 +119,20 @@ def build_genuine_impostor_distances(
         proto_np = prototype_matrix.cpu().numpy()
         genuine_dists = score_normalizer.normalize(genuine_fused.cpu().numpy(), proto_np).min(axis=-1)
         impostor_dists = score_normalizer.normalize(impostor_fused.cpu().numpy(), proto_np).min(axis=-1)
+        if out_matrices is not None:
+            out_matrices["queries"] = np.concatenate(
+                [genuine_fused.cpu().numpy(), impostor_fused.cpu().numpy()]
+            )
+            out_matrices["prototypes"] = proto_np
         return genuine_dists, impostor_dists
 
     genuine_dists = torch.cdist(genuine_fused, prototype_matrix, p=2).min(dim=-1).values
     impostor_dists = torch.cdist(impostor_fused, prototype_matrix, p=2).min(dim=-1).values
+    if out_matrices is not None:
+        out_matrices["queries"] = np.concatenate(
+            [genuine_fused.cpu().numpy(), impostor_fused.cpu().numpy()]
+        )
+        out_matrices["prototypes"] = prototype_matrix.cpu().numpy()
     return genuine_dists.cpu().numpy(), impostor_dists.cpu().numpy()
 
 

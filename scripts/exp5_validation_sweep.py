@@ -54,7 +54,7 @@ SECOND_BACKBONE = "redimnet_b2"
 K_SHOT, N_QUERY, N_WAY, N_SESSIONS = 1, 4, 10, 10
 SEEDS = SEED_LIST[:3]
 COHORT_SIZE, TOP_K = 300, 200        # exp3b locked AS-Norm params
-TARGET_FRR = 0.05                    # exp3b locked operating point
+TARGET_FRR = 0.01                    # exp3b locked operating point (re-locked 2026-07-26)
 W_GRID = [1.0, 0.95, 0.9, 0.8, 0.7, 0.6, 0.5, 0.3, 0.0]
 
 

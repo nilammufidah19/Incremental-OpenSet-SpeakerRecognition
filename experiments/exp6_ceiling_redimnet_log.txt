@@ -1,0 +1,27 @@
+validation half: 110 speakers, usable 108; task 100, leftover (4c unknowns) 8; detection half untouched: 111
+4c unknown queries: 40 utterances (leftover validation-half speakers only; detection half stays pristine)
+
+=== variant: ecapa + redimnet_b2 ===
+  holdout panel: cohort 300 utt / 55 spk, unknowns 592 utt / 56 spk (disjoint)
+  seed 0: raw  acc_e=0.8125 acc_w=0.8700 oracle=0.9000 (+0.0875)
+          asnorm acc_e=0.8400 acc_w=0.8825 oracle=0.9100 (+0.0700)
+  seed 1: raw  acc_e=0.8100 acc_w=0.8850 oracle=0.9150 (+0.1050)
+          asnorm acc_e=0.8325 acc_w=0.8875 oracle=0.9175 (+0.0850)
+  seed 2: raw  acc_e=0.8125 acc_w=0.8600 oracle=0.8900 (+0.0775)
+          asnorm acc_e=0.8375 acc_w=0.8650 oracle=0.8900 (+0.0525)
+
+  [redimnet_b2] ceiling raw   : +0.0900 ± 0.0114
+  [redimnet_b2] ceiling asnorm: +0.0692 ± 0.0133 -> G4.1 OPEN (headroom exists)
+  [redimnet_b2] ceiling asnorm LINEAR-FUSION: +0.0783 ± 0.0143 -> G4.1b OPEN (of which both-argmin-wrong: 0.0092)
+  [redimnet_b2] best asnorm fusion (coarse grid): w=0.5 acc=0.8900 vs ecapa-alone 0.8367
+  [redimnet_b2] best asnorm fusion (fine 0.01 grid) : w=0.510 acc=0.8942 gain=+0.0575 (seed std 0.0031) -> EXCEEDS noise
+  [redimnet_b2] 4c val-leftover b_only    : EER 0.1329 (a_only 0.1750) dEER -0.0344 CI[-0.0908,+0.0242] ns 
+  [redimnet_b2] 4c val-leftover mean      : EER 0.1421 (a_only 0.1750) dEER -0.0313 CI[-0.0754,+0.0092] ns 
+  [redimnet_b2] 4c val-leftover max       : EER 0.1517 (a_only 0.1750) dEER -0.0197 CI[-0.0608,+0.0192] ns 
+  [redimnet_b2] 4c val-leftover a_disagree: EER 0.1712 (a_only 0.1750) dEER -0.0018 CI[-0.0342,+0.0317] ns 
+  [redimnet_b2] 4c bt-holdout  b_only    : EER 0.1327 (a_only 0.1598) dEER -0.0281 CI[-0.0511,-0.0042] SIG
+  [redimnet_b2] 4c bt-holdout  mean      : EER 0.1288 (a_only 0.1598) dEER -0.0323 CI[-0.0499,-0.0148] SIG
+  [redimnet_b2] 4c bt-holdout  max       : EER 0.1435 (a_only 0.1598) dEER -0.0152 CI[-0.0313,+0.0008] ns 
+  [redimnet_b2] 4c bt-holdout  a_disagree: EER 0.1541 (a_only 0.1598) dEER -0.0049 CI[-0.0182,+0.0071] ns 
+
+saved experiments\exp6_ceiling_redimnet.json (7.2 min)

@@ -140,3 +140,118 @@ def extract_embedding_windows(
     if norm > 0:
         mean_emb = mean_emb / norm
     return mean_emb.astype(np.float32)
+
+
+# --------------------------------------------------------------------------- #
+# Experiment 6 F6-1: training-free Whisper-PMFA-style readout                  #
+# --------------------------------------------------------------------------- #
+# Zhao et al., "Whisper-PMFA: Partial Multi-Scale Feature Aggregation for
+# Speaker Verification using Whisper Models" (Interspeech 2024) shows the
+# middle-to-later encoder blocks carry the most speaker information and that
+# aggregating a SUBSET of them beats any single layer. Their full recipe also
+# trains an ECAPA-style backend with AAM-softmax + LoRA, which this thesis
+# cannot use (training-free constraint, docs/experiment-6-plan.md section 2),
+# so F6-1 keeps only the parts that are pure arithmetic over a frozen encoder:
+# multi-layer aggregation, and mean AND standard-deviation pooling
+# (Okabe et al., Interspeech 2018 -- statistics pooling captures within-
+# utterance variation that a mean discards).
+PMFA_LAYERS = (3, 4, 5, 6)  # hidden_states indices; whisper-base has 6 blocks
+
+# F6-1 follow-up (30 Aug 2026). The {3,4,5,6} choice mirrored Whisper-PMFA's
+# "middle-to-later blocks", but that paper selects from a 32-block encoder;
+# on whisper-base's 6 blocks the same set spans 50-100% of the depth, which is
+# deeper than the paper's analogue. The G6.1 sweep then found quality falling
+# MONOTONICALLY with depth (layer 3 > 4 > 5 > 6), so the informative region is
+# shallower than anything cached -- and layers 1-2 had never been measured at
+# all. Caching ALL blocks costs the same single forward pass as caching four,
+# so this namespace ends the question permanently: every layer subset becomes
+# a slice, and no future layer study needs GPU time again.
+PMFA_ALL_LAYERS = (1, 2, 3, 4, 5, 6)
+
+
+def extract_embedding_pmfa(
+    waveform: np.ndarray,
+    sr: int = 16000,
+    model_name: str = DEFAULT_MODEL_NAME,
+    layers: tuple[int, ...] = PMFA_LAYERS,
+    device: str = DEFAULT_DEVICE,
+) -> np.ndarray:
+    """Multi-layer masked mean+std pooling -> len(layers) * 2 * d_model dims
+    (4096 for whisper-base with 4 layers).
+
+    Layout is [mean_L1, std_L1, mean_L2, std_L2, ...] in `layers` order, so a
+    consumer can slice out any single layer or statistic without recomputing.
+
+    IMPORTANT -- this returns a RAW, UN-NORMALIZED vector, unlike every other
+    extractor in this package. That is deliberate:
+
+      * Transformer layers differ by an order of magnitude in activation
+        scale, so a plain concatenation is dominated by whichever layer has
+        the largest norm. Whether to equalize them (per-layer L2), and
+        whether to apply anti-anisotropy post-processing (ABTT / whitening,
+        fit on base_train), is exactly what F6-1 has to MEASURE.
+      * Every such choice is a deterministic function of these raw statistics,
+        so caching raw keeps all of them reachable. Caching a normalized
+        vector would bake one choice in and force a ~45 min GPU recompute per
+        ablation -- and would make the feature-flag rule "default = old
+        behaviour" unenforceable, since the default would live inside the
+        cache files.
+
+    Consumers that need unit norm get it for free: ScoreFusionEmbed.forward
+    L2-normalizes both halves itself.
+
+    Padding is masked exactly as in extract_embedding (see
+    _valid_encoder_frames); with std pooling this matters even more than with
+    mean pooling, because trailing silence would otherwise look like genuine
+    within-utterance variation.
+    """
+    if sr != 16000:
+        raise ValueError(f"Whisper expects sr=16000, got {sr}")
+
+    model, feature_extractor = get_model(model_name, device)
+    inputs = feature_extractor(waveform, sampling_rate=sr, return_tensors="pt")
+    input_features = inputs.input_features.to(device)
+
+    with torch.no_grad():
+        hidden_states = model.encoder(
+            input_features, output_hidden_states=True
+        ).hidden_states
+        max_idx = len(hidden_states) - 1
+        bad = [i for i in layers if not 0 <= i <= max_idx]
+        if bad:
+            raise ValueError(
+                f"layers {bad} out of range for {model_name}: valid 0..{max_idx}"
+            )
+
+        n_valid = _valid_encoder_frames(waveform, hidden_states[layers[0]].shape[1])
+        parts = []
+        for idx in layers:
+            frames = hidden_states[idx][:, :n_valid, :]
+            mean = frames.mean(dim=1).squeeze(0)
+            # unbiased=False: with n_valid == 1 the unbiased estimator is NaN,
+            # and short clips are exactly where this must not blow up.
+            std = frames.std(dim=1, unbiased=False).squeeze(0)
+            parts.append(mean)
+            parts.append(std)
+        pooled = torch.cat(parts).cpu().numpy().astype(np.float32)
+
+    return pooled
+
+
+def extract_embedding_pmfa_windows(
+    windows: list[np.ndarray],
+    sr: int = 16000,
+    model_name: str = DEFAULT_MODEL_NAME,
+    layers: tuple[int, ...] = PMFA_LAYERS,
+    device: str = DEFAULT_DEVICE,
+) -> np.ndarray:
+    """Average the raw PMFA statistics across sliding windows.
+
+    No normalization here either, for the reasons in extract_embedding_pmfa --
+    and note this differs from extract_embedding_windows, which normalizes the
+    averaged embedding.
+    """
+    embeddings = np.stack(
+        [extract_embedding_pmfa(w, sr, model_name, layers, device) for w in windows]
+    )
+    return embeddings.mean(axis=0).astype(np.float32)
