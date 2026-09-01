@@ -1,0 +1,11 @@
+tag=exp6_redimnet_fusion_w30: 10 reps, 495 genuine / 530 unknown per rep
+
+rule                          EER    AUROC  TAR@1%FAR
+A3_production    0.0910±0.0044   0.9640     0.6297
+a_only_A1        0.1273±0.0051   0.9380     0.4293
+b_only_A2        0.0942±0.0045   0.9636     0.6586
+mean             0.0992±0.0038   0.9607     0.6091
+max              0.1009±0.0081   0.9579     0.5739
+
+Gate G4.3 pada paruh-deteksi resmi (mean EER < a_only EER - 0.01): TERKONFIRMASI
+saved C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\experiments\exp5_detection_rules_exp6_redimnet_fusion_w30.json

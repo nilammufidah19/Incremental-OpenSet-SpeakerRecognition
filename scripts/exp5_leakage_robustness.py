@@ -59,7 +59,15 @@ N_QUERY = 9          # clean task speakers have exactly 10 cached utterances eac
 SEEDS = SEED_LIST[:10]
 COHORT_SIZE, TOP_K = 300, 200   # exp3b/exp5b locked AS-Norm params
 TARGET_FRR = 0.01               # exp3b/exp5b re-locked operating point
-WEIGHTS = {"A1_ecapa_only": 1.0, "A2_redimnet_only": 0.0, "A3_fusion": 0.5}
+# exp6 (2026-08-30): w=0.3 arm added -- the 10-seed re-derived weight now used
+# by the best official configuration (exp6_redimnet_fusion_w30). The original
+# w=0.5 arm stays untouched so the exp5b-era numbers keep reproducing.
+WEIGHTS = {
+    "A1_ecapa_only": 1.0,
+    "A2_redimnet_only": 0.0,
+    "A3_fusion": 0.5,
+    "A3_fusion_w30": 0.3,
+}
 
 
 def clean_task_speakers() -> list[str]:
@@ -163,8 +171,15 @@ def main() -> None:
     a3 = np.array(results["A3_fusion"]["closed_accs"])
     a1 = np.array(results["A1_ecapa_only"]["closed_accs"])
     a2 = np.array(results["A2_redimnet_only"]["closed_accs"])
+    a3w30 = np.array(results["A3_fusion_w30"]["closed_accs"])
     sig_a3_vs_a1 = paired_significance_test(a3, a1)
     sig_a3_vs_a2 = paired_significance_test(a3, a2)
+    sig_w30_vs_a1 = paired_significance_test(a3w30, a1)
+    sig_w30_vs_a2 = paired_significance_test(a3w30, a2)
+    print(f"A3(w=0.3) vs A1: {sig_w30_vs_a1.test_used}, p={sig_w30_vs_a1.p_value:.4f}, "
+          f"significant={sig_w30_vs_a1.p_value < 0.05}")
+    print(f"A3(w=0.3) vs A2: {sig_w30_vs_a2.test_used}, p={sig_w30_vs_a2.p_value:.4f}, "
+          f"significant={sig_w30_vs_a2.p_value < 0.05}")
     print(f"\nA3 vs A1 (leakage-free subset, n={len(task_speakers)} speakers, "
           f"{len(SEEDS)} seeds): {sig_a3_vs_a1.test_used}, p={sig_a3_vs_a1.p_value:.4f}, "
           f"significant={sig_a3_vs_a1.p_value < 0.05}")
@@ -186,6 +201,10 @@ def main() -> None:
                          "significant_at_0.05": sig_a3_vs_a1.p_value < 0.05},
             "A3_vs_A2": {"test": sig_a3_vs_a2.test_used, "p_value": sig_a3_vs_a2.p_value,
                          "significant_at_0.05": sig_a3_vs_a2.p_value < 0.05},
+            "A3_w30_vs_A1": {"test": sig_w30_vs_a1.test_used, "p_value": sig_w30_vs_a1.p_value,
+                             "significant_at_0.05": sig_w30_vs_a1.p_value < 0.05},
+            "A3_w30_vs_A2": {"test": sig_w30_vs_a2.test_used, "p_value": sig_w30_vs_a2.p_value,
+                             "significant_at_0.05": sig_w30_vs_a2.p_value < 0.05},
         },
         "elapsed_minutes": (time.time() - t0) / 60,
     }, indent=2), encoding="utf-8")

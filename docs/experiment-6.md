@@ -751,6 +751,72 @@ angkanya besar kemungkinan bergeser.
 
 ---
 
+## 7c. Dua pemeriksaan penutup — aturan deteksi dan ketahanan leakage
+
+### 7c.1 F6-4 — aturan deteksi dua ruang pada run resmi w = 30 %
+
+Artefak: `experiments/exp5_detection_rules_exp6_redimnet_fusion_w30.json`
+(10 repetisi, 495 genuine / 530 unknown per repetisi).
+
+| Aturan deteksi | EER | AUROC | TAR@1%FAR |
+|---|---|---|---|
+| **Skor produksi A3 (w = 0.3)** | **0.0910 ± 0.0044** | **0.9640** | 0.6297 |
+| ReDimNet-saja (`b_only`) | 0.0942 ± 0.0045 | 0.9636 | **0.6586** |
+| `mean` dua ruang | 0.0992 ± 0.0038 | 0.9607 | 0.6091 |
+| `max` dua ruang | 0.1009 ± 0.0081 | 0.9579 | 0.5739 |
+| ECAPA-saja (`a_only`) | 0.1273 ± 0.0051 | 0.9380 | 0.4293 |
+
+**Skor fusi produksi adalah aturan deteksi terbaik.** Aturan dua-ruang
+post-hoc (`mean`, `max`) — yang pada Experiment 4 sempat tampak menjanjikan —
+tidak menambah apa pun di atas skor produksi; keduanya justru lebih buruk.
+Gerbang G4.3 (`mean` < `a_only` − 0.01) terkonfirmasi, tetapi hanya terhadap
+arm terlemah, sehingga tidak lagi bermakna sebagai jalur perbaikan. F6-4
+ditutup: **tidak ada aturan deteksi terpisah yang perlu diadopsi ke runtime.**
+
+### 7c.2 Ketahanan leakage konfigurasi w = 30 %
+
+ReDimNet-b2 dilatih pada VoxCeleb2-dev, dan 80 dari 100 task speaker resmi
+berada di dalamnya (diungkap sejak Experiment 5). Uji ketahanan mengulang
+identifikasi pada **19 pembicara yang tidak pernah dilihat ReDimNet**
+(task statis 19-way, k = 1, 10 seed), dengan arm w = 0.3 ditambahkan ke
+skrip Experiment 5 secara aditif. Artefak:
+`experiments/exp5_leakage_robustness.json`.
+
+| Arm | closed acc (subset bebas-leakage) |
+|---|---|
+| A1 — ECAPA saja | 0.9333 ± 0.0605 |
+| A2 — ReDimNet saja | 0.9544 ± 0.0402 |
+| A3 — fusi w = 0.5 (exp5b) | 0.9556 ± 0.0436 |
+| **A3 — fusi w = 0.3** | **0.9667 ± 0.0329** |
+
+| Perbandingan | p | Vonis |
+|---|---|---|
+| A3 (w=0.5) vs A1 — *temuan exp5b* | 0.1475 | tidak signifikan |
+| **A3 (w=0.3) vs A1** | **0.0313** | **signifikan** |
+| A3 (w=0.3) vs A2 | 0.1994 | tidak signifikan |
+
+Dua hal dari tabel ini. Pertama, **klaim A3 > A1 kini bertahan bahkan pada
+pembicara yang tidak pernah dilihat ReDimNet** — pada Experiment 5b klaim ini
+tidak signifikan di subset bebas-leakage (p = 0.1475) dan hanya bisa dibela
+dengan argumen kurangnya daya; pada w = 0.3 ia signifikan langsung
+(p = 0.0313). Kekhawatiran bahwa keunggulan sistem merupakan artefak leakage
+ReDimNet menjadi jauh lebih lemah. Kedua, pola A3 vs A2 di subset ini
+(arah menguntungkan, tidak signifikan pada n kecil) konsisten dengan task
+resmi — tidak ada anomali.
+
+Ketiga arm lama mereproduksi artefak 2 Agustus **bit-identik** — pemeriksaan
+reproduksi ketiga yang lolos pada kode terkini.
+
+### 7c.3 Memo keputusan pembimbing
+
+Taksonomi tiga tingkat §3 kini dikemas sebagai memo satu halaman yang siap
+dikirim: [`memo-keputusan-f63.md`](memo-keputusan-f63.md). Isinya tabel
+komponen yang sudah di-fit di `base_train`, pertanyaan biner (garis 0–1 atau
+1–2), dan konsekuensi eksplisit masing-masing jawaban — termasuk bahwa garis
+1–2 ikut menggugurkan Experiment 3b dan 5b.
+
+---
+
 ## 8. Temuan metodologis — kecukupan jumlah seed pada sweep validasi
 
 Temuan ini muncul sebagai produk sampingan F6-3b dan berdampak melampaui Experiment 6.
@@ -782,8 +848,8 @@ Langkah berikutnya, berurutan:
 | Run resmi ECAPA+ReDimNet w=30 % | ✅ selesai — **0.882**, titik operasi terbaik |
 | Reproduksi exp5b pada kode terkini | ✅ selesai — **bit-identik** |
 | F6-2 — analisis komplementaritas ulang | **tidak relevan lagi** — G6.1 gagal, readout Whisper tidak dilanjutkan |
-| F6-3 — fusi LLR | **menunggu keputusan pembimbing** atas taksonomi §3 |
-| F6-4 — aturan deteksi dua ruang | belum |
+| F6-3 — fusi LLR | **menunggu keputusan pembimbing** — memo siap kirim: [`memo-keputusan-f63.md`](memo-keputusan-f63.md) |
+| F6-4 — aturan deteksi dua ruang | ✅ selesai — skor produksi A3 adalah aturan terbaik; tidak ada yang perlu diadopsi (§7c.1) |
 | Koreksi klaim layer L4>L3 di `experiment-2.md` | **belum** — lihat §7.7 |
 
 ---

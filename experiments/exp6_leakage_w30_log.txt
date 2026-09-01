@@ -1,0 +1,15 @@
+clean (non-vox2-dev) task_speakers: 20 candidates, 19 usable (>= 10 cached utterances)
+cohort: (300, 384) (from base_train -- disjoint split from task_speakers)
+impostor pool: 295 speakers
+
+A1_ecapa_only      w=1.00 closed_acc=0.9333+/-0.0605 open_acc=0.9333+/-0.0605
+A2_redimnet_only   w=0.00 closed_acc=0.9544+/-0.0402 open_acc=0.9538+/-0.0406
+A3_fusion          w=0.50 closed_acc=0.9556+/-0.0436 open_acc=0.9556+/-0.0436
+A3_fusion_w30      w=0.30 closed_acc=0.9667+/-0.0329 open_acc=0.9667+/-0.0329
+A3(w=0.3) vs A1: paired_t_test, p=0.0313, significant=True
+A3(w=0.3) vs A2: paired_t_test, p=0.1994, significant=False
+
+A3 vs A1 (leakage-free subset, n=19 speakers, 10 seeds): paired_t_test, p=0.1475, significant=False
+A3 vs A2: paired_t_test, p=0.9466, significant=False
+
+saved C:\Users\MSI\OneDrive\Documents\Nilam\Kuliah MKA\Thesis\Code\Incremental-OpenSet-SpeakerRecognition\experiments\exp5_leakage_robustness.json (1.3 min)
