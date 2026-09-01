@@ -798,6 +798,15 @@ Langkah berikutnya, berurutan:
 
 **Disiplin perubahan kode.** Setiap perubahan perilaku melewati registry `ExperimentConfig` dengan nilai default yang mempertahankan perilaku lama, backbone baru memakai namespace cache tersendiri, dan skrip analisis bersifat aditif sehingga seluruh angka eksperimen terdahulu tetap dapat direproduksi dari skrip yang sama. Penambahan `out_matrices` pada `build_genuine_impostor_distances` mengikuti aturan ini: parameter opsional dengan default `None` dan perilaku tidak berubah.
 
+**Audit kebocoran transform `whisper_best` (30 Agustus 2026).** Transform
+whitening/WCCN di-fit pada 111 pembicara. Diverifikasi terhadap seluruh
+partisi: irisan dengan `task_speakers` = 0, paruh validasi = 0, paruh
+deteksi = 0. Terdapat irisan nominal 10 pembicara dengan
+`calibration_impostor_pool`, seluruhnya dari `vox1_sample`; ke-10 pembicara
+tersebut memiliki **nol utterance** di `eval_capped`, sehingga tidak pernah
+muncul sebagai query impostor — bukan kebocoran dalam praktik, dicatat demi
+kelengkapan.
+
 **Pengujian.** Suite penuh 177 pengujian lulus, mencakup 13 pengujian baru untuk Experiment 6.
 
 ---
