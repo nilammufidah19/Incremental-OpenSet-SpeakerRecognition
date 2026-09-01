@@ -429,6 +429,44 @@ EXPERIMENTS: dict[str, ExperimentConfig] = {
         dump_detection_scores=True,
         n_reps=10,
     ),
+    # --------------------------------------------------------------------- #
+    # Experiment 6 PRE-REGISTERED POWER RUN (docs/experiment-6.md sec 7b.1).  #
+    # Identical to exp6_redimnet_fusion_w30 except n_reps=55, the count the   #
+    # power analysis says gives 80% power at alpha_Bonferroni=0.00833 for the #
+    # observed effect (A3 vs A2: d=0.47).                                     #
+    #                                                                         #
+    # Pre-registration, stated before the run: the hypothesis is             #
+    # "A3 (w=0.3) > A2 (ReDimNet-alone) on open-set accuracy, paired test,   #
+    # alpha=0.00833". This entry is run ONCE and the result reported          #
+    # whatever it is. n was chosen from the power analysis, not tuned; a     #
+    # failure here is a REAL negative, not an underpowered one. Repetitions  #
+    # re-draw episodes over the same 99 speakers, so the claim's scope is    #
+    # this task, not the population.                                         #
+    # --------------------------------------------------------------------- #
+    "exp6_redimnet_fusion_w30_n55": ExperimentConfig(
+        id="exp6_redimnet_fusion_w30_n55",
+        title="Experiment 6 -- ECAPA 30% + ReDimNet 70%, pre-registered 55-rep power run",
+        description=(
+            "exp6_redimnet_fusion_w30 at n_reps=55, the pre-registered count "
+            "for 80% power on A3-vs-A2 at the Bonferroni alpha. Run once; "
+            "the outcome is reported as-is."
+        ),
+        residual_init=True,
+        n_train_episodes=0,
+        continual_mode="running_average",
+        fusion_strategy="score_norm",
+        score_fusion_weight=0.30,
+        whisper_backbone="redimnet_b2",
+        calibration_strategy="target_frr",
+        target_frr=0.01,
+        per_config_calibration=True,
+        score_norm="asnorm",
+        asnorm_cohort_size=300,
+        asnorm_top_k=200,
+        report_open_set_detection=True,
+        dump_detection_scores=True,
+        n_reps=55,
+    ),
 }
 
 # The active experiment tag. Flip this (or set the ACTIVE_EXPERIMENT env var)

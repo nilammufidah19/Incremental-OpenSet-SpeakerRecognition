@@ -633,6 +633,15 @@ hanya kecil relatif derau. Untuk daya 80 %:
 | α 0.05 tanpa koreksi | 36 |
 
 Satu run sepuluh repetisi memakan 11,6 menit, sehingga 55 repetisi ≈ 64 menit.
+
+> **PRA-REGISTRASI (30 Agustus 2026, dicatat sebelum run dijalankan).**
+> Tag `exp6_redimnet_fusion_w30_n55` akan dijalankan **satu kali** dengan
+> n = 55 repetisi. Hipotesis: **A3 (w = 0.3) > A2 (ReDimNet-saja) pada
+> akurasi open-set, uji berpasangan, α = 0.00833.** Nilai n diambil dari
+> analisis daya di atas, bukan disetel; hasilnya dilaporkan apa adanya.
+> Kegagalan pada n ini adalah temuan negatif yang sesungguhnya, bukan
+> kekurangan daya.
+
 **Peringatan metodologis:** menaikkan n *sampai* signifikan adalah p-hacking.
 Yang sah adalah mempra-registrasi n = 55 lebih dulu, menjalankannya sekali, dan
 melaporkan apa pun hasilnya. Perlu dicatat pula bahwa repetisi bukan data baru

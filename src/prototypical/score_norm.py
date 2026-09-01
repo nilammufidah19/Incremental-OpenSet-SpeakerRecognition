@@ -325,3 +325,57 @@ class AdaptiveDualASNorm(DualASNorm):
         z_second = self._second.normalize(queries[:, d:], prototypes[:, d:])
         w = self._weights_from(z_first, z_second)[:, None]
         return w * z_first + (1.0 - w) * z_second
+
+
+class MarginShiftDualASNorm(AdaptiveDualASNorm):
+    """Experiment 6 follow-up to F6-3b: per-query weight from the margin
+    DIFFERENCE, shifted off a base weight.
+
+        w(q) = clip(weight + shift_scale * (margin_first(q) - margin_second(q)), 0, 1)
+
+    Why this exists -- the oracle-predictability diagnostic
+    (experiments/exp6_oracle_predictability_redimnet_b2.json) showed F6-3b's
+    margin-RATIO rule under-harvests for two design reasons:
+
+      1. The ratio is symmetric around 0.5, but the decidable-query population
+         is not: the second space is right ~2.5x more often (83 vs 33). A rule
+         anchored at 0.5 rescues a few first-space queries while damaging more
+         second-space ones. Here the anchor is `weight` -- the validation-locked
+         base weight (0.3 for ECAPA+ReDimNet), so the rule only DEVIATES from
+         the well-chosen operating point when the margins give a reason.
+      2. The margin DIFFERENCE separates "which space is right" better than
+         the ratio (AUROC 0.8583 vs 0.8383), and margins are z-score
+         (cohort-sigma) units, so the difference is scale-meaningful across
+         queries while the ratio throws that scale away.
+
+    `shift_scale` is a single scalar chosen on the validation half -- the same
+    standing as `weight` itself (tier 1 of the training-free taxonomy; nothing
+    is fitted by gradient, and nothing touches embeddings). shift_scale=0
+    reduces EXACTLY to constant-weight DualASNorm, so this is again a strict
+    generalization, and the sweep's zero point doubles as the A3-fixed arm.
+
+    Degenerate cases (fewer than 2 prototypes) fall back to the base weight
+    via the parent's convention.
+    """
+
+    def __init__(
+        self,
+        cohort_embeddings: np.ndarray,
+        split_dim: int,
+        top_k: int = 100,
+        weight: float = 0.5,
+        shift_scale: float = 1.0,
+    ) -> None:
+        # rule name only matters for the parent's validation; margins are
+        # computed the same way, the combination differs in _weights_from.
+        super().__init__(cohort_embeddings, split_dim=split_dim, top_k=top_k,
+                         weight=weight, rule="margin_weighted")
+        self.shift_scale = float(shift_scale)
+
+    def _weights_from(self, z_first: np.ndarray, z_second: np.ndarray) -> np.ndarray:
+        if z_first.shape[1] < 2:
+            return np.full(z_first.shape[0], self.weight)
+        m_first = self._margins(z_first)
+        m_second = self._margins(z_second)
+        w = self.weight + self.shift_scale * (m_first - m_second)
+        return np.clip(w, 0.0, 1.0)

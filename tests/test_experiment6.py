@@ -200,3 +200,51 @@ def test_pmfa_windows_averages_without_normalizing(sample_audio_manifest):
 
     averaged = whisper_encoder.extract_embedding_pmfa_windows([window, window])
     np.testing.assert_allclose(averaged, single, rtol=1e-5)
+
+
+# --------------------------------------------------------------------------- #
+# Margin-shift rule (follow-up to F6-3b)                                       #
+# --------------------------------------------------------------------------- #
+from src.prototypical.score_norm import MarginShiftDualASNorm  # noqa: E402
+
+
+def test_margin_shift_zero_scale_is_exactly_the_fixed_weight_rule():
+    """shift_scale=0 must be bit-identical to constant-weight DualASNorm, so
+    the sweep's zero point doubles as the A3-fixed arm."""
+    cohort, queries, protos = _fixture(seed=21)
+    for w in (0.3, 0.5):
+        fixed = DualASNorm(cohort, split_dim=D1, top_k=20, weight=w)
+        shifted = MarginShiftDualASNorm(cohort, split_dim=D1, top_k=20,
+                                        weight=w, shift_scale=0.0)
+        np.testing.assert_allclose(
+            shifted.normalize(queries, protos), fixed.normalize(queries, protos)
+        )
+
+
+def test_margin_shift_moves_weight_toward_the_decided_space():
+    rule = MarginShiftDualASNorm(_rand((60, D1 + D2), 22), split_dim=D1,
+                                 top_k=20, weight=0.3, shift_scale=1.0)
+    z_decided = np.array([[-3.0, 0.0, 0.1]])   # margin 3.0
+    z_flat = np.array([[0.0, 0.05, 0.10]])     # margin 0.05
+    # first space decided -> weight rises above the 0.3 anchor
+    assert rule._weights_from(z_decided, z_flat)[0] > 0.9
+    # second space decided -> weight pinned at the floor
+    assert rule._weights_from(z_flat, z_decided)[0] == 0.0
+
+
+def test_margin_shift_weights_are_clipped_to_unit_interval():
+    cohort, queries, protos = _fixture(seed=23)
+    rule = MarginShiftDualASNorm(cohort, split_dim=D1, top_k=20,
+                                 weight=0.3, shift_scale=100.0)
+    w = rule.per_query_weight(queries, protos)
+    assert np.all((w >= 0.0) & (w <= 1.0))
+
+
+def test_margin_shift_single_prototype_falls_back_to_base_weight():
+    cohort, queries, _ = _fixture(seed=24)
+    proto = _rand((1, D1 + D2), 25)
+    rule = MarginShiftDualASNorm(cohort, split_dim=D1, top_k=20,
+                                 weight=0.37, shift_scale=2.0)
+    fixed = DualASNorm(cohort, split_dim=D1, top_k=20, weight=0.37)
+    np.testing.assert_allclose(rule.normalize(queries, proto),
+                               fixed.normalize(queries, proto))

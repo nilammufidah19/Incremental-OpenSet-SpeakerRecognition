@@ -22,6 +22,7 @@ Usage:
 from __future__ import annotations
 
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -40,7 +41,11 @@ TAG = sys.argv[1] if len(sys.argv) > 1 else "exp5b_redimnet_fusion"
 DUMP_PATH = REPO_ROOT / "experiments" / f"detection_scores_{TAG}.json"
 OUT_PATH = REPO_ROOT / "experiments" / f"exp5_bootstrap_eer_{TAG}.json"
 
-N_BOOTSTRAP = 1000
+# exp6 (2026-08-30): overridable via env. At 1000 resamples the Monte-Carlo
+# error on the 97.5% quantile is ~1e-4 -- the same order as the distance
+# between the w=0.3 A3-vs-A2 CI bound and zero, so 1000 cannot decide that
+# borderline. Default stays 1000 so earlier artifacts reproduce.
+N_BOOTSTRAP = int(os.environ.get("N_BOOTSTRAP", "1000"))
 PROPOSED = "proposed_A3_running_average"
 COMPARISONS = [
     ("proposed_A3_running_average", "A1_ecapa_only"),
