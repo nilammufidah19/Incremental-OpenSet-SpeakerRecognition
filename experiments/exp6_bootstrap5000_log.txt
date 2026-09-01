@@ -1,0 +1,6 @@
+tag=exp6_redimnet_fusion_w30: 10 reps, n_bootstrap=5000
+
+proposed_A3_running_average vs A1_ecapa_only:
+  per-rep signifikan: 10/10  mean dEER=-0.0362
+  pooled dEER=-0.0367 CI95=[-0.0420, -0.0314] -> SIGNIFIKAN
+

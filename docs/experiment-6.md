@@ -737,7 +737,61 @@ sehingga aturan simetris menyelamatkan sedikit query ECAPA tetapi merusak lebih
 banyak query ReDimNet; dan (ii) ia memakai **rasio** margin, yang AUROC-nya
 lebih rendah daripada **selisih** margin (0.8383 berbanding 0.8583).
 
-### 7b.5 Kesimpulan mengenai keterbuktian klaim
+### 7b.5 Sweep operator — kedua keluarga operator gagal memanen plafon
+
+Artefak: `experiments/exp6_operator_sweep.json` (8 arm × 10 seed, protokol
+validasi identik; log `exp6_operator_sweep_log.txt`). Dua keluarga operator
+yang dibangun langsung dari diagnostik §7b.4 diuji berdampingan:
+
+- **`margin_shift`** (tier 2, `MarginShiftDualASNorm` di
+  `src/prototypical/score_norm.py`): `w(q) = clip(0.3 + α·(m_e − m_b), 0, 1)`
+  — memperbaiki kedua cacat F6-3b: jangkar di bobot terkunci 0.3 (bukan 0.5
+  simetris) dan digerakkan **selisih** margin (AUROC 0.8583), bukan rasio.
+- **Fusi LLR** (F6-3; **eksploratori, kontingen pada keputusan
+  [memo](memo-keputusan-f63.md)** — implementasi hidup di skrip analisis,
+  tidak ada yang masuk runtime): `llr3` = a₀+a₁z_e+a₂z_b, dan `llr4` yang
+  menambah fitur kualitas (m_e−m_b)(z_e−z_b) sehingga bobot efektifnya
+  per-query. IRLS berbobot prior + L2, 1.997 trial dari paruh kalibrasi
+  `base_train` yang speaker-disjoint; koefisien tercatat verbatim di artefak.
+
+| Arm | val_acc (10 seed) | calEER |
+|---|---|---|
+| A2 — ReDimNet saja | 0.8955 ± 0.0187 | 0.1533 |
+| A3 — bobot tetap w = 0.3 | 0.8970 ± 0.0149 | 0.1524 |
+| margin_shift α = 0.25 / 0.5 / 1.0 / 2.0 | 0.8975 / 0.8972 / 0.8980 / **0.8992** | 0.156–0.166 |
+| llr3 (bobot implisit 0.211) | 0.8948 | **0.1472** |
+| llr4 + fitur margin | 0.8955 | 0.1474 |
+
+**Kedua gerbang pra-registrasi gagal:** G-op-A (terbaik > A2): +0.0038,
+p = 0.4026. G-op-B (terbaik > bobot tetap): +0.0023, p = 0.3371, menang 4/10
+seed. Selisih antar-arm (≈0.002) jauh di bawah simpangan antar-seed (≈0.017);
+menyapu α lebih jauh berarti menyetel pada derau validasi, dan tidak
+dilakukan.
+
+Tiga pengamatan yang menambah bobot hasil ini:
+
+1. **llr3 berperilaku persis seperti prediksi struktural yang dicatat sebelum
+   run**: kombinasi linear tetap tidak mengubah argmin, sehingga akurasinya
+   menyamai (sedikit di bawah) bobot tetap. Bobot implisitnya — 0.211, dari
+   regresi yang tidak pernah melihat grid mana pun — mendarat di wilayah
+   ReDimNet-berat yang sama dengan sweep validasi (0.30) dan grid-halus plafon
+   (0.376): **empat prosedur independen kini menunjuk wilayah bobot yang
+   sama.**
+2. **Nilai LLR muncul tepat di tempat yang dijanjikan teori kalibrasi**:
+   calEER-nya terbaik dari semua arm (0.1472). LLR memperbaiki kalibrasi,
+   bukan identifikasi.
+3. Bahkan `llr4` yang mampu per-query tidak bergerak — koefisien fitur
+   marginnya kecil (−0.065): pada trial kalibrasi, informasi margin tidak
+   menambah banyak di atas (z_e, z_b).
+
+**Mengapa sinyal AUROC 0.86 tidak termanen.** Diagnostik §7b.4 mengukur
+sinyal pada query *decidable* di task statis 100 pembicara. Saat runtime,
+margin dihitung terhadap himpunan prototipe sesi yang kecil (10, bertambah
+per sesi) sehingga jauh lebih berderau, dan aturan per-query mengubah bobot
+pada **semua** query — termasuk 81 % query yang kedua ruangnya sudah benar,
+yang sebagian dirusak oleh pergeseran bobot. Perolehan bersihnya nyaris nol.
+
+### 7b.5b Kesimpulan mengenai keterbuktian klaim
 
 Bukti menggeser pembacaan dari "fusi tidak berkontribusi" menjadi **"fusi
 memiliki kontribusi nyata yang belum berhasil dipanen"** — dua pernyataan yang
@@ -751,12 +805,16 @@ operator yang lebih baik berada pada kisaran +0.01 sampai +0.02 — cukup untuk
 mencapai signifikansi, belum cukup untuk mengubah cerita tesis secara
 mendasar.
 
-Urutan langkah yang disarankan: **(1)** bangun aturan tier-2 berbasis selisih
-margin dengan titik operasi yang menghormati prior 83 : 33 — tidak memerlukan
-keputusan pembimbing; **(2)** jika berhasil, jalankan bootstrap 5000 resample
-untuk memutuskan sisi perbatasan det-EER; **(3)** pra-registrasi 55 repetisi
-hanya bila diperlukan. Menjalankan (2) sebelum (1) adalah pemborosan, karena
-angkanya besar kemungkinan bergeser.
+**Pembaruan setelah sweep operator (§7b.5): langkah (1) sudah dijalankan dan
+gagal.** Dengan plafon terukur (+0.0413), sinyal terukur (AUROC 0.8583), dan
+dua keluarga operator berprinsip yang keduanya gagal memanennya, kesimpulan
+yang tersisa menjadi jauh lebih kuat daripada sekadar temuan negatif: **ruang
+perbaikan fusi itu nyata tetapi tidak terjangkau oleh operator level-skor
+kelas kalibrasi** — baik nol-parameter maupun ter-fit ringan. Satu-satunya
+tingkat yang secara masuk akal dapat mencapainya adalah backend terlatih
+(tingkat 0), yang berada di luar batasan tesis by construction. Bootstrap
+5000 resample dan run daya n = 55 yang telah dipra-registrasi tetap
+dijalankan untuk menutup kedua ujung statistik yang masih menggantung.
 
 ---
 

@@ -316,7 +316,11 @@ def main() -> None:
         accs, fms, closed_accs = [], [], []
         det_eers, det_aurocs, det_tars = [], [], []
         for rep in range(N_REPS):
-            seed = SEED_LIST[rep]
+            # SEED_LIST holds 10 entries (values 0..9), so for every run to
+            # date SEED_LIST[rep] == rep. Extending past 10 (the exp6 n=55
+            # pre-registered power run) continues the same identity sequence:
+            # bit-identical for rep < 10, deterministic beyond.
+            seed = SEED_LIST[rep] if rep < len(SEED_LIST) else rep
             system = factory()
             detailed = run_fscil_detailed(
                 system, sessions, speaker_audio_paths, k_shot=K_SHOT, n_query=N_QUERY,
